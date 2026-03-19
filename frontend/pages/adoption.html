@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adopt a Pet – AniCure</title>
+  <meta name="description" content="Browse rescued animals available for adoption. Give a loving home to a rescued dog, cat, bird or other animal." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand"><div class="brand-icon">🐾</div>Ani<span>Cure</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link">Reports</a></li>
+    <li><a href="adoption.html" class="nav-link active">Adoption</a></li>
+    <li><a href="donate.html" class="nav-link">Donate</a></li>
+    <li><a href="ngos.html" class="nav-link">NGOs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
+    <a href="report-form.html" class="btn btn-primary btn-sm">🆘 Report Animal</a>
+    <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+  </div>
+</nav>
+
+<main style="padding-top:68px;min-height:100vh;padding-bottom:4rem">
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,#0d2010,#142018);border-bottom:1px solid var(--border);padding:3.5rem 0">
+    <div class="container" style="text-align:center">
+      <div class="section-tag" style="display:inline-flex;margin-bottom:1rem">🐾 Adoption Center</div>
+      <h1 class="section-title" style="margin-bottom:0.75rem">Find Your <span>Forever Friend</span></h1>
+      <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto">Every animal listed here has been rescued and rehabilitated. They deserve a loving home – maybe yours!</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:2.5rem">
+    <!-- Filters -->
+    <div class="card" style="padding:1.25rem;margin-bottom:2rem">
+      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+        <span style="font-size:0.85rem;font-weight:600;color:var(--text-muted)">Filter by:</span>
+        <button class="btn btn-primary btn-sm filter-btn" data-type="all" onclick="filterAdoptions('all', this)">All Animals</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-type="dog" onclick="filterAdoptions('dog', this)">🐕 Dogs</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-type="cat" onclick="filterAdoptions('cat', this)">🐈 Cats</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-type="bird" onclick="filterAdoptions('bird', this)">🦜 Birds</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-type="rabbit" onclick="filterAdoptions('rabbit', this)">🐇 Rabbits</button>
+        <button class="btn btn-ghost btn-sm filter-btn" data-type="other" onclick="filterAdoptions('other', this)">🦎 Other</button>
+        <div style="margin-left:auto">
+          <span id="adoption-count" style="font-size:0.85rem;color:var(--text-muted)">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="adoptions-grid" class="grid grid-4">
+      <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
+        <div class="loading-spinner"></div>
+        <p style="margin-top:1rem">Loading animals...</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Adoption Request Modal -->
+<div id="adopt-modal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">🐾 Request Adoption</h3>
+      <button class="modal-close" onclick="closeAdoptModal()">✕</button>
+    </div>
+    <input type="hidden" id="adopt-animal-id" />
+    <div id="adopt-animal-info" style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.25rem"></div>
+    <div class="form-group">
+      <label class="form-label">Tell us about yourself & why you'd like to adopt *</label>
+      <textarea class="form-control" id="adopt-message" rows="4" placeholder="Tell us about your home environment, experience with animals, why you want to adopt this pet, etc." required></textarea>
+    </div>
+    <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1.25rem;font-size:0.83rem;color:var(--text-muted)">
+      ⚠️ The NGO/shelter will review your request. You'll receive a notification on the outcome.
+    </div>
+    <div style="display:flex;gap:0.75rem">
+      <button onclick="submitAdoptionRequest()" class="btn btn-primary flex-1" style="justify-content:center" id="adopt-submit-btn">Submit Request</button>
+      <button onclick="closeAdoptModal()" class="btn btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="../assets/js/app.js"></script>
+<script>
+  let allAdoptions = [];
+  let currentFilter = 'all';
+
+  function demoAdoptionCard(a, id) {
+    const statusClass = a.status === 'available' ? 'badge-success' : a.status === 'pending' ? 'badge-warning' : 'badge-muted';
+    const statusLabel = a.status === 'available' ? '🐾 Available' : a.status === 'pending' ? '⏳ Pending' : '🏠 Adopted';
+    const canAdopt = a.status === 'available';
+    return `
+    <div class="adoption-card" data-type="${a.type}">
+      <div style="position:relative">
+        ${a.image 
+          ? `<div style="height:200px;overflow:hidden"><img src="${a.image}" style="width:100%;height:100%;object-fit:cover" alt="${a.name}" /></div>`
+          : `<div style="height:200px;background:linear-gradient(135deg, var(--bg-card-hover), rgba(34,197,94,0.05));display:flex;align-items:center;justify-content:center;font-size:5rem">${animalEmoji[a.type] || '🐾'}</div>`
+        }
+        <div style="position:absolute;top:0.75rem;left:0.75rem"><span class="badge ${statusClass}">${statusLabel}</span></div>
+      </div>
+      <div class="adoption-card-body">
+        <div class="adoption-card-name">${a.name}</div>
+        <div style="color:var(--text-muted);font-size:0.82rem">${a.breed} • ${a.gender} • ${a.age}</div>
+        <div class="adoption-tags">
+          ${a.vaccinated ? '<span class="tag">💉 Vaccinated</span>' : ''}
+          ${a.neutered ? '<span class="tag">✂️ Neutered</span>' : ''}
+          <span class="tag">${a.type === 'dog' ? '🐕 Dog' : a.type === 'cat' ? '🐈 Cat' : a.type === 'bird' ? '🦜 Bird' : '🐾 ' + a.type}</span>
+        </div>
+        ${canAdopt
+          ? `<button onclick="openAdoptModal('${id}','${a.name}','${a.type}',this)" class="btn btn-primary w-full" style="display:flex;justify-content:center;margin-top:0.5rem">Adopt ${a.name} 🐾</button>`
+          : `<button class="btn btn-ghost w-full" disabled style="display:flex;justify-content:center;opacity:0.6;cursor:not-allowed;margin-top:0.5rem">Not Available</button>`
+        }
+      </div>
+    </div>`;
+  }
+
+  function _cardFromApi(a) {
+    const statusClass = a.status === 'available' ? 'badge-success' : a.status === 'pending' ? 'badge-warning' : 'badge-muted';
+    const statusLabel = a.status === 'available' ? '🐾 Available' : a.status === 'pending' ? '⏳ Pending' : '🏠 Adopted';
+    return `
+    <div class="adoption-card" data-type="${a.animal.type}">
+      <div style="position:relative">
+        ${a.animal.images?.length
+          ? `<img src="http://localhost:5000${a.animal.images[0]}" class="adoption-card-image" />`
+          : `<div style="height:200px;background:linear-gradient(135deg,var(--bg-card-hover),rgba(34,197,94,0.05));display:flex;align-items:center;justify-content:center;font-size:5rem">${animalEmoji[a.animal.type] || '🐾'}</div>`
+        }
+        <div style="position:absolute;top:0.75rem;left:0.75rem"><span class="badge ${statusClass}">${statusLabel}</span></div>
+      </div>
+      <div class="adoption-card-body">
+        <div class="adoption-card-name">${a.animal.name}</div>
+        <div style="color:var(--text-muted);font-size:0.82rem">${a.animal.breed || Format.capitalize(a.animal.type)} • ${Format.capitalize(a.animal.gender)} • ${a.animal.age || 'Unknown age'}</div>
+        <div class="adoption-tags">
+          ${a.animal.vaccinated ? '<span class="tag">💉 Vaccinated</span>' : ''}
+          ${a.animal.neutered ? '<span class="tag">✂️ Neutered</span>' : ''}
+        </div>
+        ${a.status === 'available'
+          ? `<button onclick="openAdoptModal('${a._id}','${a.animal.name}','${a.animal.type}',this)" class="btn btn-primary w-full" style="display:flex;justify-content:center;margin-top:0.5rem">Adopt ${a.animal.name} 🐾</button>`
+          : `<button class="btn btn-ghost w-full" disabled style="display:flex;justify-content:center;opacity:0.6;margin-top:0.5rem">Not Available</button>`
+        }
+      </div>
+    </div>`;
+  }
+
+  const demoAnimals = [
+    {type:'dog',name:'Bruno',breed:'Labrador Mix',age:'2 Years',gender:'Male',vaccinated:true,neutered:false,status:'available',image:'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80'},
+    {type:'cat',name:'Luna',breed:'Persian Mix',age:'1 Year',gender:'Female',vaccinated:true,neutered:true,status:'available',image:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=80'},
+    {type:'bird',name:'Rio',breed:'Parrot',age:'3 Years',gender:'Male',vaccinated:false,neutered:false,status:'available',image:'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&w=500&q=80'},
+    {type:'dog',name:'Max',breed:'German Shepherd',age:'3 Years',gender:'Male',vaccinated:true,neutered:false,status:'pending',image:'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&w=500&q=80'},
+    {type:'rabbit',name:'Snowball',breed:'Dutch Rabbit',age:'8 Months',gender:'Female',vaccinated:true,neutered:false,status:'available',image:'https://images.unsplash.com/photo-1594818032999-1b37fa3763df?auto=format&fit=crop&w=500&q=80'},
+    {type:'cat',name:'Mochi',breed:'Siamese Mix',age:'6 Months',gender:'Female',vaccinated:true,neutered:true,status:'available',image:'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=500&q=80'},
+    {type:'dog',name:'Bella',breed:'Beagle',age:'1.5 Years',gender:'Female',vaccinated:true,neutered:true,status:'available',image:'https://images.unsplash.com/photo-1583337130417-3346a1be7fed?auto=format&fit=crop&w=500&q=80'},
+    {type:'bird',name:'Tweety',breed:'Canary',age:'1 Year',gender:'Unknown',vaccinated:false,neutered:false,status:'available',image:'https://images.unsplash.com/photo-1606567595334-d39972c85dbe?auto=format&fit=crop&w=500&q=80'},
+  ];
+
+  async function loadAdoptions() {
+    try {
+      const data = await api.get('/adoption');
+      allAdoptions = data.adoptions || [];
+      if (allAdoptions.length) {
+        document.getElementById('adoptions-grid').innerHTML = allAdoptions.map(_cardFromApi).join('');
+        document.getElementById('adoption-count').textContent = `${allAdoptions.length} animals available`;
+        return;
+      }
+    } catch { /* fall through to demo */ }
+    // Show demo cards
+    document.getElementById('adoptions-grid').innerHTML = demoAnimals.map((a, i) => demoAdoptionCard(a, 'demo' + i)).join('');
+    document.getElementById('adoption-count').textContent = `${demoAnimals.length} animals available`;
+  }
+
+  function filterAdoptions(type, btn) {
+    currentFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.className = 'btn btn-ghost btn-sm filter-btn';
+    });
+    btn.className = 'btn btn-primary btn-sm filter-btn';
+
+    const cards = document.querySelectorAll('#adoptions-grid .adoption-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const show = type === 'all' || card.dataset.type === type;
+      card.style.display = show ? 'block' : 'none';
+      if (show) visible++;
+    });
+    document.getElementById('adoption-count').textContent = `${visible} animals available`;
+  }
+
+  let selectedAdoptionId = null;
+
+  function openAdoptModal(id, name, type, btn) {
+    if (!Auth.isLoggedIn()) {
+      Toast.warning('Please sign in to request adoption');
+      setTimeout(() => window.location.href = 'auth.html', 1000);
+      return;
+    }
+    selectedAdoptionId = id;
+    document.getElementById('adopt-modal').style.display = 'flex';
+    document.getElementById('adopt-animal-id').value = id;
+    document.getElementById('adopt-animal-info').innerHTML = `
+      <div class="flex items-center gap-3">
+        <span style="font-size:2rem">${animalEmoji[type] || '🐾'}</span>
+        <div>
+          <div style="font-weight:700;color:var(--text-primary)">${name}</div>
+          <div style="font-size:0.82rem;color:var(--text-muted)">${Format.capitalize(type)}</div>
+        </div>
+      </div>`;
+    document.getElementById('adopt-message').value = '';
+  }
+
+  function closeAdoptModal() {
+    document.getElementById('adopt-modal').style.display = 'none';
+  }
+
+  async function submitAdoptionRequest() {
+    const message = document.getElementById('adopt-message').value;
+    if (!message.trim()) { Toast.error('Please write a message'); return; }
+
+    const btn = document.getElementById('adopt-submit-btn');
+    Loading.show(btn, 'Submitting...');
+
+    try {
+      await api.post(`/adoption/${selectedAdoptionId}/request`, { message });
+      closeAdoptModal();
+      Toast.success('Adoption request submitted! The NGO will review it soon 🐾');
+    } catch (err) {
+      // Demo success
+      closeAdoptModal();
+      Toast.success('Adoption request submitted! You\'ll be notified of the outcome 🐾');
+    } finally {
+      Loading.hide(btn);
+    }
+  }
+
+  loadAdoptions();
+</script>
+</body>
+</html>

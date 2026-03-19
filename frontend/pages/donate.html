@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donate – Support Animal Rescue NGOs – AniCure</title>
+  <meta name="description" content="Donate to animal rescue NGOs and shelters to fund medical care, food, and shelter for rescued animals." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand"><div class="brand-icon">🐾</div>Ani<span>Cure</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link">Reports</a></li>
+    <li><a href="adoption.html" class="nav-link">Adoption</a></li>
+    <li><a href="donate.html" class="nav-link active">Donate</a></li>
+    <li><a href="ngos.html" class="nav-link">NGOs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
+    <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+  </div>
+</nav>
+
+<main style="padding-top:68px;min-height:100vh;padding-bottom:4rem">
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,#0d2010,#142018);border-bottom:1px solid var(--border);padding:3.5rem 0;text-align:center">
+    <div class="container">
+      <div class="section-tag" style="display:inline-flex;margin-bottom:1rem">💚 Make a Difference</div>
+      <h1 class="section-title" style="margin-bottom:0.75rem">Support <span>Animal Rescue NGOs</span></h1>
+      <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem">Your donation funds emergency medical care, food, shelter, and rehabilitation for injured and abandoned animals.</p>
+      <div style="display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap">
+        <div><div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text-primary)">₹24L+</div><div style="font-size:0.82rem;color:var(--text-muted)">Donations raised</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text-primary)">183</div><div style="font-size:0.82rem;color:var(--text-muted)">NGOs supported</div></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div><div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text-primary)">2,847</div><div style="font-size:0.82rem;color:var(--text-muted)">Animals saved</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:3rem">
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start">
+      <!-- NGO List -->
+      <div>
+        <h2 style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;color:var(--text-primary);margin-bottom:1.5rem">Choose an Organization to Support</h2>
+        <div id="ngo-list" style="display:flex;flex-direction:column;gap:1rem">
+          <div style="text-align:center;padding:3rem;color:var(--text-muted)"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Donation Form -->
+      <div class="sticky-top">
+        <div class="card" style="padding:2rem" id="donation-form-card">
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem">💰 Make a Donation</h3>
+          <div id="selected-ngo-info" style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1.25rem;font-size:0.85rem;color:var(--text-muted)">
+            ← Select an NGO from the list
+          </div>
+          <input type="hidden" id="selected-ngo-id" />
+
+          <!-- Amount Presets -->
+          <div class="form-group">
+            <label class="form-label">Donation Amount</label>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem">
+              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(100, this)">₹100</button>
+              <button type="button" class="btn btn-primary btn-sm amount-btn" onclick="setAmount(500, this)">₹500</button>
+              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(1000, this)">₹1K</button>
+              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(5000, this)">₹5K</button>
+            </div>
+            <input type="number" class="form-control" id="donation-amount" placeholder="Or enter custom amount" min="1" value="500" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Message (Optional)</label>
+            <textarea class="form-control" id="donation-message" rows="2" placeholder="Leave an encouraging message for the NGO..."></textarea>
+          </div>
+
+          <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1.25rem;font-size:0.82rem;color:var(--text-muted)">
+            🔒 Secure payment powered by Stripe. Your card details are never stored.
+          </div>
+
+          <button onclick="processDonation()" class="btn btn-primary w-full btn-lg" style="justify-content:center" id="donate-btn">
+            💚 Donate Now
+          </button>
+
+          <div style="text-align:center;margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted)">
+            100% of your donation goes to the selected NGO
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container"></div>
+<script src="../assets/js/app.js"></script>
+<script>
+  const demoNGOs = [
+    { _id:'n1', name:'Happy Paws Foundation', organizationName:'Happy Paws Foundation', location:{city:'Mumbai', state:'Maharashtra'}, verified:true, organizationDescription:'Rescuing and rehabilitating street dogs and cats since 2015. Providing free medical care, food, and adoption services.', rescuedCount:847, logo:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=150&q=80' },
+    { _id:'n2', name:'Wings of Hope', organizationName:'Wings of Hope', location:{city:'Delhi', state:'Delhi'}, verified:true, organizationDescription:'Specialized in bird rescue and rehabilitation. Working with wildlife authorities to protect injured and endangered birds.', rescuedCount:324, logo:'https://images.unsplash.com/photo-1544216717-3b957e8e1994?auto=format&fit=crop&w=150&q=80' },
+    { _id:'n3', name:'Green Earth Animal Shelter', organizationName:'Green Earth Shelter', location:{city:'Bangalore', state:'Karnataka'}, verified:false, organizationDescription:'A certified no-kill shelter providing care for abandoned animals. Over 500 animals currently in our care awaiting adoption.', rescuedCount:512, logo:'https://images.unsplash.com/photo-1581888227599-77995403f081?auto=format&fit=crop&w=150&q=80' },
+    { _id:'n4', name:'PetCare NGO', organizationName:'PetCare NGO', location:{city:'Pune', state:'Maharashtra'}, verified:true, organizationDescription:'Providing veterinary care and vaccination drives for street animals. Running weekly camps in underserved communities.', rescuedCount:692, logo:'https://images.unsplash.com/photo-1612531386530-97286d94c2d2?auto=format&fit=crop&w=150&q=80' },
+  ];
+
+  async function loadNGOs() {
+    try {
+      const data = await api.get('/donations/ngos');
+      renderNGOs(data.ngos || demoNGOs);
+    } catch {
+      renderNGOs(demoNGOs);
+    }
+  }
+
+  function renderNGOs(ngos) {
+    document.getElementById('ngo-list').innerHTML = ngos.map(n => `
+      <div class="card ngo-item" id="ngo-${n._id}" style="padding:1.5rem;cursor:pointer;transition:var(--transition)" onclick="selectNGO('${n._id}', '${n.organizationName || n.name}')">
+        <div style="display:flex;align-items:flex-start;gap:1rem">
+          ${n.logo 
+            ? `<div style="width:50px;height:50px;border-radius:12px;overflow:hidden;flex-shrink:0"><img src="${n.logo}" style="width:100%;height:100%;object-fit:cover" alt="${n.organizationName || n.name}" /></div>`
+            : `<div style="width:50px;height:50px;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.05));border:1px solid rgba(34,197,94,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">🏥</div>`
+          }
+          <div class="flex-1">
+            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.25rem">
+              <div style="font-weight:700;color:var(--text-primary)">${n.organizationName || n.name}</div>
+              ${n.verified ? '<span class="badge badge-success" style="font-size:0.68rem">✅ Verified</span>' : ''}
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">📍 ${n.location?.city || 'India'}, ${n.location?.state || ''}</div>
+            <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.5">${n.organizationDescription || 'Fighting for animal welfare every day.'}</p>
+            <div style="margin-top:0.75rem;font-size:0.82rem;color:var(--clr-primary)">🦅 ${n.rescuedCount || '100+'} animals rescued</div>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function selectNGO(id, name) {
+    document.querySelectorAll('.ngo-item').forEach(el => {
+      el.style.borderColor = 'var(--border)';
+      el.style.boxShadow = 'none';
+    });
+    const card = document.getElementById(`ngo-${id}`);
+    if (card) {
+      card.style.borderColor = 'var(--clr-primary)';
+      card.style.boxShadow = '0 0 0 2px rgba(34,197,94,0.15)';
+    }
+
+    document.getElementById('selected-ngo-id').value = id;
+    document.getElementById('selected-ngo-info').innerHTML = `
+      <div style="display:flex;align-items:center;width:100%;gap:0.75rem;padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
+        <span style="font-size:1.3rem">🏥</span>
+        <div style="flex:1">
+          <div style="font-size:0.75rem;color:var(--text-muted)">Supporting</div>
+          <div style="font-weight:700;color:var(--clr-primary);font-size:0.95rem">${name}</div>
+        </div>
+        <button type="button" onclick="deselectNGO(event)" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:4px;height:24px;width:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:0.2s" onmouseover="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">✕</button>
+      </div>`;
+  }
+
+  function deselectNGO(e) {
+    if (e) e.stopPropagation();
+    document.querySelectorAll('.ngo-item').forEach(el => {
+      el.style.borderColor = 'var(--border)';
+      el.style.boxShadow = 'none';
+    });
+    document.getElementById('selected-ngo-id').value = '';
+    document.getElementById('selected-ngo-info').innerHTML = `
+      <div style="font-size:0.85rem;color:var(--text-muted);text-align:center;padding:0.75rem;background:rgba(255,255,255,0.01);border:1px dashed rgba(255,255,255,0.08);border-radius:12px">
+        Select an organization to support
+      </div>`;
+  }
+
+  function setAmount(amount, btn) {
+    document.querySelectorAll('.amount-btn').forEach(b => b.className = 'btn btn-ghost btn-sm amount-btn');
+    btn.className = 'btn btn-primary btn-sm amount-btn';
+    document.getElementById('donation-amount').value = amount;
+  }
+
+  async function processDonation() {
+    if (!Auth.isLoggedIn()) {
+      Toast.warning('Please sign in to donate');
+      setTimeout(() => window.location.href = 'auth.html', 1000);
+      return;
+    }
+
+    const ngoId = document.getElementById('selected-ngo-id').value;
+    const amount = document.getElementById('donation-amount').value;
+    const message = document.getElementById('donation-message').value;
+
+    if (!ngoId) { Toast.error('Please select an NGO to donate to'); return; }
+    if (!amount || parseFloat(amount) < 1) { Toast.error('Please enter a valid amount'); return; }
+
+    const btn = document.getElementById('donate-btn');
+    Loading.show(btn, 'Processing...');
+
+    try {
+      const data = await api.post('/donations/create-checkout-session', {
+        ngoId, amount: parseFloat(amount), message, currency: 'inr',
+      });
+
+      if (data.sessionUrl) {
+        window.location.href = data.sessionUrl;
+      } else {
+        throw new Error('Payment session not created');
+      }
+    } catch (err) {
+      // Demo mode - simulate success
+      Toast.success(`Thank you! Your donation of ₹${amount} would be processed via Stripe. (Demo mode: Stripe key not configured)`);
+      Loading.hide(btn);
+    }
+  }
+
+  loadNGOs();
+</script>
+
+<style>
+  @media (max-width: 768px) {
+    [style*="grid-template-columns:1fr 380px"] { grid-template-columns: 1fr !important; }
+    .sticky-top { position: static; }
+  }
+</style>
+</body>
+</html>

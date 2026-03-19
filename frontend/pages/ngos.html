@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NGOs & Vets – AniCure</title>
+  <meta name="description" content="Find nearby NGOs, veterinarians, and animal shelters. Connect with animal welfare organizations in your city." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand"><div class="brand-icon">🐾</div>Ani<span>Cure</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link">Reports</a></li>
+    <li><a href="adoption.html" class="nav-link">Adoption</a></li>
+    <li><a href="donate.html" class="nav-link">Donate</a></li>
+    <li><a href="ngos.html" class="nav-link active">NGOs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
+    <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+  </div>
+</nav>
+
+<main style="padding-top:68px;min-height:100vh;padding-bottom:4rem">
+  <div style="background:linear-gradient(135deg,#0d2010,#142018);border-bottom:1px solid var(--border);padding:3rem 0">
+    <div class="container">
+      <div class="section-tag" style="display:inline-flex;margin-bottom:0.75rem">🏥 Partner Network</div>
+      <h1 class="section-title" style="margin-bottom:0.5rem">Our <span>NGO & Vet Network</span></h1>
+      <p style="color:var(--text-muted);margin-bottom:2rem">183+ verified animal welfare organizations ready to respond to emergencies in your area</p>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;max-width:600px">
+        <input type="text" class="form-control" id="search-query" placeholder="Search by name or city..." style="flex:1" oninput="filterNGOs()" />
+        <select class="form-control" id="filter-role" style="width:auto" onchange="filterNGOs()">
+          <option value="">All Types</option>
+          <option value="ngo">NGO</option>
+          <option value="vet">Veterinarian</option>
+          <option value="shelter">Shelter</option>
+        </select>
+        <button onclick="findNearby()" class="btn btn-primary btn-sm">📍 Find Near Me</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:2.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+      <div style="font-size:0.88rem;color:var(--text-muted)" id="result-info">Loading organizations...</div>
+    </div>
+
+    <div id="ngos-grid" class="grid grid-3">
+      <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
+        <div class="loading-spinner"></div>
+        <p style="margin-top:1rem">Loading organizations...</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container"></div>
+<script src="../assets/js/app.js"></script>
+<script>
+  let allNGOs = [];
+
+  const demoNGOs = [
+    { _id:'n1', name:'Happy Paws Foundation', organizationName:'Happy Paws Foundation', role:'ngo', location:{city:'Mumbai', state:'Maharashtra', address:'Andheri West'}, verified:true, organizationDescription:'Rescuing and rehabilitating street dogs and cats since 2015.', rescuedCount:847 },
+    { _id:'n2', name:'Dr. Priya Sharma', organizationName:'Dr. Priya Veterinary Clinic', role:'vet', location:{city:'Mumbai', state:'Maharashtra', address:'Bandra'}, verified:true, organizationDescription:'Licensed veterinarian with 10+ years experience in emergency animal care and surgery.', rescuedCount:420 },
+    { _id:'n3', name:'Wings of Hope', organizationName:'Wings of Hope Bird Rescue', role:'ngo', location:{city:'Delhi', state:'Delhi', address:'Lajpat Nagar'}, verified:true, organizationDescription:'Specialized in bird rescue and rehabilitation. Working with wildlife authorities.', rescuedCount:324 },
+    { _id:'n4', name:'Green Earth Shelter', organizationName:'Green Earth Animal Shelter', role:'shelter', location:{city:'Bangalore', state:'Karnataka', address:'Koramangala'}, verified:false, organizationDescription:'No-kill shelter providing care for abandoned animals. 500+ animals in care.', rescuedCount:512 },
+    { _id:'n5', name:'PetCare NGO', organizationName:'PetCare Animal Welfare', role:'ngo', location:{city:'Pune', state:'Maharashtra', address:'Kothrud'}, verified:true, organizationDescription:'Free veterinary care and vaccination drives. Weekly camps in underserved communities.', rescuedCount:692 },
+    { _id:'n6', name:'Dr. Raj Kumar', organizationName:'Animal Emergency Clinic', role:'vet', location:{city:'Hyderabad', state:'Telangana', address:'Madhapur'}, verified:true, organizationDescription:'24x7 animal emergency clinic. Specialized in trauma and orthopedic surgery.', rescuedCount:289 },
+  ];
+
+  const roleEmoji = { ngo: '🌿', vet: '👨‍⚕️', shelter: '🏠' };
+  const roleLabel = { ngo: 'Animal NGO', vet: 'Veterinarian', shelter: 'Animal Shelter' };
+
+  async function loadNGOs(coords = null) {
+    try {
+      let url = '/ngos';
+      if (coords) url += `?lat=${coords.lat}&lng=${coords.lng}&radius=50`;
+      const data = await api.get(url);
+      allNGOs = data.ngos || demoNGOs;
+    } catch {
+      allNGOs = demoNGOs;
+    }
+    renderNGOs(allNGOs);
+  }
+
+  function renderNGOs(ngos) {
+    document.getElementById('result-info').textContent = `${ngos.length} organizations found`;
+    document.getElementById('ngos-grid').innerHTML = ngos.length
+      ? ngos.map(n => `
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,0.08),var(--bg-card-hover));padding:1.5rem;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:flex-start;gap:0.75rem">
+              <div style="width:48px;height:48px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">${roleEmoji[n.role] || '🏥'}</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap">
+                  <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem">${n.organizationName || n.name}</div>
+                  ${n.verified ? '<span class="badge badge-success" style="font-size:0.65rem">✅ Verified</span>' : ''}
+                </div>
+                <div style="display:flex;gap:0.5rem;margin-top:0.35rem;flex-wrap:wrap">
+                  <span class="badge badge-info" style="font-size:0.65rem">${roleLabel[n.role] || n.role}</span>
+                  <span style="font-size:0.78rem;color:var(--text-muted)">📍 ${n.location?.city || 'India'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:1.25rem">
+            <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.55;margin-bottom:1rem">${n.organizationDescription || 'Dedicated to animal welfare and rescue operations.'}</p>
+            <div style="font-size:0.82rem;color:var(--clr-primary);margin-bottom:1rem">🦅 ${n.rescuedCount || '50+'} animals rescued</div>
+            <div style="display:flex;gap:0.5rem">
+              <a href="donate.html" class="btn btn-primary btn-sm flex-1" style="justify-content:center">💚 Donate</a>
+              <button class="btn btn-ghost btn-sm" onclick="Toast.info('Contact details available after login')">📞 Contact</button>
+            </div>
+          </div>
+        </div>`).join('')
+      : `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
+          <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+          No organizations found matching your search
+        </div>`;
+  }
+
+  function filterNGOs() {
+    const query = document.getElementById('search-query').value.toLowerCase();
+    const role = document.getElementById('filter-role').value;
+
+    const filtered = allNGOs.filter(n => {
+      const matchText = !query ||
+        (n.organizationName || n.name || '').toLowerCase().includes(query) ||
+        (n.location?.city || '').toLowerCase().includes(query) ||
+        (n.location?.state || '').toLowerCase().includes(query);
+      const matchRole = !role || n.role === role;
+      return matchText && matchRole;
+    });
+
+    renderNGOs(filtered);
+  }
+
+  function findNearby() {
+    if (!navigator.geolocation) return Toast.error('Geolocation not supported');
+    Toast.info('Getting your location...');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        Toast.success('Loading NGOs near you!');
+        loadNGOs({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => Toast.error('Could not detect location. Showing all NGOs.')
+    );
+  }
+
+  loadNGOs();
+</script>
+</body>
+</html>

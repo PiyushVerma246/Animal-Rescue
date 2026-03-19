@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Reports – AniCure</title>
+  <meta name="description" content="Browse all injured and abandoned animal reports. Filter by status, animal type, or severity." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand"><div class="brand-icon">🐾</div>Ani<span>Cure</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link active">Reports</a></li>
+    <li><a href="adoption.html" class="nav-link">Adoption</a></li>
+    <li><a href="donate.html" class="nav-link">Donate</a></li>
+    <li><a href="ngos.html" class="nav-link">NGOs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
+    <a href="report-form.html" class="btn btn-primary btn-sm">🆘 Report Animal</a>
+    <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+  </div>
+</nav>
+
+<main style="padding-top:68px;min-height:100vh;padding-bottom:4rem">
+  <div style="background:linear-gradient(135deg,#0d2010,#142018);border-bottom:1px solid var(--border);padding:3rem 0">
+    <div class="container">
+      <div class="section-tag" style="display:inline-flex;margin-bottom:0.75rem">📋 Live Reports</div>
+      <h1 class="section-title" style="margin-bottom:0.5rem">Animal <span>Emergency Reports</span></h1>
+      <p style="color:var(--text-muted)">Real-time reports of injured and abandoned animals needing help</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:2rem">
+    <!-- Stats Bar -->
+    <div class="grid grid-4" style="margin-bottom:2rem" id="stats-bar">
+      <div class="stat-card"><div class="stat-icon green">📋</div><div><div class="stat-value" id="total-stat">–</div><div class="stat-label">Total Reports</div></div></div>
+      <div class="stat-card"><div class="stat-icon red">⏳</div><div><div class="stat-value" id="pending-stat">–</div><div class="stat-label">Pending</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue">🏥</div><div><div class="stat-value" id="inprog-stat">–</div><div class="stat-label">In Progress</div></div></div>
+      <div class="stat-card"><div class="stat-icon amber">✅</div><div><div class="stat-value" id="rescued-stat">–</div><div class="stat-label">Rescued</div></div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card" style="padding:1.25rem;margin-bottom:2rem">
+      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+        <select id="filter-status" class="form-control" style="width:auto" onchange="applyFilters()">
+          <option value="">All Status</option>
+          <option value="reported">Reported</option>
+          <option value="accepted">Accepted</option>
+          <option value="under_treatment">Under Treatment</option>
+          <option value="rescued">Rescued</option>
+        </select>
+        <select id="filter-type" class="form-control" style="width:auto" onchange="applyFilters()">
+          <option value="">All Animals</option>
+          <option value="dog">🐕 Dog</option>
+          <option value="cat">🐈 Cat</option>
+          <option value="bird">🦜 Bird</option>
+          <option value="cow">🐄 Cow</option>
+          <option value="other">🦎 Other</option>
+        </select>
+        <select id="filter-severity" class="form-control" style="width:auto" onchange="applyFilters()">
+          <option value="">All Severity</option>
+          <option value="critical">🔴 Critical</option>
+          <option value="high">🟠 High</option>
+          <option value="medium">🟡 Medium</option>
+          <option value="low">🟢 Low</option>
+        </select>
+        <button onclick="resetFilters()" class="btn btn-ghost btn-sm">Reset</button>
+        <div style="margin-left:auto">
+          <a href="report-form.html" class="btn btn-primary btn-sm">+ Report Animal</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports Grid -->
+    <div id="reports-grid" class="grid grid-3">
+      <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
+        <div class="loading-spinner"></div>
+        <p style="margin-top:1rem">Loading reports...</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination" style="display:flex;justify-content:center;gap:0.5rem;margin-top:2rem"></div>
+  </div>
+</main>
+
+<div class="toast-container"></div>
+<script src="../assets/js/app.js"></script>
+<script>
+  let currentPage = 1;
+  const demoReports = [
+    { _id:'r1', animalType:'dog', description:'Adult Labrador found injured on the highway near toll plaza. Missing right eye and multiple cuts.', status:'reported', severity:'critical', location:{city:'Mumbai'}, reporter:{name:'Rahul S.'}, images:['https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?auto=format&fit=crop&w=600&q=80'], createdAt: new Date(Date.now()-1800000) },
+    { _id:'r2', animalType:'cat', description:'Three kittens abandoned in a cardboard box near the railway overpass in heavy rain.', status:'accepted', severity:'medium', location:{city:'Delhi'}, reporter:{name:'Priya M.'}, images:['https://images.unsplash.com/photo-1557242393-ee27500fb303?auto=format&fit=crop&w=600&q=80'], createdAt: new Date(Date.now()-3600000*3) },
+    { _id:'r3', animalType:'bird', description:'Parrot with broken wing found in the park. Cannot fly. Needs urgent medical care.', status:'rescued', severity:'low', location:{city:'Pune'}, reporter:{name:'Anita K.'}, images:['https://images.unsplash.com/photo-1522850403397-b0c8f2f75451?auto=format&fit=crop&w=600&q=80'], createdAt: new Date(Date.now()-86400000) },
+    { _id:'r4', animalType:'cow', description:'Cow hit by vehicle on the main road. Severe injuries to hind legs. Traffic hazard.', status:'under_treatment', severity:'critical', location:{city:'Bangalore'}, reporter:{name:'Sandeep V.'}, images:['https://images.unsplash.com/photo-1570114138072-4d436ec027ab?auto=format&fit=crop&w=600&q=80'], createdAt: new Date(Date.now()-86400000*2) }, // Dark Cow setting
+    { _id:'r5', animalType:'dog', description:'Puppy found alone near construction site, appears to be 4-6 weeks old, very thin.', status:'accepted', severity:'medium', location:{city:'Chennai'}, reporter:{name:'Kavya R.'}, images:['https://images.unsplash.com/photo-1583337130417-3346a1be7fed?auto=format&fit=crop&w=600&q=80'], createdAt: new Date(Date.now()-3600000*8) },
+    { _id:'r6', animalType:'rabbit', description:'Injured rabbit found on the roadside, has a wound on its leg, needs medical attention.', status:'reported', severity:'medium', location:{city:'Hyderabad'}, reporter:{name:'Arjun P.'}, images:['https://images.unsplash.com/photo-1585110396054-c8102ab0d4ed?auto=format&fit=crop&w=600&q=80'], createdAt: new Date(Date.now()-3600000*5) },
+  ];
+
+  async function loadStats() {
+    try {
+      const data = await api.get('/reports/stats');
+      if (data.success) {
+        const s = data.stats;
+        document.getElementById('total-stat').textContent = s.totalReports;
+        document.getElementById('pending-stat').textContent = s.pending;
+        document.getElementById('inprog-stat').textContent = s.inProgress;
+        document.getElementById('rescued-stat').textContent = s.rescued;
+      }
+    } catch {
+      document.getElementById('total-stat').textContent = '1,248';
+      document.getElementById('pending-stat').textContent = '84';
+      document.getElementById('inprog-stat').textContent = '37';
+      document.getElementById('rescued-stat').textContent = '1,127';
+    }
+  }
+
+  async function loadReports(page = 1) {
+    const status = document.getElementById('filter-status').value;
+    const animalType = document.getElementById('filter-type').value;
+    const severity = document.getElementById('filter-severity').value;
+
+    let query = `?page=${page}&limit=9`;
+    if (status) query += `&status=${status}`;
+    if (animalType) query += `&animalType=${animalType}`;
+    if (severity) query += `&severity=${severity}`;
+
+    try {
+      const data = await api.get(`/reports${query}`);
+      renderReports(data.reports || []);
+      renderPagination(data.pagination);
+    } catch {
+      renderReports(demoReports);
+    }
+  }
+
+  function renderReports(reports) {
+    const grid = document.getElementById('reports-grid');
+    grid.innerHTML = reports.length
+      ? reports.map(r => `
+        <div class="report-card">
+          ${r.images?.length
+            ? `<img src="${r.images[0].startsWith('http') ? r.images[0] : 'http://localhost:5000' + r.images[0]}" class="report-card-image" onerror="this.style.display='none'" />`
+            : `<div class="report-card-image-placeholder">${animalEmoji[r.animalType] || '🐾'}</div>`
+          }
+          <div class="report-card-body">
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.6rem">${severityBadge(r.severity)} ${statusBadge(r.status)}</div>
+            <div class="report-card-title">${Format.capitalize(r.animalType)} Emergency</div>
+            <p class="report-card-desc">${r.description.substring(0, 100)}${r.description.length > 100 ? '...' : ''}</p>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem">
+              📍 ${r.location?.city || 'Unknown'} • ${Format.relativeTime(r.createdAt)}
+            </div>
+            <div class="report-card-meta">
+              <span style="font-size:0.78rem;color:var(--text-muted)">👤 ${r.reporter?.name || 'Anonymous'}</span>
+              <a href="report-form.html" class="btn btn-primary btn-sm">View</a>
+            </div>
+          </div>
+        </div>`).join('')
+      : `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
+          <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+          <div style="margin-bottom:1rem">No reports found matching your filters</div>
+          <button onclick="resetFilters()" class="btn btn-outline">Clear Filters</button>
+        </div>`;
+  }
+
+  function renderPagination(pagination) {
+    if (!pagination || pagination.pages <= 1) return;
+    const pages = Math.min(pagination.pages, 5);
+    document.getElementById('pagination').innerHTML = Array.from({length: pages}, (_, i) => i + 1)
+      .map(p => `<button onclick="changePage(${p})" class="btn ${p === currentPage ? 'btn-primary' : 'btn-ghost'} btn-sm">${p}</button>`)
+      .join('');
+  }
+
+  function changePage(p) {
+    currentPage = p;
+    loadReports(p);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function applyFilters() {
+    currentPage = 1;
+    loadReports(1);
+  }
+
+  function resetFilters() {
+    document.getElementById('filter-status').value = '';
+    document.getElementById('filter-type').value = '';
+    document.getElementById('filter-severity').value = '';
+    loadReports(1);
+  }
+
+  loadStats();
+  loadReports();
+</script>
+</body>
+</html>

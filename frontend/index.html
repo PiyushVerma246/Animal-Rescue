@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AniCure – Animal Rescue & Care Platform</title>
+  <meta name="description"
+    content="Report injured animals, connect with nearby NGOs, adopt rescued pets, and make a difference. AniCure is your real-time animal rescue companion." />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="assets/css/style.css?v=2.0" />
+</head>
+
+<body>
+
+  <!-- ============== NAVBAR ============== -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <img src="assets/images/logo.png" alt="AniCure Logo" style="height:52px;object-fit:contain" />
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link active">Home</a></li>
+      <li><a href="pages/reports.html" class="nav-link">Reports</a></li>
+      <li><a href="pages/adoption.html" class="nav-link">Adoption</a></li>
+      <li><a href="pages/donate.html" class="nav-link">Donate</a></li>
+      <li><a href="pages/ngos.html" class="nav-link">NGOs</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="pages/auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+      <a href="pages/dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">
+        👤 <span id="nav-user-name">User</span>
+      </a>
+      <a href="pages/report-form.html" class="btn btn-primary btn-sm">🆘 Report Animal</a>
+      <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- ============== HERO ============== -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid-overlay"></div>
+
+    <!-- Ambient Mesh Glows -->
+    <div class="mesh-blob" style="width:600px;height:600px;background:rgba(239,153,52,0.15);top:-150px;left:-100px">
+    </div>
+    <div class="mesh-blob"
+      style="width:500px;height:500px;background:rgba(30,131,197,0.16);top:30%;right:5%;animation-delay:-6s"></div>
+    <div class="mesh-blob"
+      style="width:300px;height:300px;background:rgba(239,153,52,0.1);bottom:5%;left:25%;animation-delay:-3s"></div>
+
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;min-height:calc(100vh - 68px)">
+
+        <div class="hero-content">
+          <div class="hero-badge">
+            🌿 Real-time Animal Rescue Network
+          </div>
+
+          <h1 class="hero-title" style="margin-bottom:1rem">
+            Every Life<br>Deserves a<br>
+            <span class="highlight">Second Chance</span>
+          </h1>
+          <p class="hero-subtitle" style="margin-bottom:1.5rem">
+            Report injured animals instantly. Connect with nearby NGOs, vets & shelters.
+            Track rescues in real-time and give abandoned animals a loving home.
+          </p>
+          <div class="hero-actions">
+            <a href="pages/report-form.html" class="btn btn-primary btn-xl">🆘 Report an Animal</a>
+            <a href="pages/adoption.html" class="btn btn-accent btn-xl">🐾 Adopt a Pet</a>
+          </div>
+        </div>
+
+        <!-- Hero visual card -->
+        <div style="display:flex;flex-direction:column;gap:1.5rem" class="hero-cards">
+          <!-- Live report card -->
+          <div class="card" style="animation: fadeInUp 0.7s ease 0.2s both">
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                style="width:42px;height:42px;background:rgba(239,68,68,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem">
+                🆘</div>
+              <div class="flex-1">
+                <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem">Injured Dog Found</div>
+                <div style="font-size:0.78rem;color:var(--text-muted)">Reported 3 min ago • Mumbai, India</div>
+              </div>
+              <span class="badge badge-danger">Critical</span>
+            </div>
+            <div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">
+              <div
+                style="width:30%;height:100%;background:linear-gradient(90deg,var(--clr-primary),#34d399);animation:progressAnim 2s ease infinite">
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:0.6rem">
+              <span style="font-size:0.78rem;color:var(--text-muted)">⏳ Finding nearby NGO...</span>
+              <span style="font-size:0.78rem;color:var(--clr-primary)">🔔 3 NGOs notified</span>
+            </div>
+          </div>
+
+          <div class="hero-stats"
+            style="border-top:1px solid var(--border);border-bottom:none;margin-top:0.25rem;padding-top:1.25rem;padding-bottom:0;justify-content:space-between">
+            <div>
+              <div class="hero-stat-value" id="stat-rescued">2,847</div>
+              <div class="hero-stat-label">Animals Rescued</div>
+            </div>
+            <div style="width:1px;height:40px;background:var(--border)"></div>
+            <div>
+              <div class="hero-stat-value" id="stat-ngos">183</div>
+              <div class="hero-stat-label">Active NGOs</div>
+            </div>
+            <div style="width:1px;height:40px;background:var(--border)"></div>
+            <div>
+              <div class="hero-stat-value" id="stat-adopted">1,204</div>
+              <div class="hero-stat-label">Happy Adoptions</div>
+            </div>
+          </div>
+
+
+
+          <!-- NGO notification card -->
+          <div class="card" style="animation: fadeInUp 0.7s ease 0.4s both">
+            <div
+              style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">
+              Live NGO Alerts</div>
+            <div style="display:flex;flex-direction:column;gap:0.6rem" id="live-alerts">
+              <div class="flex items-center gap-2" style="font-size:0.85rem">
+                <span style="color:var(--clr-primary)">●</span>
+                <span style="color:var(--text-muted)">PetCare NGO accepted case #1284</span>
+                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:auto">2m</span>
+              </div>
+              <div class="flex items-center gap-2" style="font-size:0.85rem">
+                <span style="color:#f59e0b">●</span>
+                <span style="color:var(--text-muted)">Cat rescued near Bandra Station</span>
+                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:auto">8m</span>
+              </div>
+              <div class="flex items-center gap-2" style="font-size:0.85rem">
+                <span style="color:#3b82f6">●</span>
+                <span style="color:var(--text-muted)">Vet Dr. Sharma is en route</span>
+                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:auto">12m</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SERVICES WE PROVIDE ============== -->
+  <style>
+    .services-grid .feature-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .services-grid .feature-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .services-grid .feature-card:hover .feature-icon {
+      transform: scale(1.12) rotate(6deg);
+    }
+
+    /* Individual card glows on hover */
+    .card-crisis:hover {
+      box-shadow: 0 15px 40px rgba(239, 68, 68, 0.12) !important;
+      border-color: rgba(239, 68, 68, 0.25) !important;
+    }
+
+    .card-crisis::before {
+      background: linear-gradient(90deg, transparent, #ef4444, transparent) !important;
+    }
+
+    .card-medical:hover {
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.12) !important;
+      border-color: rgba(59, 130, 246, 0.25) !important;
+    }
+
+    .card-medical::before {
+      background: linear-gradient(90deg, transparent, #3b82f6, transparent) !important;
+    }
+
+    .card-adopt:hover {
+      box-shadow: 0 15px 40px rgba(34, 197, 94, 0.12) !important;
+      border-color: rgba(34, 197, 94, 0.25) !important;
+    }
+
+    .card-adopt::before {
+      background: linear-gradient(90deg, transparent, var(--clr-primary), transparent) !important;
+    }
+
+    .card-fund:hover {
+      box-shadow: 0 15px 40px rgba(245, 158, 11, 0.12) !important;
+      border-color: rgba(245, 158, 11, 0.25) !important;
+    }
+
+    .card-fund::before {
+      background: linear-gradient(90deg, transparent, #f59e0b, transparent) !important;
+    }
+  </style>
+
+  <section class="section"
+    style="background:linear-gradient(180deg, var(--bg-dark) 0%, rgba(34,197,94,0.03) 50%, var(--bg-dark) 100%)">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">💡 Our Offerings</div>
+        <h2 class="section-title">Services We <span>Provide</span></h2>
+        <p class="section-subtitle">Empowering communities to secure, treat, and find loving homes for animals in
+          distress</p>
+      </div>
+
+      <div class="grid grid-4 services-grid">
+        <div class="feature-card card-crisis">
+          <div>
+            <div class="feature-icon" style="background:rgba(239, 68, 68, 0.1);color:#ef4444">🚨</div>
+            <div class="feature-title">24/7 Crisis Reporting</div>
+            <p class="feature-desc">Interactive live reporting module connecting nearest users dropping precise
+              coordinates tags for swift responses.</p>
+          </div>
+          <div style="margin-top:1.5rem"><a href="pages/report-form.html"
+              style="font-size:0.85rem;color:#ef4444;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">File
+              Report <span>→</span></a></div>
+        </div>
+
+        <div class="feature-card card-medical">
+          <div>
+            <div class="feature-icon" style="background:rgba(59, 130, 246, 0.1);color:#3b82f6">🏥</div>
+            <div class="feature-title">Medical Connectivity Grid</div>
+            <p class="feature-desc">Direct interface to veterinary centers and clinics dispatching rescue professionals
+              to critical hazards location spots.</p>
+          </div>
+          <div style="margin-top:1.5rem"><a href="pages/ngos.html"
+              style="font-size:0.85rem;color:#3b82f6;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">View
+              Clinics <span>→</span></a></div>
+        </div>
+
+        <div class="feature-card card-adopt">
+          <div>
+            <div class="feature-icon" style="background:rgba(34, 197, 94, 0.1);color:var(--clr-primary)">🏡</div>
+            <div class="feature-title">Verified Adoption Portal</div>
+            <p class="feature-desc">Matching rescued animals awaiting support items connecting caring owners directly to
+              rescue networks safely.</p>
+          </div>
+          <div style="margin-top:1.5rem"><a href="pages/adoption.html"
+              style="font-size:0.85rem;color:var(--clr-primary);font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">Browse
+              Adoptions <span>→</span></a></div>
+        </div>
+
+        <div class="feature-card card-fund">
+          <div>
+            <div class="feature-icon" style="background:rgba(245, 158, 11, 0.1);color:#f59e0b">💚</div>
+            <div class="feature-title">Secured NGO Crowd-Funding</div>
+            <p class="feature-desc">Streamlined verified payment pipelines empowering single click support systems
+              assisting NGOs medical treatments buffers.</p>
+          </div>
+          <div style="margin-top:1.5rem"><a href="pages/donate.html"
+              style="font-size:0.85rem;color:#f59e0b;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">Donate
+              Now <span>→</span></a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== LIVE REPORTS ============== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">🆘 Live Reports</div>
+        <h2 class="section-title">Recent <span>Animal Reports</span></h2>
+        <p class="section-subtitle">Animals currently in need of help near you</p>
+      </div>
+
+      <div class="grid grid-3" id="recent-reports">
+        <!-- Will be populated by JS, showing skeleton first -->
+        <div class="report-card">
+          <div class="report-card-image">
+            <img src="https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?auto=format&fit=crop&w=600&q=80"
+              alt="Injured Dog" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+          <div class="report-card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+              <span class="badge badge-danger">Critical</span>
+              <span class="badge badge-warning">📋 Reported</span>
+            </div>
+            <div class="report-card-title">Injured Dog on Highway</div>
+            <p class="report-card-desc">Adult dog found on the side of highway 4, limping and in distress. Needs
+              immediate medical care.</p>
+            <div class="report-card-meta">
+              <span style="font-size:0.75rem;color:var(--text-muted)">📍 Mumbai • 15 min ago</span>
+              <button type="button" onclick="openDetailsModal(0)" class="btn btn-primary btn-sm">View</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="report-card-image">
+            <img src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=600&q=80"
+              alt="Abandoned Kittens" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+          <div class="report-card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+              <span class="badge badge-warning">Medium</span>
+              <span class="badge badge-info">✅ Accepted</span>
+            </div>
+            <div class="report-card-title">Abandoned Kittens</div>
+            <p class="report-card-desc">Three kittens abandoned in a box near the railway station. Estimated 4-5 weeks
+              old, need care.</p>
+            <div class="report-card-meta">
+              <span style="font-size:0.75rem;color:var(--text-muted)">📍 Delhi • 2 hrs ago</span>
+              <button type="button" onclick="openDetailsModal(1)" class="btn btn-primary btn-sm">View</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <div class="report-card-image">
+            <img src="https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&w=600&q=80"
+              alt="Injured Bird" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+          <div class="report-card-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
+              <span class="badge badge-info">Low</span>
+              <span class="badge badge-success">🦅 Rescued</span>
+            </div>
+            <div class="report-card-title">Injured Bird - Wing Fracture</div>
+            <p class="report-card-desc">Parrot with injured wing found in the park. Now under treatment at PetCare
+              Animal Hospital.</p>
+            <div class="report-card-meta">
+              <span style="font-size:0.75rem;color:var(--text-muted)">📍 Pune • Yesterday</span>
+              <button type="button" onclick="openDetailsModal(2)" class="btn btn-primary btn-sm">View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="pages/reports.html" class="btn btn-outline">View All Reports →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== REWARD SYSTEM ============== -->
+  <section class="section"
+    style="background:linear-gradient(135deg, rgba(34,197,94,0.04) 0%, var(--bg-dark) 40%, var(--bg-dark) 100%)">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:center">
+        <!-- Left: Info -->
+        <div>
+          <div class="section-tag">🎁 Earn Rewards</div>
+          <h2 class="section-title" style="font-size: clamp(2rem, 4vw, 3rem);margin-bottom:1.25rem">Be an Animal
+            <span>Hero</span> & Get Rewarded</h2>
+          <p style="color:var(--text-muted);margin-bottom:2rem;line-height:1.75">Every valid report you file contributes
+            to saving a life. Track your acts of kindness on your dashboard, climb the ranks, and redeem exclusive
+            rewards for your care.</p>
+
+          <div style="display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2.5rem">
+            <div class="flex items-start gap-4"
+              style="background:rgba(255,255,255,0.02);padding:1.25rem;border-radius:16px;border:1px solid rgba(255,255,255,0.04)">
+              <div
+                style="background:rgba(34,197,94,0.1);color:var(--clr-primary);width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0">
+                50</div>
+              <div>
+                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem">Report an Incident</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)">Points given on precise markers drop verifying
+                  locations correctly.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4"
+              style="background:rgba(255,255,255,0.02);padding:1.25rem;border-radius:16px;border:1px solid rgba(255,255,255,0.04)">
+              <div
+                style="background:rgba(59,130,246,0.1);color:#3b82f6;width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0">
+                100</div>
+              <div>
+                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem">Case Accepted by NGO</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)">Extra benefits awarded after provider dispatches
+                  initial check maps schedules.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4"
+              style="background:rgba(255,255,255,0.02);padding:1.25rem;border-radius:16px;border:1px solid rgba(255,255,255,0.04)">
+              <div
+                style="background:rgba(245,158,11,0.1);color:#f59e0b;width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0">
+                250</div>
+              <div>
+                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem">Successful Rescue</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)">Massive boosts for continuous tracks solving
+                  critical hazards successfully.</p>
+              </div>
+            </div>
+          </div>
+          <a href="pages/report-form.html" class="btn btn-primary btn-lg">Start Reporting 🐾</a>
+        </div>
+
+        <!-- Right: Gamified Card Preview -->
+        <div style="position:relative">
+          <div
+            style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:var(--clr-primary-glow);filter:blur(50px);z-index:1">
+          </div>
+          <div class="card"
+            style="position:relative;z-index:2;background:rgba(20,28,24,0.7);backdrop-filter:blur(10px);border:1px solid rgba(34,197,94,0.15);padding:2.5rem;overflow:hidden">
+            <div
+              style="position:absolute;top:0;right:0;width:150px;height:150px;background:linear-gradient(135deg,rgba(34,197,94,0.15),transparent);border-bottom-left-radius:100%">
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
+              <div>
+                <div
+                  style="font-size:0.82rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">
+                  Current Standing</div>
+                <div
+                  style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:var(--text-primary);display:flex;align-items:center;gap:0.5rem">
+                  🏆 Silver Hero</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600">Your Balance</div>
+                <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:var(--clr-primary)">
+                  1,450 <span style="font-size:1rem;color:var(--text-muted)">PTS</span></div>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="margin-bottom:2.5rem">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.5rem">
+                <span style="color:var(--text-muted)">To Gold Hero Tier</span>
+                <span style="font-weight:700;color:var(--text-primary)">550 pts remaining</span>
+              </div>
+              <div style="height:10px;background:rgba(255,255,255,0.04);border-radius:10px;overflow:hidden">
+                <div
+                  style="width:70%;height:100%;background:linear-gradient(90deg, var(--clr-primary), var(--clr-primary-light));border-radius:10px;box-shadow:0 0 15px var(--clr-primary-glow)">
+                </div>
+              </div>
+            </div>
+
+            <!-- Rewards Redeemables -->
+            <div
+              style="font-size:0.85rem;color:var(--text-muted);font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.04em">
+              Redeemable Rewards</div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+              <div
+                style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);border-radius:16px;padding:1rem;text-align:center;position:relative">
+                <div style="font-size:1.75rem;margin-bottom:0.5rem">🏥</div>
+                <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;margin-bottom:0.25rem">Free Vet
+                  Checkup</div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem">Valid at 80+ Partner Clinics
+                </p>
+                <span class="badge"
+                  style="background:rgba(34,197,94,0.12);color:var(--clr-primary);font-size:0.68rem">500 PTS</span>
+              </div>
+              <div
+                style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);border-radius:16px;padding:1rem;text-align:center">
+                <div style="font-size:1.75rem;margin-bottom:0.5rem">🥩</div>
+                <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;margin-bottom:0.25rem">Feed a
+                  Shelter</div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem">Sponsor Meals for 10 Rescues
+                </p>
+                <span class="badge"
+                  style="background:rgba(34,197,94,0.12);color:var(--clr-primary);font-size:0.68rem">800 PTS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== ADOPTION PREVIEW ============== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">🐾 Find Your Companion</div>
+        <h2 class="section-title">Animals Ready for <span>Adoption</span></h2>
+        <p class="section-subtitle">These beautiful souls have been rescued and rehabilitated. They're waiting for a
+          forever home.</p>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="adoption-card">
+          <div style="position:relative">
+            <div style="height:200px;overflow:hidden">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80"
+                alt="Bruno" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div class="adoption-card-badge"><span class="badge badge-success">Available</span></div>
+          </div>
+          <div class="adoption-card-body">
+            <div class="adoption-card-name">Bruno</div>
+            <div style="color:var(--text-muted);font-size:0.82rem">Labrador Mix • Male • 2 Years</div>
+            <div class="adoption-tags">
+              <span class="tag">💉 Vaccinated</span>
+              <span class="tag">🏥 Healthy</span>
+            </div>
+            <button type="button" onclick="openPetModal(0)" class="btn btn-outline w-full"
+              style="display:flex;justify-content:center">View Details</button>
+          </div>
+        </div>
+        <div class="adoption-card">
+          <div style="position:relative">
+            <div style="height:200px;overflow:hidden">
+              <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=80"
+                alt="Luna" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div class="adoption-card-badge"><span class="badge badge-success">Available</span></div>
+          </div>
+          <div class="adoption-card-body">
+            <div class="adoption-card-name">Luna</div>
+            <div style="color:var(--text-muted);font-size:0.82rem">Persian Mix • Female • 1 Year</div>
+            <div class="adoption-tags">
+              <span class="tag">💉 Vaccinated</span>
+              <span class="tag">✂️ Neutered</span>
+            </div>
+            <button type="button" onclick="openPetModal(1)" class="btn btn-outline w-full"
+              style="display:flex;justify-content:center">View Details</button>
+          </div>
+        </div>
+        <div class="adoption-card">
+          <div style="position:relative">
+            <div style="height:200px;overflow:hidden">
+              <img src="https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&w=500&q=80"
+                alt="Max" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div class="adoption-card-badge"><span class="badge badge-warning">Pending</span></div>
+          </div>
+          <div class="adoption-card-body">
+            <div class="adoption-card-name">Max</div>
+            <div style="color:var(--text-muted);font-size:0.82rem">German Shepherd • Male • 3 Years</div>
+            <div class="adoption-tags">
+              <span class="tag">💉 Vaccinated</span>
+              <span class="tag">🎓 Trained</span>
+            </div>
+            <button type="button" onclick="openPetModal(2)" class="btn btn-outline w-full"
+              style="display:flex;justify-content:center">View Details</button>
+          </div>
+        </div>
+        <div class="adoption-card">
+          <div style="position:relative">
+            <div style="height:200px;overflow:hidden">
+              <img src="https://images.unsplash.com/photo-1594818032999-1b37fa3763df?auto=format&fit=crop&w=500&q=80"
+                alt="Snowball" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div class="adoption-card-badge"><span class="badge badge-success">Available</span></div>
+          </div>
+          <div class="adoption-card-body">
+            <div class="adoption-card-name">Snowball</div>
+            <div style="color:var(--text-muted);font-size:0.82rem">Rabbit • Female • 8 Months</div>
+            <div class="adoption-tags">
+              <span class="tag">🏥 Healthy</span>
+              <span class="tag">🥕 Friendly</span>
+            </div>
+            <button type="button" onclick="openPetModal(3)" class="btn btn-outline w-full"
+              style="display:flex;justify-content:center">View Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="pages/adoption.html" class="btn btn-outline">See All Available Animals →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== DONATE CTA ============== -->
+  <section class="section">
+    <div class="container">
+      <div
+        style="background:linear-gradient(135deg, #0f141a 0%, #151b23 50%, #0f141a 100%);border:1px solid rgba(30,131,197,0.15);border-radius:var(--radius-xl);padding:4rem;text-align:center;position:relative;overflow:hidden">
+        <div
+          style="position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(30,131,197,0.05) 0%, transparent 70%);pointer-events:none">
+        </div>
+        <div style="font-size:2.8rem;margin-bottom:1rem">🧡</div>
+        <h2 class="section-title" style="margin-bottom:1rem">Support Animal Rescue <span>NGOs</span></h2>
+        <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem">Your donation funds
+          medical care, food, and shelter for rescued animals. Every contribution makes a life-changing difference.</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+          <a href="pages/donate.html" class="btn btn-primary btn-xl">💰 Donate Now</a>
+          <a href="pages/ngos.html" class="btn btn-outline btn-xl">🏥 View NGOs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FOOTER ============== -->
+  <!-- ============== FOOTER ============== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="footer-brand">
+            <img src="assets/images/logo.png" alt="AniCure Logo" style="height:44px;object-fit:contain" />
+          </a>
+          <p class="footer-desc">
+            A real-time animal rescue and care platform connecting helpers, NGOs, vets, and shelters to save more lives
+            every day.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-link" aria-label="Instagram">📸</a>
+            <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-link" aria-label="Facebook">👥</a>
+            <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-title">Platform</div>
+          <div class="footer-links">
+            <a href="pages/reports.html" class="footer-link">View Reports</a>
+            <a href="pages/report-form.html" class="footer-link">Report Animal</a>
+            <a href="pages/adoption.html" class="footer-link">Adoption</a>
+            <a href="pages/donate.html" class="footer-link">Donate</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-title">Community</div>
+          <div class="footer-links">
+            <a href="pages/ngos.html" class="footer-link">Our NGOs</a>
+            <a href="pages/dashboard.html" class="footer-link">Dashboard</a>
+            <a href="pages/auth.html" class="footer-link">Login / Register</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-newsletter">
+            <div class="footer-title" style="margin-bottom:0.5rem">Stay Updated</div>
+            <p style="color:var(--text-muted);font-size:0.82rem;line-height:1.5">Get instructions, tips, and rescue
+              alerts directly to your inbox.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault(); Toast.success('Subscribed successfully!');">
+              <input type="email" class="newsletter-input" placeholder="Enter your email" required />
+              <button type="submit" class="btn btn-primary btn-sm">Join</button>
+            </form>
+            <div style="margin-top:1.25rem;border-top:1px solid rgba(255,255,255,0.04);padding-top:1rem">
+              <a href="pages/report-form.html" class="btn btn-danger btn-sm w-full" style="justify-content:center">🆘
+                Report Emergency</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          © 2026 AniCure. Built with <span style="color:#ef4444">❤️</span> for animals everywhere. 🐾
+        </div>
+        <div class="footer-legal">
+          <a href="#" class="footer-legal-link">Privacy Policy</a>
+          <a href="#" class="footer-legal-link">Terms of Service</a>
+          <a href="#" class="footer-legal-link">Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal for Pet Details -->
+  <!-- Modal for Pet Details (Requirement met) -->
+  <div id="pet-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1.5rem">
+    <div id="pet-modal-container" class="card"
+      style="max-width:800px;width:100%;background:#111814;border:1px solid rgba(255,255,255,0.08);border-radius:24px;overflow:hidden;position:relative;animation:zoomIn 0.3s ease;display:grid;grid-template-columns:1fr 1fr;height:520px">
+      <button onclick="closePetModal()"
+        style="position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,0.5);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid rgba(255,255,255,0.1);z-index:1000;cursor:pointer">✕</button>
+
+      <!-- Left Column: Full-Height Media -->
+      <div style="height:100%;border-right:1px solid rgba(255,255,255,0.04)">
+        <img id="p-image" style="width:100%;height:100%;object-fit:cover" />
+      </div>
+
+      <!-- Right Column: ALL Details & Forms -->
+      <div id="p-right-col"
+        style="padding:2.2rem;display:flex;flex-direction:column;justify-content:center;height:100%;overflow-y:auto">
+        <!-- Core Pet Identity Wrapped -->
+        <div id="p-identity">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem">
+            <div>
+              <h3 id="p-name"
+                style="font-family:var(--font-display);font-size:1.6rem;color:var(--text-primary);margin-bottom:0.25rem;letter-spacing:-0.02em">
+              </h3>
+              <p id="p-breed" style="color:var(--text-muted);font-size:0.85rem"></p>
+            </div>
+            <span id="p-status" class="badge"></span>
+          </div>
+
+          <!-- Attributes -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem">
+            <div
+              style="background:rgba(255,255,255,0.02);padding:0.6rem 0.8rem;border-radius:12px;border:1px solid rgba(255,255,255,0.04)">
+              <div style="font-size:0.7rem;color:var(--text-muted)">Age</div>
+              <div id="p-age" style="font-weight:600;color:var(--text-primary);font-size:0.88rem"></div>
+            </div>
+            <div
+              style="background:rgba(255,255,255,0.02);padding:0.6rem 0.8rem;border-radius:12px;border:1px solid rgba(255,255,255,0.04)">
+              <div style="font-size:0.7rem;color:var(--text-muted)">Gender</div>
+              <div id="p-gender" style="font-weight:600;color:var(--text-primary);font-size:0.88rem"></div>
+            </div>
+          </div>
+          <div id="p-tags" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.5rem"></div>
+        </div>
+
+        <!-- Step 1: Details -->
+        <div id="p-step-1">
+          <div style="font-weight:600;color:var(--text-primary);margin-bottom:0.4rem;font-size:0.88rem">About this Pet
+          </div>
+          <p id="p-bio" style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;margin-bottom:1.5rem"></p>
+          <button type="button" onclick="showAdoptForm()" id="p-adopt-btn" class="btn btn-primary btn-sm w-full"
+            style="justify-content:center;border-radius:10px">Adopt Now 🐾</button>
+        </div>
+
+        <!-- Step 2: Request Form -->
+        <div id="p-step-2" style="display:none">
+          <div style="font-weight:600;color:var(--text-primary);margin-bottom:0.4rem;font-size:0.88rem">🏥 Pickup
+            Location</div>
+          <div
+            style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:12px;padding:0.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem">
+            <div style="font-size:1.5rem">🏥</div>
+            <div style="line-height:1.4">
+              <div id="p-shelter-name" style="font-weight:700;color:var(--text-primary);font-size:0.88rem">Happy Paws
+                NGO</div>
+              <div id="p-shelter-address" style="font-size:0.75rem;color:var(--text-muted)">12, Linking Road, Bandra
+                West, Mumbai</div>
+            </div>
+          </div>
+
+          <form onsubmit="submitModalAdoption(event)" style="display:flex;flex-direction:column;gap:0.6rem">
+            <input type="text" id="p-form-name" placeholder="Your Name" class="form-control"
+              style="font-size:0.85rem;padding:0.6rem;border-radius:8px" required />
+            <input type="tel" id="p-form-phone" placeholder="Contact Number" class="form-control"
+              style="font-size:0.85rem;padding:0.6rem;border-radius:8px" required />
+            <textarea id="p-form-reason" placeholder="Why do you want to adopt?" class="form-control" rows="2"
+              style="font-size:0.85rem;padding:0.6rem;border-radius:8px;resize:none" required></textarea>
+
+            <div style="display:flex;gap:0.75rem;margin-top:0.3rem">
+              <button type="button" onclick="showAdoptDetails()" class="btn btn-outline btn-sm"
+                style="flex:1">Back</button>
+              <button type="submit" class="btn btn-primary btn-sm" style="flex:2;justify-content:center">Submit
+                Request</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Details Structure -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <div id="details-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1.5rem">
+    <div id="modal-container" class="card"
+      style="max-width:800px;width:100%;height:450px;background:#111814;border:1px solid rgba(255,255,255,0.08);border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;position:relative">
+      <button onclick="closeDetailsModal()"
+        style="position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,0.5);color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid rgba(255,255,255,0.1);z-index:1000;cursor:pointer">✕</button>
+
+      <!-- Left: Image & Description -->
+      <div style="display:flex;flex-direction:column;height:100%;border-right:1px solid rgba(255,255,255,0.04)">
+        <img id="m-image" style="width:100%;height:220px;object-fit:cover" />
+        <div style="padding:1.5rem;flex:1;overflow-y:auto">
+          <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+            <span id="m-severity" class="badge"></span>
+            <span id="m-status" class="badge badge-info"></span>
+          </div>
+          <h3 id="m-title"
+            style="font-family:var(--font-display);font-size:1.25rem;color:var(--text-primary);margin-bottom:0.5rem">
+          </h3>
+          <p id="m-desc" style="font-size:0.88rem;color:var(--text-muted);line-height:1.6"></p>
+        </div>
+      </div>
+
+      <!-- Right: Map -->
+      <div style="display:flex;flex-direction:column;height:100%">
+        <div id="mini-map" style="flex:1;height:100%"></div>
+        <div style="padding:1rem;border-top:1px solid rgba(255,255,255,0.05);text-align:center">
+          <a id="m-direct" href="#" target="_blank" class="btn btn-primary btn-sm w-full"
+            style="justify-content:center">🚗 Get Directions on Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container"></div>
+
+  <style>
+    @keyframes progressAnim {
+      0% {
+        width: 10%;
+      }
+
+      50% {
+        width: 60%;
+      }
+
+      100% {
+        width: 30%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #modal-container {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      #mini-map {
+        height: 250px !important;
+      }
+    }
+  </style>
+
+  <script src="assets/js/app.js"></script>
+  <script>
+    // Counter Animation Systems
+    document.addEventListener("DOMContentLoaded", () => {
+      animateCount("stat-rescued", 2847);
+      animateCount("stat-ngos", 183);
+      animateCount("stat-adopted", 1204);
+    });
+
+    function animateCount(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let current = 0;
+      const increment = Math.ceil(target / 50); // fast count duration
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          el.textContent = target.toLocaleString();
+          clearInterval(timer);
+        } else {
+          el.textContent = current.toLocaleString();
+        }
+      }, 20);
+    }
+
+    let miniMap = null;
+    let miniMarker = null;
+
+    const demoReports = [
+      { title: "Injured Dog on Highway", desc: "Adult dog found on the side of highway 4, limping and in distress. Needs immediate medical care.", image: "https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?auto=format&fit=crop&w=600&q=80", severity: "Critical", status: "Reported", coords: [19.0760, 72.8777] },
+      { title: "Abandoned Kittens", desc: "Three kittens abandoned in a box near the railway station. Estimated 4-5 weeks old, need care.", image: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=600&q=80", severity: "Medium", status: "Accepted", coords: [28.6139, 77.2090] },
+      { title: "Injured Bird - Wing Fracture", desc: "Parrot with injured wing found in the park. Now under treatment at PetCare Animal Hospital.", image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&w=600&q=80", severity: "Low", status: "Rescued", coords: [18.5204, 73.8567] }
+    ];
+
+    const demoPets = [
+      { name: "Bruno", breed: "Labrador Mix", age: "2 Years", gender: "Male", status: "Available", image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80", tags: ["🏥 Healthy", "💉 Vaccinated"], bio: "Bruno is a sweet, energetic boy found wandering near a gas station. He loves playing fetch and is extremely friendly with children!" },
+      { name: "Luna", breed: "Persian Mix", age: "1 Year", gender: "Female", status: "Available", image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=80", tags: ["💉 Vaccinated", "✂️ Neutered"], bio: "Luna was rescued from a busy alleyway during continuous monsoons. She is extremely affectionate and enjoys sitting on laps looking forward cozy intervals." },
+      { name: "Max", breed: "German Shepherd", age: "3 Years", gender: "Male", status: "Pending", image: "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&w=500&q=80", tags: ["🎓 Trained", "💉 Vaccinated"], bio: "Max was left abandoned in an empty lot. He is incredibly smart, loyal, fully trained on basic commands, and ready to meet his forever family." },
+      { name: "Snowball", breed: "Dutch Rabbit", age: "8 Months", gender: "Female", status: "Available", image: "https://images.unsplash.com/photo-1594818032999-1b37fa3763df?auto=format&fit=crop&w=500&q=80", tags: ["🏥 Healthy", "🥕 Friendly"], bio: "Snowball is a gentle giant found abandoned in a birdcage. She loves fresh carrots and thrives in quiet warm environments setups." }
+    ];
+
+    function openPetModal(index) {
+      const pet = demoPets[index];
+      document.getElementById('p-name').textContent = pet.name;
+      document.getElementById('p-breed').textContent = pet.breed;
+      document.getElementById('p-image').src = pet.image;
+      document.getElementById('p-age').textContent = pet.age;
+      document.getElementById('p-gender').textContent = pet.gender;
+      document.getElementById('p-bio').textContent = pet.bio;
+
+      document.getElementById('p-status').textContent = pet.status;
+      document.getElementById('p-status').className = `badge ${pet.status === 'Available' ? 'badge-success' : 'badge-warning'}`;
+
+      const tagsCont = document.getElementById('p-tags');
+      tagsCont.innerHTML = pet.tags.map(t => `<span class="tag" style="background:rgba(255,255,255,0.05);padding:0.3rem 0.6rem;border-radius:12px;font-size:0.72rem">${t}</span>`).join('');
+
+      // Update shelter info implicitly based on index/location
+      const shelters = [
+        { name: "Happy Paws NGO", address: "12, Linking Road, Bandra West, Mumbai" },
+        { name: "Cat Care Centre", address: "Sector 4, Connaught Place, New Delhi" },
+        { name: "Dog Rescue Shelter", address: "Karve Road, Kothrud, Pune" },
+        { name: "Bunny Haven Mumbai", address: "44, Juhu Tara Road, Mumbai" }
+      ];
+      document.getElementById('p-shelter-name').textContent = shelters[index % 4].name;
+      document.getElementById('p-shelter-address').textContent = shelters[index % 4].address;
+
+      showAdoptDetails(); // Reset to step 1
+      document.getElementById('pet-modal').style.display = 'flex';
+    }
+
+    function showAdoptForm() {
+      document.getElementById('p-step-1').style.display = 'none';
+      document.getElementById('p-step-2').style.display = 'block';
+      document.getElementById('p-identity').style.display = 'none';
+    }
+
+    function showAdoptDetails() {
+      document.getElementById('p-step-1').style.display = 'block';
+      document.getElementById('p-step-2').style.display = 'none';
+      document.getElementById('p-identity').style.display = 'block';
+    }
+
+    function submitModalAdoption(e) {
+      e.preventDefault();
+      Toast.success('Adoption request submitted! Our shelter team will reach out shortly.');
+      closePetModal();
+    }
+
+    function closePetModal() {
+      document.getElementById('pet-modal').style.display = 'none';
+    }
+
+    document.getElementById('pet-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'pet-modal') closePetModal();
+    });
+
+    function openDetailsModal(index) {
+      const report = demoReports[index];
+      const modal = document.getElementById('details-modal');
+
+      document.getElementById('m-title').textContent = report.title;
+      document.getElementById('m-desc').textContent = report.desc;
+      document.getElementById('m-image').src = report.image;
+
+      // Bandges
+      const sev = document.getElementById('m-severity');
+      sev.textContent = report.severity;
+      sev.className = `badge ${report.severity === 'Critical' ? 'badge-danger' : report.severity === 'Medium' ? 'badge-warning' : 'badge-info'}`;
+      document.getElementById('m-status').textContent = `📋 ${report.status}`;
+
+      // Google Maps Redirect Link
+      document.getElementById('m-direct').href = `https://www.google.com/maps/dir/?api=1&destination=${report.coords[0]},${report.coords[1]}`;
+
+      modal.style.display = 'flex';
+
+      // Init Leaflet
+      setTimeout(() => {
+        if (miniMap) miniMap.remove();
+        miniMap = L.map('mini-map').setView([report.coords[0], report.coords[1]], 14);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(miniMap);
+        miniMarker = L.marker([report.coords[0], report.coords[1]]).addTo(miniMap).bindPopup(report.title).openPopup();
+      }, 200);
+    }
+
+    function closeDetailsModal() {
+      document.getElementById('details-modal').style.display = 'none';
+    }
+
+    // Close on click overlay
+    document.getElementById('details-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'details-modal') closeDetailsModal();
+    });
+
+    // Animate stats counter
+    function animateCounter(el, target) {
+      let current = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.floor(current).toLocaleString();
+      }, 20);
+    }
+
+    async function loadStats() {
+      try {
+        const data = await api.get('/reports/stats');
+        if (data.success) document.getElementById('stat-rescued').textContent = data.stats.rescued.toLocaleString();
+      } catch { }
+    }
+
+    window.addEventListener('load', () => {
+      const rescued = document.getElementById('stat-rescued');
+      const ngos = document.getElementById('stat-ngos');
+      const adopted = document.getElementById('stat-adopted');
+      if (rescued) animateCounter(rescued, 2847);
+      if (ngos) animateCounter(ngos, 183);
+      if (adopted) animateCounter(adopted, 1204);
+      loadStats();
+    });
+  </script>
+</body>
+
+</html>

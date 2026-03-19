@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report an Animal – AniCure</title>
+  <meta name="description" content="Report an injured or abandoned animal. Help connect them with nearby NGOs and vets in real-time." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="brand-icon">🐾</div>
+    Ani<span>Cure</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link">Reports</a></li>
+    <li><a href="adoption.html" class="nav-link">Adoption</a></li>
+    <li><a href="donate.html" class="nav-link">Donate</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
+    <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+  </div>
+</nav>
+
+<main style="padding-top:68px;min-height:100vh;padding-bottom:4rem">
+  <div class="container" style="max-width:800px;padding-top:3rem">
+    
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div style="width:70px;height:70px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem">🆘</div>
+      <h1 class="section-title" style="margin-bottom:0.5rem">Report an <span>Injured Animal</span></h1>
+      <p style="color:var(--text-muted)">Fill in the details below. Nearby NGOs and vets will be notified immediately.</p>
+    </div>
+
+    <!-- Reward Incentive Banner -->
+    <div id="reward-banner" class="card" style="border-color:rgba(34,197,94,0.25);background:rgba(34,197,94,0.05);margin-bottom:1.5rem">
+      <div class="flex items-center gap-3">
+        <span style="font-size:1.75rem">🎁</span>
+        <div class="flex-1">
+          <div style="font-weight:700;color:var(--text-primary)">Reporting is open to everyone – no login needed!</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-top:2px">
+            <span id="reward-msg-loggedin" style="display:none;color:var(--clr-primary)">✅ You're signed in! You'll earn <strong>reward points</strong> for this report.</span>
+            <span id="reward-msg-guest"><a href="auth.html" style="color:var(--clr-primary);font-weight:600">Sign in or create a free account</a> to earn 🎁 reward points &amp; track your rescue impact!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form id="report-form" class="card" style="padding:2.5rem">
+      <!-- Animal Details -->
+      <div style="margin-bottom:2rem">
+        <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text-primary);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">🐾 Animal Details</h3>
+        
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label" for="animalType">Animal Type *</label>
+            <select class="form-control" id="animalType" name="animalType" required>
+              <option value="">Select animal type</option>
+              <option value="dog">🐕 Dog</option>
+              <option value="cat">🐈 Cat</option>
+              <option value="bird">🦜 Bird</option>
+              <option value="cow">🐄 Cow</option>
+              <option value="horse">🐎 Horse</option>
+              <option value="monkey">🐒 Monkey</option>
+              <option value="rabbit">🐇 Rabbit</option>
+              <option value="other">🦎 Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="severity">Severity Level *</label>
+            <select class="form-control" id="severity" name="severity" required>
+              <option value="low">🟢 Low – Needs attention</option>
+              <option value="medium" selected>🟡 Medium – Injured</option>
+              <option value="high">🟠 High – Serious Injury</option>
+              <option value="critical">🔴 Critical – Life Threatening</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="description">Description *</label>
+          <textarea class="form-control" id="description" name="description" placeholder="Describe the animal's condition, behavior, and any visible injuries. Include color, size, and any other identifying features..." rows="4" required minlength="20"></textarea>
+          <span style="font-size:0.75rem;color:var(--text-muted)" id="desc-count">0 / 1000 characters</span>
+        </div>
+      </div>
+
+      <!-- Location: Interactive Map -->
+      <div style="margin-bottom:2rem">
+        <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text-primary);margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📍 Pin the Location on the Map</h3>
+
+        <!-- Map toolbar -->
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap">
+          <button type="button" class="btn btn-primary btn-sm" id="get-location-btn" onclick="getLocation()">
+            📡 Use My GPS Location
+          </button>
+          <span style="font-size:0.82rem;color:var(--text-muted)">or click anywhere on the map to drop a pin</span>
+        </div>
+
+        <!-- Location status badge -->
+        <div id="location-status" style="display:none;align-items:center;gap:0.5rem;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-md);padding:0.6rem 1rem;margin-bottom:0.75rem;font-size:0.85rem;color:var(--clr-primary);font-weight:600">
+          📍 <span id="location-status-text">Location selected</span>
+        </div>
+
+        <!-- Hidden inputs for form submission -->
+        <input type="hidden" id="lat" />
+        <input type="hidden" id="lng" />
+
+        <!-- Leaflet Map -->
+        <div id="report-map" style="height:360px;border-radius:var(--radius-md);border:1px solid var(--border);overflow:hidden;position:relative">
+          <div id="map-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,20,12,0.85);z-index:500;gap:0.75rem">
+            <div class="loading-spinner"></div>
+            <span style="color:var(--text-muted);font-size:0.85rem">Loading map...</span>
+          </div>
+        </div>
+
+        <!-- Auto-filled address fields -->
+        <div style="margin-top:1rem">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.6rem">📝 Location Details (auto-filled from map pin)</div>
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="form-label" for="address">Address / Landmark</label>
+              <input type="text" class="form-control" id="address" name="address" placeholder="Auto-filled from map" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="city">City *</label>
+              <input type="text" class="form-control" id="city" name="city" placeholder="Auto-filled from map" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="state">State</label>
+            <input type="text" class="form-control" id="state" name="state" placeholder="Auto-filled from map" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Capture (Strict Camera Only) -->
+      <div style="margin-bottom:2rem">
+        <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text-primary);margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📸 Image Verification *</h3>
+        
+        <div style="max-width:400px;margin:0 auto;text-align:center">
+          <!-- Video Stream -->
+          <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center" id="video-container">
+            <video id="video-feed" autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>
+            <canvas id="canvas-capture" style="display:none"></canvas>
+            
+            <div id="camera-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);gap:0.75rem">
+              <div class="loading-spinner"></div>
+              <span style="color:var(--text-muted);font-size:0.82rem">Accessing camera...</span>
+            </div>
+          </div>
+
+          <!-- Captured Preview -->
+          <div id="capture-preview-container" style="display:none;margin-top:1rem;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--clr-primary)">
+            <img id="capture-preview-img" style="width:100%;height:auto;aspect-ratio:4/3;object-fit:cover" />
+            <div style="position:absolute;top:0.5rem;right:0.5rem;background:rgba(34,197,94,0.9);color:#fff;padding:0.25rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600">✅ Captured</div>
+          </div>
+
+          <!-- Controls -->
+          <div style="margin-top:1rem;display:flex;gap:0.75rem;justify-content:center">
+            <button type="button" class="btn btn-primary btn-sm" id="capture-btn" onclick="takePhoto()">📷 Capture Photo</button>
+            <button type="button" class="btn btn-outline btn-sm" id="retake-btn" onclick="startCamera()" style="display:none">🔄 Retake</button>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">⚠️ Camera capture is required. Gallery uploads are disabled.</div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
+          🆘 Submit Report
+        </button>
+        <p style="font-size:0.82rem;color:var(--text-muted)">
+          Your report will immediately notify nearby animal welfare organizations.
+        </p>
+      </div>
+    </form>
+
+    <!-- Success Card (hidden) -->
+    <div id="success-card" class="card" style="display:none;border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.05);text-align:center;padding:3rem">
+      <div style="font-size:4rem;margin-bottom:1rem">✅</div>
+      <h2 style="font-family:var(--font-display);color:var(--text-primary);font-size:1.5rem;margin-bottom:0.5rem">Report Submitted!</h2>
+      <p style="color:var(--text-muted);margin-bottom:0.5rem">Your report has been submitted. Nearby NGOs and vets have been notified!</p>
+      <p id="notif-count" style="color:var(--clr-primary);font-weight:600;margin-bottom:1rem"></p>
+      <!-- Guest upsell -->
+      <div id="guest-upsell" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:0.88rem;color:var(--text-muted)">
+        🎁 <strong style="color:var(--text-primary)">Did you know?</strong> If you had been signed in, you'd earn <strong style="color:var(--clr-primary)">+50 reward points</strong> for this report and +100 more when the animal gets rescued!<br/>
+        <a href="auth.html" class="btn btn-primary btn-sm" style="margin-top:0.75rem;display:inline-flex">Create Free Account →</a>
+      </div>
+      <!-- Logged-in reward notice -->
+      <div id="points-awarded" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:0.88rem">
+        🎁 <strong style="color:var(--clr-primary)">+50 reward points added to your account!</strong> You'll earn another +100 when the animal is rescued.
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="reports.html" class="btn btn-primary">View All Reports</a>
+        <button onclick="resetForm()" class="btn btn-outline">Submit Another</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container"></div>
+
+<!-- Leaflet.js – Open Source Maps (no API key needed) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="../assets/js/app.js"></script>
+<script>
+  // Update reward banner based on login state
+  if (Auth.isLoggedIn()) {
+    document.getElementById('reward-msg-loggedin').style.display = 'inline';
+    document.getElementById('reward-msg-guest').style.display = 'none';
+  }
+
+  // Character counter
+  const desc = document.getElementById('description');
+  const descCount = document.getElementById('desc-count');
+  desc.addEventListener('input', () => {
+    descCount.textContent = `${desc.value.length} / 1000 characters`;
+  });
+
+  // ─── Camera Access (getUserMedia) ───────────────────────────────────────────
+  let mediaStream = null;
+  let capturedImageBlob = null;
+
+  async function startCamera() {
+    const video = document.getElementById('video-feed');
+    const loader = document.getElementById('camera-loading');
+    const preview = document.getElementById('capture-preview-container');
+    const videoContainer = document.getElementById('video-container');
+    
+    // UI Reset
+    preview.style.display = 'none';
+    videoContainer.style.display = 'flex';
+    document.getElementById('capture-btn').style.display = 'inline-flex';
+    document.getElementById('retake-btn').style.display = 'none';
+    capturedImageBlob = null;
+
+    try {
+      if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+      
+      mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment', width: 640, height: 480 } 
+      });
+      video.srcObject = mediaStream;
+      loader.style.display = 'none';
+    } catch (err) {
+      loader.innerHTML = `<span style="color:#ef4444;font-size:0.85rem">❌ Camera denied or unavailable</span>`;
+      Toast.error('Please allow camera access to take a photo.');
+    }
+  }
+
+  function takePhoto() {
+    const video = document.getElementById('video-feed');
+    const canvas = document.getElementById('canvas-capture');
+    const previewImg = document.getElementById('capture-preview-img');
+    const preview = document.getElementById('capture-preview-container');
+    const videoContainer = document.getElementById('video-container');
+
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      capturedImageBlob = blob;
+      previewImg.src = URL.createObjectURL(blob);
+      
+      // Toggle Views
+      videoContainer.style.display = 'none';
+      preview.style.display = 'block';
+      document.getElementById('capture-btn').style.display = 'none';
+      document.getElementById('retake-btn').style.display = 'inline-flex';
+      
+      if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+    }, 'image/jpeg', 0.85);
+  }
+
+  // Auto-start camera
+  window.addEventListener('load', startCamera);
+
+  // ─── Interactive Leaflet Map ─────────────────────────────────────────────────
+  let userCoords = null; // [lng, lat] – GeoJSON order for backend
+  let map = null;
+  let marker = null;
+
+  // Custom green pin icon
+  const pinIcon = L.divIcon({
+    className: '',
+    html: `<div style="width:32px;height:40px;display:flex;flex-direction:column;align-items:center">
+             <div style="width:28px;height:28px;background:linear-gradient(135deg,#22c55e,#16a34a);border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(34,197,94,0.5);display:flex;align-items:center;justify-content:center;font-size:14px">📍</div>
+             <div style="width:3px;height:14px;background:#22c55e;border-radius:2px;margin-top:-1px"></div>
+           </div>`,
+    iconSize: [32, 42],
+    iconAnchor: [16, 42],
+    popupAnchor: [0, -44],
+  });
+
+  function initMap(lat, lng) {
+    // Remove loading overlay
+    const loader = document.getElementById('map-loading');
+    if (loader) loader.remove();
+
+    if (map) map.remove();
+
+    map = L.map('report-map', {
+      center: [lat, lng],
+      zoom: 14,
+      zoomControl: true,
+    });
+
+    // Dark-styled tile layer (CartoDB Dark Matter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Drop initial marker
+    placeMarker(lat, lng);
+
+    // Click-to-pin handler
+    map.on('click', (e) => {
+      placeMarker(e.latlng.lat, e.latlng.lng);
+      reverseGeocode(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Instruction popup in map corner
+    const info = L.control({ position: 'bottomleft' });
+    info.onAdd = () => {
+      const d = L.DomUtil.create('div');
+      d.innerHTML = `<div style="background:rgba(0,0,0,0.75);color:#ccc;font-size:11px;padding:6px 10px;border-radius:6px;backdrop-filter:blur(4px)">🖱️ Click anywhere to move the pin</div>`;
+      return d;
+    };
+    info.addTo(map);
+  }
+
+  function placeMarker(lat, lng) {
+    if (marker) map.removeLayer(marker);
+    marker = L.marker([lat, lng], { icon: pinIcon, draggable: true }).addTo(map);
+
+    // Draggable marker support
+    marker.on('dragend', (e) => {
+      const { lat, lng } = e.target.getLatLng();
+      setCoords(lat, lng);
+      reverseGeocode(lat, lng);
+    });
+
+    setCoords(lat, lng);
+    map.panTo([lat, lng]);
+
+    // Show status
+    document.getElementById('location-status').style.display = 'flex';
+  }
+
+  function setCoords(lat, lng) {
+    userCoords = [lng, lat]; // [lng, lat] for GeoJSON
+    document.getElementById('lat').value = lat.toFixed(6);
+    document.getElementById('lng').value = lng.toFixed(6);
+  }
+
+  // Reverse geocoding using OpenStreetMap Nominatim (free, no key)
+  let geocodeTimer = null;
+  async function reverseGeocode(lat, lng) {
+    clearTimeout(geocodeTimer);
+    document.getElementById('location-status-text').textContent = '🔍 Looking up address...';
+
+    geocodeTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=en`,
+          { headers: { 'Accept-Language': 'en' } }
+        );
+        const data = await res.json();
+        const a = data.address || {};
+
+        const road      = a.road || a.pedestrian || a.footway || '';
+        const suburb    = a.suburb || a.neighbourhood || a.quarter || '';
+        const city      = a.city || a.town || a.village || a.county || '';
+        const state     = a.state || '';
+        const postcode  = a.postcode || '';
+
+        document.getElementById('address').value = [road, suburb].filter(Boolean).join(', ');
+        document.getElementById('city').value    = city;
+        document.getElementById('state').value   = state;
+
+        const display = [road || suburb, city, state].filter(Boolean).join(', ');
+        document.getElementById('location-status-text').textContent = `📍 ${display || 'Location pinned'}`;
+
+        Toast.success('Address auto-filled from map pin!');
+      } catch {
+        document.getElementById('location-status-text').textContent = '📍 Location pinned (address lookup failed)';
+      }
+    }, 600); // debounce 600ms
+  }
+
+  // GPS detect & fly to user's real location
+  async function getLocation() {
+    const btn = document.getElementById('get-location-btn');
+    btn.innerHTML = '⏳ Getting GPS...';
+    btn.disabled = true;
+
+    if (!navigator.geolocation) {
+      Toast.error('Geolocation not supported by your browser');
+      btn.innerHTML = '📡 Use My GPS Location';
+      btn.disabled = false;
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        if (!map) {
+          initMap(lat, lng);
+        } else {
+          map.setView([lat, lng], 16);
+          placeMarker(lat, lng);
+        }
+        reverseGeocode(lat, lng);
+        btn.innerHTML = '✅ GPS Located!';
+        btn.disabled = false;
+        Toast.success('GPS location found! Pin dropped on your location.');
+      },
+      () => {
+        // Fall back to India centre if GPS denied
+        if (!map) initMap(20.5937, 78.9629);
+        Toast.warning('GPS unavailable — click on the map to pin the location manually.');
+        btn.innerHTML = '📡 Use My GPS Location';
+        btn.disabled = false;
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  }
+
+  // Initialise map on page load — try GPS first, fall back to India centre
+  window.addEventListener('load', () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          initMap(pos.coords.latitude, pos.coords.longitude);
+          reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+        },
+        () => initMap(20.5937, 78.9629) // India centre fallback
+      );
+    } else {
+      initMap(20.5937, 78.9629);
+    }
+  });
+
+  // Form submit – open to everyone, rewards only for logged-in users
+  document.getElementById('report-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // ─── VALIDATION ───
+    if (!userCoords) {
+      Toast.error('Please verify your GPS location using the button or map.');
+      return;
+    }
+    if (!capturedImageBlob) {
+      Toast.error('Live camera photo is required.');
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    Loading.show(btn, 'Submitting...');
+
+    try {
+      const formData = new FormData();
+      formData.append('animalType', document.getElementById('animalType').value);
+      formData.append('description', document.getElementById('description').value);
+      formData.append('severity', document.getElementById('severity').value);
+      formData.append('address', document.getElementById('address').value);
+      formData.append('city', document.getElementById('city').value);
+      formData.append('state', document.getElementById('state').value);
+      
+      // Strict Location Coordinates
+      formData.append('coordinates', JSON.stringify(userCoords));
+
+      // Strict Captured Image from Canvas
+      formData.append('images', capturedImageBlob, 'rescue_capture.jpg');
+
+      const data = await api.upload('/reports', formData);
+
+      document.getElementById('report-form').style.display = 'none';
+      const successCard = document.getElementById('success-card');
+      successCard.style.display = 'block';
+      document.getElementById('notif-count').textContent = `🔔 ${data.notifiedOrgs || 0} nearby organizations were instantly notified!`;
+      
+      if (Auth.isLoggedIn()) {
+        document.getElementById('points-awarded').style.display = 'block';
+      } else {
+        document.getElementById('guest-upsell').style.display = 'block';
+      }
+
+    } catch (err) {
+      Toast.error(err.message || 'Failed to submit report');
+      Loading.hide(btn);
+    }
+  });
+
+  function resetForm() {
+    document.getElementById('report-form').reset();
+    document.getElementById('report-form').style.display = 'block';
+    document.getElementById('success-card').style.display = 'none';
+    startCamera(); // Restart camera on reset
+  }
+</script>
+</body>
+</html>

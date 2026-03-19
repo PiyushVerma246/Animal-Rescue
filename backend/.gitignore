@@ -1,0 +1,6 @@
+node_modules/
+.env
+uploads/reports/*.jpg
+uploads/reports/*.jpeg
+uploads/reports/*.png
+uploads/reports/*.webp

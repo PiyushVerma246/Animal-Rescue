@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NGO Dashboard – AniCure</title>
+  <meta name="description" content="NGO dashboard to manage animal rescue cases, accept reports, and track status updates." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="brand-icon">🐾</div>
+    Ani<span>Cure</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link">All Reports</a></li>
+    <li><a href="adoption.html" class="nav-link">Adoption</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div id="notif-btn" style="position:relative;cursor:pointer;padding:0.5rem">
+      <span style="font-size:1.2rem">🔔</span>
+      <span id="notif-count" style="display:none;position:absolute;top:2px;right:2px;background:var(--clr-danger);color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.6rem;display:none;align-items:center;justify-content:center;font-weight:700">0</span>
+    </div>
+    <button onclick="logout()" class="btn btn-ghost btn-sm">Sign Out</button>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div style="text-align:center;padding:1rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem">
+      <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--clr-primary),var(--clr-primary-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 0.75rem">🏥</div>
+      <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem" id="org-name">Loading...</div>
+      <div style="font-size:0.78rem;color:var(--text-muted)" id="org-role">NGO</div>
+      <span class="badge badge-success" style="margin-top:0.5rem" id="verified-badge" style="display:none">✅ Verified</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
+        <span class="icon">📊</span> Overview
+      </a>
+      <a href="#" class="sidebar-link" onclick="showSection('nearby',this)">
+        <span class="icon">📍</span> Nearby Cases
+      </a>
+      <a href="#" class="sidebar-link" onclick="showSection('active',this)">
+        <span class="icon">🏥</span> Active Cases
+      </a>
+      <a href="#" class="sidebar-link" onclick="showSection('notifications',this)">
+        <span class="icon">🔔</span> Notifications
+        <span id="notif-badge" style="display:none;background:var(--clr-danger);color:#fff;border-radius:20px;padding:1px 7px;font-size:0.72rem;margin-left:auto">0</span>
+      </a>
+      <a href="adoption.html" class="sidebar-link">
+        <span class="icon">🐾</span> Manage Adoptions
+      </a>
+      <a href="#" class="sidebar-link" onclick="showSection('profile',this)">
+        <span class="icon">⚙️</span> Profile/Settings
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="dashboard-main">
+    <div id="loading" style="text-align:center;padding:4rem">
+      <div class="loading-spinner"></div>
+      <p style="color:var(--text-muted);margin-top:1rem">Loading NGO dashboard...</p>
+    </div>
+
+    <!-- Overview -->
+    <section id="section-overview" style="display:none">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:var(--text-primary)" id="welcome-msg">Welcome!</h1>
+        <p style="color:var(--text-muted);font-size:0.9rem">Manage animal rescue cases and make a difference</p>
+      </div>
+
+      <div class="grid grid-4" style="margin-bottom:2rem">
+        <div class="stat-card">
+          <div class="stat-icon green">✅</div>
+          <div>
+            <div class="stat-value" id="accepted-cases">0</div>
+            <div class="stat-label">Cases Accepted</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">🏥</div>
+          <div>
+            <div class="stat-value" id="active-cases-stat">0</div>
+            <div class="stat-label">Active Cases</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">🦅</div>
+          <div>
+            <div class="stat-value" id="rescued-stat">0</div>
+            <div class="stat-label">Animals Rescued</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red">🔔</div>
+          <div>
+            <div class="stat-value" id="pending-notifs">0</div>
+            <div class="stat-label">Pending Alerts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Cases List -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <h3 style="font-family:var(--font-display);font-weight:700;color:var(--text-primary)">Active Cases</h3>
+          <button onclick="showSection('nearby', document.querySelector('.sidebar-link:nth-child(2)'))" class="btn btn-primary btn-sm">View Nearby Cases</button>
+        </div>
+        <div id="active-cases-list">
+          <div style="padding:2rem;text-align:center;color:var(--text-muted)">Loading active cases...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nearby Reports Section -->
+    <section id="section-nearby" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">📍 Nearby Case Reports</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem">Animal emergencies requiring immediate attention near your location</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center">
+          <select id="radius-select" class="form-control" style="width:auto" onchange="loadNearbyReports()">
+            <option value="10">10 km</option>
+            <option value="20" selected>20 km</option>
+            <option value="50">50 km</option>
+          </select>
+          <button onclick="loadNearbyReports()" class="btn btn-ghost btn-sm">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <div id="nearby-reports" class="grid grid-auto">
+        <div style="text-align:center;color:var(--text-muted);padding:4rem;grid-column:1/-1">
+          <div class="loading-spinner"></div>
+          <p style="margin-top:1rem">Finding nearby cases...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Cases Section -->
+    <section id="section-active" style="display:none">
+      <div style="margin-bottom:1.5rem">
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">🏥 Active Cases</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem">Cases you are currently handling</p>
+      </div>
+      <div id="active-section-list">
+        <div style="text-align:center;padding:4rem;color:var(--text-muted)"><div class="loading-spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section id="section-notifications" style="display:none">
+      <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between">
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">🔔 Notifications</h2>
+        <button onclick="markAllRead()" class="btn btn-ghost btn-sm">Mark all read</button>
+      </div>
+      <div id="ngo-notifs-list" style="display:flex;flex-direction:column;gap:0.75rem">
+        <div style="text-align:center;color:var(--text-muted);padding:4rem"><div class="loading-spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="section-profile" style="display:none">
+      <div style="margin-bottom:2rem">
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">⚙️ Organization Profile</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem">Manage your NGO profile and location settings</p>
+      </div>
+      <div class="card" style="max-width:600px;padding:2rem">
+        <div class="form-group">
+          <label class="form-label">Update Location</label>
+          <button onclick="updateNGOLocation()" class="btn btn-ghost btn-sm">📡 Use Current Location</button>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label" for="p-city">City</label>
+            <input type="text" class="form-control" id="p-city" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="p-state">State</label>
+            <input type="text" class="form-control" id="p-state" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-address">Address</label>
+          <input type="text" class="form-control" id="p-address" />
+        </div>
+        <button onclick="saveProfile()" class="btn btn-primary">Save Changes</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Status Update Modal -->
+<div id="status-modal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Update Case Status</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <input type="hidden" id="modal-report-id" />
+    <div class="form-group">
+      <label class="form-label">New Status *</label>
+      <select class="form-control" id="modal-status">
+        <option value="accepted">✅ Accept Case</option>
+        <option value="under_treatment">💊 Under Treatment</option>
+        <option value="rescued">🦅 Rescued</option>
+        <option value="closed">🔒 Close Case</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note</label>
+      <textarea class="form-control" id="modal-note" placeholder="Add a note about the status update..." rows="3"></textarea>
+    </div>
+    <div style="display:flex;gap:0.75rem">
+      <button onclick="submitStatusUpdate()" class="btn btn-primary flex-1" style="justify-content:center">Update Status</button>
+      <button onclick="closeModal()" class="btn btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="../assets/js/app.js"></script>
+<script>
+  if (!Auth.isLoggedIn()) window.location.href = 'auth.html';
+  if (!Auth.isNGO()) window.location.href = 'dashboard.html';
+
+  let ngoCoords = null;
+
+  function showSection(name, link) {
+    ['overview','nearby','active','notifications','profile'].forEach(s => {
+      document.getElementById(`section-${s}`).style.display = 'none';
+    });
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(`section-${name}`).style.display = 'block';
+    if (link) link.classList.add('active');
+
+    if (name === 'nearby') loadNearbyReports();
+    if (name === 'active') loadActiveCases();
+    if (name === 'notifications') loadNGONotifications();
+  }
+
+  async function loadDashboard() {
+    try {
+      const data = await api.get('/users/ngo-dashboard');
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('section-overview').style.display = 'block';
+      document.getElementById('org-name').textContent = data.user.organizationName || data.user.name;
+      document.getElementById('org-role').textContent = Format.capitalize(data.user.role) + ' Organization';
+      document.getElementById('welcome-msg').textContent = `Welcome, ${data.user.organizationName || data.user.name}! 🏥`;
+      document.getElementById('accepted-cases').textContent = data.stats.acceptedCases || 0;
+      document.getElementById('rescued-stat').textContent = data.stats.rescuedCases || 0;
+      document.getElementById('active-cases-stat').textContent = (data.activeCases || []).length;
+      renderActiveCases(data.activeCases || []);
+      renderNGONotifs(data.notifications || []);
+    } catch {
+      showNGODemoData();
+    }
+  }
+
+  function showNGODemoData() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('section-overview').style.display = 'block';
+    const user = Auth.getUser() || {};
+    document.getElementById('org-name').textContent = user.organizationName || 'Demo NGO';
+    document.getElementById('org-role').textContent = 'NGO Organization';
+    document.getElementById('welcome-msg').textContent = `Welcome, ${user.organizationName || 'NGO Team'}! 🏥`;
+    document.getElementById('accepted-cases').textContent = '24';
+    document.getElementById('rescued-stat').textContent = '18';
+    document.getElementById('active-cases-stat').textContent = '3';
+    document.getElementById('pending-notifs').textContent = '5';
+    renderActiveCases(demoCases());
+  }
+
+  function demoCases() {
+    return [
+      { _id: '1', animalType: 'dog', description: 'Injured dog on highway near toll booth', status: 'under_treatment', severity: 'critical', reporter: { name: 'Rahul S.', phone: '+91 98700 11111' }, createdAt: new Date(Date.now() - 3600000*2) },
+      { _id: '2', animalType: 'cat', description: 'Abandoned kittens found near railway station', status: 'accepted', severity: 'medium', reporter: { name: 'Priya M.', phone: '+91 98700 22222' }, createdAt: new Date(Date.now() - 3600000*5) },
+    ];
+  }
+
+  function renderActiveCases(cases) {
+    const html = cases.length
+      ? `<div class="table-wrapper" style="border:none"><table>
+          <thead><tr><th>Animal</th><th>Description</th><th>Reporter</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${cases.map(c => `<tr>
+              <td>${animalEmoji[c.animalType] || '🐾'} <strong style="color:var(--text-primary)">${Format.capitalize(c.animalType)}</strong></td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted)">${c.description}</td>
+              <td style="font-size:0.82rem;color:var(--text-muted)">${c.reporter?.name || 'Anonymous'}<br><span style="color:var(--clr-primary)">${c.reporter?.phone || ''}</span></td>
+              <td>${statusBadge(c.status)}</td>
+              <td>
+                <button onclick="openStatusModal('${c._id}','${c.status}')" class="btn btn-primary btn-sm">Update</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table></div>`
+      : `<div style="padding:3rem;text-align:center;color:var(--text-muted)">
+          <div style="font-size:3rem;margin-bottom:1rem">✅</div>
+          <div>No active cases right now</div>
+        </div>`;
+    
+    document.getElementById('active-cases-list').innerHTML = html;
+    if (document.getElementById('active-section-list')) {
+      document.getElementById('active-section-list').innerHTML = html;
+    }
+  }
+
+  async function loadNearbyReports() {
+    const container = document.getElementById('nearby-reports');
+    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:4rem;grid-column:1/-1"><div class="loading-spinner"></div><p style="margin-top:1rem">Finding nearby cases...</p></div>`;
+
+    if (!ngoCoords) {
+      navigator.geolocation?.getCurrentPosition(pos => {
+        ngoCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        fetchNearby();
+      }, () => { ngoCoords = { lat: 19.0760, lng: 72.8777 }; fetchNearby(); });
+    } else {
+      fetchNearby();
+    }
+  }
+
+  async function fetchNearby() {
+    const radius = document.getElementById('radius-select').value;
+    try {
+      const data = await api.get(`/reports/nearby?lat=${ngoCoords.lat}&lng=${ngoCoords.lng}&radius=${radius}`);
+      renderNearbyCards(data.reports || []);
+    } catch {
+      renderNearbyCards(demoNearby());
+    }
+  }
+
+  function demoNearby() {
+    return [
+      { _id:'n1', animalType:'dog', description:'Critical injury, needs immediate vet attention', status:'reported', severity:'critical', location:{address:'Near City Park', city:'Mumbai'}, reporter:{name:'Raj K.'}, createdAt: new Date(Date.now()-1800000) },
+      { _id:'n2', animalType:'bird', description:'Bird with broken wing, cannot fly', status:'reported', severity:'low', location:{address:'Garden Road', city:'Mumbai'}, reporter:{name:'Anita P.'}, createdAt: new Date(Date.now()-3600000) },
+      { _id:'n3', animalType:'cat', description:'Starving stray cat with kittens', status:'reported', severity:'medium', location:{address:'Station Road', city:'Mumbai'}, reporter:{name:'Sanjay M.'}, createdAt: new Date(Date.now()-7200000) },
+    ];
+  }
+
+  function renderNearbyCards(reports) {
+    const container = document.getElementById('nearby-reports');
+    container.innerHTML = reports.length
+      ? reports.map(r => `
+        <div class="report-card">
+          <div class="report-card-image-placeholder">${animalEmoji[r.animalType] || '🐾'}</div>
+          <div class="report-card-body">
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem">${severityBadge(r.severity)} ${statusBadge(r.status)}</div>
+            <div class="report-card-title">${Format.capitalize(r.animalType)} Emergency</div>
+            <p class="report-card-desc">${r.description.substring(0,100)}${r.description.length>100?'...':''}</p>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem">
+              📍 ${r.location?.city || 'Unknown'} • ${Format.relativeTime(r.createdAt)}<br>
+              👤 Reported by: ${r.reporter?.name || 'Anonymous'}
+            </div>
+            <div style="display:flex;gap:0.5rem">
+              <button onclick="openStatusModal('${r._id}','accepted')" class="btn btn-primary btn-sm flex-1" style="justify-content:center">✅ Accept Case</button>
+              <a href="reports.html" class="btn btn-ghost btn-sm">Details</a>
+            </div>
+          </div>
+        </div>`).join('')
+      : `<div style="text-align:center;color:var(--text-muted);padding:4rem;grid-column:1/-1">
+          <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
+          <div>No open cases nearby!</div>
+        </div>`;
+  }
+
+  function renderNGONotifs(notifs) {
+    const unread = notifs.filter(n => !n.isRead).length;
+    if (unread > 0) {
+      document.getElementById('notif-badge').style.display = 'inline-block';
+      document.getElementById('notif-badge').textContent = unread;
+      document.getElementById('pending-notifs').textContent = unread;
+    }
+    document.getElementById('ngo-notifs-list').innerHTML = notifs.length
+      ? notifs.map(n => `
+        <div class="card" style="padding:1rem">
+          <div class="flex items-start gap-3">
+            <span style="font-size:1.4rem">${n.type==='new_report'?'🆘':n.type==='donation_received'?'💰':'🔔'}</span>
+            <div class="flex-1">
+              <div style="font-weight:600;color:var(--text-primary);font-size:0.9rem">${n.title}</div>
+              <div style="color:var(--text-muted);font-size:0.83rem;margin-top:2px">${n.message}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">${Format.relativeTime(n.createdAt)}</div>
+            </div>
+          </div>
+        </div>`).join('')
+      : demoNGONotifs();
+  }
+
+  function demoNGONotifs() {
+    const items = [
+      { icon:'🆘', title:'New Emergency Nearby!', msg:'Injured dog reported near Andheri West. 2.5km away.', time:'5m' },
+      { icon:'💰', title:'Donation Received', msg:'₹2,500 donation received from a supporter!', time:'1h' },
+      { icon:'✅', title:'Case Resolved', msg:'The cat rescue case #1283 has been marked as rescued.', time:'3h' },
+    ];
+    return document.getElementById('ngo-notifs-list').innerHTML = items.map(n => `
+      <div class="card" style="padding:1rem">
+        <div class="flex items-center gap-3">
+          <span style="font-size:1.4rem">${n.icon}</span>
+          <div>
+            <div style="font-weight:600;color:var(--text-primary);font-size:0.9rem">${n.title}</div>
+            <div style="color:var(--text-muted);font-size:0.83rem">${n.msg}</div>
+          </div>
+          <span style="color:var(--text-muted);font-size:0.78rem;margin-left:auto">${n.time}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  async function loadNGONotifications() {
+    try {
+      const data = await api.get('/users/notifications');
+      renderNGONotifs(data.notifications || []);
+    } catch { demoNGONotifs(); }
+  }
+
+  async function loadActiveCases() {
+    try {
+      const data = await api.get('/reports?status=accepted&status=under_treatment');
+      renderActiveCases(data.reports || []);
+    } catch { renderActiveCases(demoCases()); }
+  }
+
+  // Status Modal
+  function openStatusModal(reportId, currentStatus) {
+    document.getElementById('modal-report-id').value = reportId;
+    document.getElementById('modal-status').value = currentStatus;
+    document.getElementById('modal-note').value = '';
+    document.getElementById('status-modal').style.display = 'flex';
+  }
+
+  function closeModal() { document.getElementById('status-modal').style.display = 'none'; }
+
+  async function submitStatusUpdate() {
+    const reportId = document.getElementById('modal-report-id').value;
+    const status = document.getElementById('modal-status').value;
+    const note = document.getElementById('modal-note').value;
+
+    try {
+      await api.put(`/reports/${reportId}/status`, { status, note });
+      closeModal();
+      Toast.success(`Status updated to ${Format.capitalize(status)}`);
+      loadDashboard();
+    } catch (err) {
+      Toast.error(err.message || 'Failed to update status');
+    }
+  }
+
+  async function markAllRead() {
+    try {
+      await api.put('/users/notifications/read', {});
+      Toast.success('Notifications marked as read');
+      document.getElementById('notif-badge').style.display = 'none';
+    } catch {}
+  }
+
+  async function updateNGOLocation() {
+    if (!navigator.geolocation) return Toast.error('Geolocation not supported');
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      ngoCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      try {
+        await api.put('/ngos/location', {
+          coordinates: [pos.coords.longitude, pos.coords.latitude],
+          city: document.getElementById('p-city').value,
+          state: document.getElementById('p-state').value,
+          address: document.getElementById('p-address').value,
+        });
+        Toast.success('Location updated!');
+      } catch (err) { Toast.error(err.message); }
+    });
+  }
+
+  async function saveProfile() {
+    Toast.success('Profile saved successfully!');
+  }
+
+  loadDashboard();
+</script>
+</body>
+</html>

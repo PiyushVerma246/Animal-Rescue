@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard – AniCure</title>
+  <meta name="description" content="Track your animal reports, view reward points, and manage your AniCure profile." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="brand-icon">🐾</div>
+    Ani<span>Cure</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html" class="nav-link">Home</a></li>
+    <li><a href="reports.html" class="nav-link">Reports</a></li>
+    <li><a href="adoption.html" class="nav-link">Adoption</a></li>
+    <li><a href="donate.html" class="nav-link">Donate</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="report-form.html" class="btn btn-primary btn-sm">🆘 Report Animal</a>
+    <button onclick="logout()" class="btn btn-ghost btn-sm">Sign Out</button>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <!-- User Card -->
+    <div style="text-align:center;padding:1rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem">
+      <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--clr-primary),var(--clr-primary-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 0.75rem" id="avatar">👤</div>
+      <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem" id="user-name">Loading...</div>
+      <div style="font-size:0.78rem;color:var(--text-muted)" id="user-email">...</div>
+      <div style="margin-top:0.75rem;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:0.3rem 0.75rem">
+        <span style="font-size:0.9rem">🎁</span>
+        <span style="color:var(--clr-primary);font-weight:700;font-size:0.9rem" id="reward-points">0</span>
+        <span style="color:var(--text-muted);font-size:0.78rem">Points</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#overview" class="sidebar-link active" onclick="showSection('overview')">
+        <span class="icon">📊</span> Overview
+      </a>
+      <a href="#my-reports" class="sidebar-link" onclick="showSection('my-reports')">
+        <span class="icon">📋</span> My Reports
+      </a>
+      <a href="#notifications" class="sidebar-link" onclick="showSection('notifications')">
+        <span class="icon">🔔</span> Notifications
+        <span id="notif-badge" style="display:none;background:var(--clr-danger);color:#fff;border-radius:20px;padding:1px 7px;font-size:0.72rem;margin-left:auto">0</span>
+      </a>
+      <a href="#rewards" class="sidebar-link" onclick="showSection('rewards')">
+        <span class="icon">🎁</span> Rewards
+      </a>
+      <a href="report-form.html" class="sidebar-link">
+        <span class="icon">🆘</span> Report Animal
+      </a>
+      <a href="adoption.html" class="sidebar-link">
+        <span class="icon">🐾</span> Adoption
+      </a>
+      <a href="donate.html" class="sidebar-link">
+        <span class="icon">💰</span> Donate
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div id="loading" style="text-align:center;padding:4rem">
+      <div class="loading-spinner"></div>
+      <p style="color:var(--text-muted);margin-top:1rem">Loading your dashboard...</p>
+    </div>
+
+    <!-- Overview Section -->
+    <section id="section-overview" style="display:none">
+      <div style="margin-bottom:2rem">
+        <h1 style="font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:var(--text-primary)" id="welcome-msg">Welcome back!</h1>
+        <p style="color:var(--text-muted);font-size:0.9rem">Here's a summary of your animal rescue activity</p>
+      </div>
+
+      <div class="grid grid-4" style="margin-bottom:2rem">
+        <div class="stat-card">
+          <div class="stat-icon green">📋</div>
+          <div>
+            <div class="stat-value" id="total-reports">0</div>
+            <div class="stat-label">Total Reports</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">✅</div>
+          <div>
+            <div class="stat-value" id="rescued-count">0</div>
+            <div class="stat-label">Animals Rescued</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🎁</div>
+          <div>
+            <div class="stat-value" id="pts-stat">0</div>
+            <div class="stat-label">Reward Points</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">🏆</div>
+          <div>
+            <div class="stat-value" id="rank-stat">Hero</div>
+            <div class="stat-label">Your Rank</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Reports -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <h3 style="font-family:var(--font-display);font-weight:700;color:var(--text-primary)">Recent Reports</h3>
+          <button onclick="showSection('my-reports')" class="btn btn-ghost btn-sm">View All</button>
+        </div>
+        <div id="recent-reports-table">
+          <div style="padding:2rem;text-align:center;color:var(--text-muted)">Loading reports...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Reports Section -->
+    <section id="section-my-reports" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">My Reports</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem">Track all the animals you've reported</p>
+        </div>
+        <a href="report-form.html" class="btn btn-primary btn-sm">+ New Report</a>
+      </div>
+
+      <div id="my-reports-list" class="grid grid-auto">
+        <div style="text-align:center;color:var(--text-muted);padding:4rem;grid-column:1/-1">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notifications Section -->
+    <section id="section-notifications" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
+        <div>
+          <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">Notifications</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem">Updates on your animal reports and rewards</p>
+        </div>
+        <button onclick="markAllRead()" class="btn btn-ghost btn-sm">Mark all read</button>
+      </div>
+
+      <div id="notifications-list" style="display:flex;flex-direction:column;gap:0.75rem">
+        <div style="text-align:center;color:var(--text-muted);padding:4rem;text-align:center">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rewards Section -->
+    <section id="section-rewards" style="display:none">
+      <div style="margin-bottom:2rem">
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">Reward Program</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem">Earn points by helping animals and climb the hero leaderboard</p>
+      </div>
+
+      <div class="grid grid-2" style="margin-bottom:2rem">
+        <div class="card" style="text-align:center;padding:2.5rem">
+          <div style="font-size:3rem;margin-bottom:0.75rem">🎁</div>
+          <div style="font-family:var(--font-display);font-size:3rem;font-weight:900;color:var(--clr-primary)" id="rewards-points">0</div>
+          <div style="color:var(--text-muted);font-size:0.9rem;margin-top:0.25rem">Total Points Earned</div>
+          <div style="margin-top:1.25rem;padding:0.75rem;background:rgba(34,197,94,0.08);border-radius:10px;font-size:0.85rem;color:var(--text-muted)">
+            🏆 Rank: <strong style="color:var(--clr-primary)" id="hero-rank">Animal Hero</strong>
+          </div>
+        </div>
+
+        <div class="card" style="padding:2rem">
+          <h4 style="font-weight:700;color:var(--text-primary);margin-bottom:1rem">How to Earn Points</h4>
+          <div style="display:flex;flex-direction:column;gap:0.75rem">
+            <div class="flex items-center gap-3" style="font-size:0.88rem">
+              <span style="background:rgba(34,197,94,0.15);padding:0.4rem 0.8rem;border-radius:20px;color:var(--clr-primary);font-weight:700">+50</span>
+              <span style="color:var(--text-muted)">Submit a verified animal report</span>
+            </div>
+            <div class="flex items-center gap-3" style="font-size:0.88rem">
+              <span style="background:rgba(34,197,94,0.15);padding:0.4rem 0.8rem;border-radius:20px;color:var(--clr-primary);font-weight:700">+100</span>
+              <span style="color:var(--text-muted)">Animal from your report gets rescued</span>
+            </div>
+            <div class="flex items-center gap-3" style="font-size:0.88rem">
+              <span style="background:rgba(59,130,246,0.15);padding:0.4rem 0.8rem;border-radius:20px;color:#60a5fa;font-weight:700">+25</span>
+              <span style="color:var(--text-muted)">Report complete with photos</span>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+            <h5 style="font-size:0.82rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Rank Milestones</h5>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.82rem;color:var(--text-muted)">
+              <div>🌱 <strong style="color:var(--text-primary)">Sprout</strong> – 0–99 pts</div>
+              <div>🌿 <strong style="color:var(--text-primary)">Helper</strong> – 100–499 pts</div>
+              <div>🦅 <strong style="color:var(--text-primary)">Rescuer</strong> – 500–999 pts</div>
+              <div>⭐ <strong style="color:var(--text-primary)">Animal Hero</strong> – 1000–4999 pts</div>
+              <div>👑 <strong style="color:var(--text-primary)">Guardian Angel</strong> – 5000+ pts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="../assets/js/app.js"></script>
+<script>
+  // Redirect if not logged in
+  if (!Auth.isLoggedIn()) window.location.href = 'auth.html';
+  if (Auth.isNGO()) window.location.href = 'ngo-dashboard.html';
+
+  let dashData = null;
+  const activeSection = 'overview';
+
+  // Connect Socket.io for real-time notifications
+  // const socket = io('http://localhost:5000');
+  // const user = Auth.getUser();
+  // if (user) socket.emit('join-room', user._id);
+  // socket.on('notification', (notif) => { Toast.info(notif.title); loadDashboard(); });
+
+  async function loadDashboard() {
+    try {
+      dashData = await api.get('/users/dashboard');
+      renderDashboard(dashData);
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('section-overview').style.display = 'block';
+    } catch (err) {
+      // Show demo data on API failure
+      showDemoData();
+    }
+  }
+
+  function showDemoData() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('section-overview').style.display = 'block';
+    const user = Auth.getUser() || { name: 'Demo User', email: 'user@demo.com', rewardPoints: 350 };
+    renderUserCard(user);
+    document.getElementById('welcome-msg').textContent = `Welcome back, ${user.name.split(' ')[0]}! 👋`;
+    document.getElementById('total-reports').textContent = '7';
+    document.getElementById('rescued-count').textContent = '4';
+    document.getElementById('pts-stat').textContent = user.rewardPoints || 350;
+    document.getElementById('rank-stat').textContent = '🦅 Rescuer';
+    document.getElementById('recent-reports-table').innerHTML = demoReportsTable();
+  }
+
+  function renderDashboard(data) {
+    renderUserCard(data.user);
+    document.getElementById('welcome-msg').textContent = `Welcome back, ${data.user.name.split(' ')[0]}! 👋`;
+    document.getElementById('total-reports').textContent = data.stats.totalReports;
+    document.getElementById('rescued-count').textContent = data.stats.rescued;
+    document.getElementById('pts-stat').textContent = data.user.rewardPoints;
+    document.getElementById('recent-reports-table').innerHTML = renderReportsTable(data.recentReports || []);
+    renderNotifications(data.notifications || []);
+  }
+
+  function renderUserCard(user) {
+    document.getElementById('user-name').textContent = user.name;
+    document.getElementById('user-email').textContent = user.email;
+    document.getElementById('reward-points').textContent = user.rewardPoints || 0;
+    document.getElementById('rewards-points').textContent = user.rewardPoints || 0;
+    document.getElementById('rewards-points').textContent = user.rewardPoints || 0;
+    const pts = user.rewardPoints || 0;
+    const rank = pts >= 5000 ? '👑 Guardian Angel' : pts >= 1000 ? '⭐ Animal Hero' : pts >= 500 ? '🦅 Rescuer' : pts >= 100 ? '🌿 Helper' : '🌱 Sprout';
+    document.getElementById('rank-stat').textContent = rank;
+    document.getElementById('hero-rank').textContent = rank;
+  }
+
+  function demoReportsTable() {
+    return renderReportsTable([
+      { _id: '1', animalType: 'dog', description: 'Injured dog near central park', status: 'rescued', severity: 'high', createdAt: new Date(Date.now() - 86400000*2) },
+      { _id: '2', animalType: 'cat', description: 'Abandoned kittens in a box', status: 'under_treatment', severity: 'medium', createdAt: new Date(Date.now() - 86400000*5) },
+      { _id: '3', animalType: 'bird', description: 'Injured bird with wing fracture', status: 'accepted', severity: 'low', createdAt: new Date(Date.now() - 86400000*7) },
+    ]);
+  }
+
+  function renderReportsTable(reports) {
+    if (!reports.length) return `<div style="padding:2rem;text-align:center;color:var(--text-muted)">No reports yet. <a href="report-form.html" style="color:var(--clr-primary)">Submit your first report!</a></div>`;
+    
+    return `<div class="table-wrapper" style="border:none">
+      <table>
+        <thead><tr>
+          <th>Animal</th><th>Description</th><th>Severity</th><th>Status</th><th>Date</th><th></th>
+        </tr></thead>
+        <tbody>
+          ${reports.map(r => `<tr>
+            <td>${animalEmoji[r.animalType] || '🐾'} <strong style="color:var(--text-primary)">${Format.capitalize(r.animalType)}</strong></td>
+            <td style="color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.description}</td>
+            <td>${severityBadge(r.severity)}</td>
+            <td>${statusBadge(r.status)}</td>
+            <td style="font-size:0.82rem;color:var(--text-muted)">${Format.relativeTime(r.createdAt)}</td>
+            <td><a href="reports.html" class="btn btn-ghost btn-sm">View</a></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  function renderNotifications(notifs) {
+    const unread = notifs.filter(n => !n.isRead).length;
+    const badge = document.getElementById('notif-badge');
+    if (unread > 0) {
+      badge.style.display = 'inline-block';
+      badge.textContent = unread;
+    }
+
+    document.getElementById('notifications-list').innerHTML = notifs.length
+      ? notifs.map(n => `
+        <div class="card" style="padding:1rem;${!n.isRead ? 'border-color:rgba(34,197,94,0.25)' : ''}">
+          <div class="flex items-start gap-3">
+            <span style="font-size:1.5rem">${n.type === 'reward_earned' ? '🎁' : n.type === 'report_status_update' ? '📋' : '🔔'}</span>
+            <div class="flex-1">
+              <div style="font-weight:600;color:var(--text-primary);font-size:0.9rem">${n.title}</div>
+              <div style="color:var(--text-muted);font-size:0.83rem;margin-top:2px">${n.message}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">${Format.relativeTime(n.createdAt)}</div>
+            </div>
+            ${!n.isRead ? '<span style="width:8px;height:8px;background:var(--clr-primary);border-radius:50%;flex-shrink:0;margin-top:4px"></span>' : ''}
+          </div>
+        </div>`).join('')
+      : `<div style="text-align:center;color:var(--text-muted);padding:3rem">
+          <div style="font-size:3rem;margin-bottom:0.75rem">🔔</div>
+          <div>No notifications yet</div>
+        </div>`;
+  }
+
+  function showSection(name) {
+    ['overview', 'my-reports', 'notifications', 'rewards'].forEach(s => {
+      document.getElementById(`section-${s}`).style.display = 'none';
+    });
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(`section-${name}`).style.display = 'block';
+    event.currentTarget?.classList?.add('active');
+
+    if (name === 'my-reports') loadMyReports();
+    if (name === 'notifications') loadNotifications();
+  }
+
+  async function loadMyReports() {
+    try {
+      const data = await api.get('/reports/my-reports');
+      document.getElementById('my-reports-list').innerHTML = data.reports.length
+        ? data.reports.map(r => `
+          <div class="report-card">
+            <div class="report-card-image-placeholder">${animalEmoji[r.animalType] || '🐾'}</div>
+            <div class="report-card-body">
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem">${severityBadge(r.severity)} ${statusBadge(r.status)}</div>
+              <div class="report-card-title">${Format.capitalize(r.animalType)} Report</div>
+              <p class="report-card-desc">${r.description.substring(0, 80)}...</p>
+              <div class="report-card-meta">
+                <span style="font-size:0.78rem;color:var(--text-muted)">${Format.relativeTime(r.createdAt)}</span>
+                <a href="reports.html" class="btn btn-primary btn-sm">View</a>
+              </div>
+            </div>
+          </div>`).join('')
+        : `<div style="text-align:center;color:var(--text-muted);padding:4rem;grid-column:1/-1">
+            <div style="font-size:3rem;margin-bottom:1rem">📋</div>
+            <div style="margin-bottom:1rem">No reports yet</div>
+            <a href="report-form.html" class="btn btn-primary">Submit Your First Report</a>
+          </div>`;
+    } catch {
+      document.getElementById('my-reports-list').innerHTML = demoReportsCards();
+    }
+  }
+
+  function demoReportsCards() {
+    return ['dog','cat','bird'].map(type => `
+      <div class="report-card">
+        <div class="report-card-image-placeholder">${animalEmoji[type]}</div>
+        <div class="report-card-body">
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem">${severityBadge('medium')} ${statusBadge('rescued')}</div>
+          <div class="report-card-title">${Format.capitalize(type)} Report</div>
+          <p class="report-card-desc">Demo report – this is a demonstration of what your reports look like.</p>
+          <div class="report-card-meta">
+            <span style="font-size:0.78rem;color:var(--text-muted)">3 days ago</span>
+            <a href="reports.html" class="btn btn-primary btn-sm">View</a>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function loadNotifications() {
+    try {
+      const data = await api.get('/users/notifications');
+      renderNotifications(data.notifications || []);
+    } catch { 
+      renderNotifications([
+        { _id: '1', title: 'Welcome, Animal Saver! 🐾', message: 'Create reports and help rescue injured animals on the go.', type: 'welcome', isRead: false, createdAt: new Date() },
+        { _id: '2', title: 'Help Desk Live 📋', message: 'You have joined the AniCure Network. Submit full descriptions accurately.', type: 'report_status_update', isRead: true, createdAt: new Date(Date.now() - 86400000) }
+      ]);
+    }
+  }
+
+  async function markAllRead() {
+    try {
+      await api.put('/users/notifications/read', {});
+      document.getElementById('notif-badge').style.display = 'none';
+      Toast.success('All notifications marked as read');
+      loadNotifications();
+    } catch { Toast.error('Failed to mark notifications'); }
+  }
+
+  // Load dashboard
+  loadDashboard();
+</script>
+</body>
+</html>

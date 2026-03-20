@@ -21,20 +21,26 @@
     </a>
 
     <ul class="nav-links">
-      <li><a href="index.html" class="nav-link active">Home</a></li>
-      <li><a href="pages/reports.html" class="nav-link">Reports</a></li>
-      <li><a href="pages/adoption.html" class="nav-link">Adoption</a></li>
-      <li><a href="pages/donate.html" class="nav-link">Donate</a></li>
-      <li><a href="pages/ngos.html" class="nav-link">NGOs</a></li>
+      <li><a href="index.html" class="nav-link active" data-i18n="nav_home">Home</a></li>
+      <li><a href="pages/reports.html" class="nav-link" data-i18n="nav_reports">Reports</a></li>
+      <li><a href="pages/adoption.html" class="nav-link" data-i18n="nav_adoption">Adoption</a></li>
+      <li><a href="pages/donate.html" class="nav-link" data-i18n="nav_donate">Donate</a></li>
+      <li><a href="pages/ngos.html" class="nav-link" data-i18n="nav_ngos">NGOs</a></li>
     </ul>
 
     <div class="nav-actions">
-      <a href="pages/auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
+      <!-- Language Dropdown -->
+      <select id="lang-select" style="background:rgba(255,255,255,0.04);color:var(--text-primary);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.4rem 0.6rem;font-size:0.8rem;cursor:pointer;outline:none">
+        <option value="en">🇺🇸 EN</option>
+        <option value="hi">🇮🇳 HI</option>
+      </select>
+
+      <a href="pages/auth.html" id="nav-login-btn" class="btn btn-outline btn-sm" data-i18n="nav_signin">Sign In</a>
       <a href="pages/dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">
         👤 <span id="nav-user-name">User</span>
       </a>
-      <a href="pages/report-form.html" class="btn btn-primary btn-sm">🆘 Report Animal</a>
-      <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
+      <a href="pages/report-form.html" class="btn btn-primary btn-sm" data-i18n="nav_report_animal">🆘 Report Animal</a>
+      <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none" data-i18n="nav_signout">Sign Out</button>
     </div>
   </nav>
 
@@ -55,21 +61,21 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;min-height:calc(100vh - 68px)">
 
         <div class="hero-content">
-          <div class="hero-badge">
+          <div class="hero-badge" data-i18n="hero_badge">
             🌿 Real-time Animal Rescue Network
           </div>
 
           <h1 class="hero-title" style="margin-bottom:1rem">
-            Every Life<br>Deserves a<br>
-            <span class="highlight">Second Chance</span>
+            <span data-i18n="hero_title_1">Every Life</span><br><span data-i18n="hero_title_2">Deserves a</span><br>
+            <span class="highlight" data-i18n="hero_highlight">Second Chance</span>
           </h1>
-          <p class="hero-subtitle" style="margin-bottom:1.5rem">
+          <p class="hero-subtitle" style="margin-bottom:1.5rem" data-i18n="hero_subtitle">
             Report injured animals instantly. Connect with nearby NGOs, vets & shelters.
             Track rescues in real-time and give abandoned animals a loving home.
           </p>
           <div class="hero-actions">
-            <a href="pages/report-form.html" class="btn btn-primary btn-xl">🆘 Report an Animal</a>
-            <a href="pages/adoption.html" class="btn btn-accent btn-xl">🐾 Adopt a Pet</a>
+            <a href="pages/report-form.html" class="btn btn-primary btn-xl" data-i18n="hero_btn_report">🆘 Report an Animal</a>
+            <a href="pages/adoption.html" class="btn btn-accent btn-xl" data-i18n="hero_btn_adopt">🐾 Adopt a Pet</a>
           </div>
         </div>
 
@@ -98,21 +104,21 @@
             </div>
           </div>
 
-          <div class="hero-stats"
+            <div class="hero-stats"
             style="border-top:1px solid var(--border);border-bottom:none;margin-top:0.25rem;padding-top:1.25rem;padding-bottom:0;justify-content:space-between">
             <div>
               <div class="hero-stat-value" id="stat-rescued">2,847</div>
-              <div class="hero-stat-label">Animals Rescued</div>
+              <div class="hero-stat-label" data-i18n="stat_rescued_lbl">Animals Rescued</div>
             </div>
             <div style="width:1px;height:40px;background:var(--border)"></div>
             <div>
               <div class="hero-stat-value" id="stat-ngos">183</div>
-              <div class="hero-stat-label">Active NGOs</div>
+              <div class="hero-stat-label" data-i18n="stat_ngos_lbl">Active NGOs</div>
             </div>
             <div style="width:1px;height:40px;background:var(--border)"></div>
             <div>
               <div class="hero-stat-value" id="stat-adopted">1,204</div>
-              <div class="hero-stat-label">Happy Adoptions</div>
+              <div class="hero-stat-label" data-i18n="stat_adopted_lbl">Happy Adoptions</div>
             </div>
           </div>
 
@@ -219,59 +225,46 @@
     style="background:linear-gradient(180deg, var(--bg-dark) 0%, rgba(34,197,94,0.03) 50%, var(--bg-dark) 100%)">
     <div class="container">
       <div class="section-header">
-        <div class="section-tag">💡 Our Offerings</div>
-        <h2 class="section-title">Services We <span>Provide</span></h2>
-        <p class="section-subtitle">Empowering communities to secure, treat, and find loving homes for animals in
-          distress</p>
+        <div class="section-tag" data-i18n="services_tag">💡 Our Offerings</div>
+        <h2 class="section-title" data-i18n="services_title">Services We Provide</h2>
+        <p class="section-subtitle" data-i18n="services_subtitle">Empowering communities to secure, treat, and find loving homes for animals in distress</p>
       </div>
 
       <div class="grid grid-4 services-grid">
         <div class="feature-card card-crisis">
           <div>
             <div class="feature-icon" style="background:rgba(239, 68, 68, 0.1);color:#ef4444">🚨</div>
-            <div class="feature-title">24/7 Crisis Reporting</div>
-            <p class="feature-desc">Interactive live reporting module connecting nearest users dropping precise
-              coordinates tags for swift responses.</p>
+            <div class="feature-title" data-i18n="service_crisis">24/7 Crisis Reporting</div>
+            <p class="feature-desc" data-i18n="service_crisis_desc">Interactive live reporting module connecting nearest users dropping precise coordinates tags for swift responses.</p>
           </div>
-          <div style="margin-top:1.5rem"><a href="pages/report-form.html"
-              style="font-size:0.85rem;color:#ef4444;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">File
-              Report <span>→</span></a></div>
+          <div style="margin-top:1.5rem"><a href="pages/report-form.html" style="font-size:0.85rem;color:#ef4444;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem" data-i18n="service_crisis_link">File Report →</a></div>
         </div>
 
         <div class="feature-card card-medical">
           <div>
             <div class="feature-icon" style="background:rgba(59, 130, 246, 0.1);color:#3b82f6">🏥</div>
-            <div class="feature-title">Medical Connectivity Grid</div>
-            <p class="feature-desc">Direct interface to veterinary centers and clinics dispatching rescue professionals
-              to critical hazards location spots.</p>
+            <div class="feature-title" data-i18n="service_medical">Medical Connectivity Grid</div>
+            <p class="feature-desc" data-i18n="service_medical_desc">Direct interface to veterinary centers and clinics dispatching rescue professionals to critical hazards location spots.</p>
           </div>
-          <div style="margin-top:1.5rem"><a href="pages/ngos.html"
-              style="font-size:0.85rem;color:#3b82f6;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">View
-              Clinics <span>→</span></a></div>
+          <div style="margin-top:1.5rem"><a href="pages/ngos.html" style="font-size:0.85rem;color:#3b82f6;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem" data-i18n="service_medical_link">View Clinics →</a></div>
         </div>
 
         <div class="feature-card card-adopt">
           <div>
             <div class="feature-icon" style="background:rgba(34, 197, 94, 0.1);color:var(--clr-primary)">🏡</div>
-            <div class="feature-title">Verified Adoption Portal</div>
-            <p class="feature-desc">Matching rescued animals awaiting support items connecting caring owners directly to
-              rescue networks safely.</p>
+            <div class="feature-title" data-i18n="service_adopt">Verified Adoption Portal</div>
+            <p class="feature-desc" data-i18n="service_adopt_desc">Matching rescued animals awaiting support items connecting caring owners directly to rescue networks safely.</p>
           </div>
-          <div style="margin-top:1.5rem"><a href="pages/adoption.html"
-              style="font-size:0.85rem;color:var(--clr-primary);font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">Browse
-              Adoptions <span>→</span></a></div>
+          <div style="margin-top:1.5rem"><a href="pages/adoption.html" style="font-size:0.85rem;color:var(--clr-primary);font-weight:600;display:inline-flex;align-items:center;gap:0.3rem" data-i18n="service_adopt_link">Browse Adoptions →</a></div>
         </div>
 
         <div class="feature-card card-fund">
           <div>
             <div class="feature-icon" style="background:rgba(245, 158, 11, 0.1);color:#f59e0b">💚</div>
-            <div class="feature-title">Secured NGO Crowd-Funding</div>
-            <p class="feature-desc">Streamlined verified payment pipelines empowering single click support systems
-              assisting NGOs medical treatments buffers.</p>
+            <div class="feature-title" data-i18n="service_fund">Secured NGO Crowd-Funding</div>
+            <p class="feature-desc" data-i18n="service_fund_desc">Streamlined verified payment pipelines empowering single click support systems assisting NGOs medical treatments buffers.</p>
           </div>
-          <div style="margin-top:1.5rem"><a href="pages/donate.html"
-              style="font-size:0.85rem;color:#f59e0b;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem">Donate
-              Now <span>→</span></a></div>
+          <div style="margin-top:1.5rem"><a href="pages/donate.html" style="font-size:0.85rem;color:#f59e0b;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem" data-i18n="service_fund_link">Donate Now →</a></div>
         </div>
       </div>
     </div>
@@ -281,9 +274,9 @@
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <div class="section-tag">🆘 Live Reports</div>
-        <h2 class="section-title">Recent <span>Animal Reports</span></h2>
-        <p class="section-subtitle">Animals currently in need of help near you</p>
+        <div class="section-tag" data-i18n="reports_tag">🆘 Live Reports</div>
+        <h2 class="section-title" data-i18n="reports_title">Recent Animal Reports</h2>
+        <p class="section-subtitle" data-i18n="reports_subtitle">Animals currently in need of help near you</p>
       </div>
 
       <div class="grid grid-3" id="recent-reports">
@@ -348,7 +341,7 @@
       </div>
 
       <div class="text-center mt-8">
-        <a href="pages/reports.html" class="btn btn-outline">View All Reports →</a>
+        <a href="pages/reports.html" class="btn btn-outline" data-i18n="reports_btn_all">View All Reports →</a>
       </div>
     </div>
   </section>
@@ -360,12 +353,9 @@
       <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:center">
         <!-- Left: Info -->
         <div>
-          <div class="section-tag">🎁 Earn Rewards</div>
-          <h2 class="section-title" style="font-size: clamp(2rem, 4vw, 3rem);margin-bottom:1.25rem">Be an Animal
-            <span>Hero</span> & Get Rewarded</h2>
-          <p style="color:var(--text-muted);margin-bottom:2rem;line-height:1.75">Every valid report you file contributes
-            to saving a life. Track your acts of kindness on your dashboard, climb the ranks, and redeem exclusive
-            rewards for your care.</p>
+          <div class="section-tag" data-i18n="rewards_tag">🎁 Earn Rewards</div>
+          <h2 class="section-title" style="font-size: clamp(2rem, 4vw, 3rem);margin-bottom:1.25rem" data-i18n="rewards_title">Be an Animal Hero & Get Rewarded</h2>
+          <p style="color:var(--text-muted);margin-bottom:2rem;line-height:1.75" data-i18n="rewards_desc">Every valid report you file contributes to saving a life. Track your acts of kindness on your dashboard, climb the ranks, and redeem exclusive rewards for your care.</p>
 
           <div style="display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2.5rem">
             <div class="flex items-start gap-4"
@@ -374,9 +364,8 @@
                 style="background:rgba(34,197,94,0.1);color:var(--clr-primary);width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0">
                 50</div>
               <div>
-                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem">Report an Incident</div>
-                <p style="font-size:0.85rem;color:var(--text-muted)">Points given on precise markers drop verifying
-                  locations correctly.</p>
+                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem" data-i18n="reward_1_title">Report an Incident</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)" data-i18n="reward_1_desc">Points given on precise markers drop verifying locations correctly.</p>
               </div>
             </div>
             <div class="flex items-start gap-4"
@@ -385,9 +374,8 @@
                 style="background:rgba(59,130,246,0.1);color:#3b82f6;width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0">
                 100</div>
               <div>
-                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem">Case Accepted by NGO</div>
-                <p style="font-size:0.85rem;color:var(--text-muted)">Extra benefits awarded after provider dispatches
-                  initial check maps schedules.</p>
+                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem" data-i18n="reward_2_title">Case Accepted by NGO</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)" data-i18n="reward_2_desc">Extra benefits awarded after provider dispatches initial check maps schedules.</p>
               </div>
             </div>
             <div class="flex items-start gap-4"
@@ -396,13 +384,12 @@
                 style="background:rgba(245,158,11,0.1);color:#f59e0b;width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0">
                 250</div>
               <div>
-                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem">Successful Rescue</div>
-                <p style="font-size:0.85rem;color:var(--text-muted)">Massive boosts for continuous tracks solving
-                  critical hazards successfully.</p>
+                <div style="font-weight:700;color:var(--text-primary);margin-bottom:0.25rem" data-i18n="reward_3_title">Successful Rescue</div>
+                <p style="font-size:0.85rem;color:var(--text-muted)" data-i18n="reward_3_desc">Massive boosts for continuous tracks solving critical hazards successfully.</p>
               </div>
             </div>
           </div>
-          <a href="pages/report-form.html" class="btn btn-primary btn-lg">Start Reporting 🐾</a>
+          <a href="pages/report-form.html" class="btn btn-primary btn-lg" data-i18n="rewards_btn">Start Reporting 🐾</a>
         </div>
 
         <!-- Right: Gamified Card Preview -->
@@ -419,10 +406,10 @@
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
               <div>
                 <div
-                  style="font-size:0.82rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">
+                  style="font-size:0.82rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em" data-i18n="rewards_standing">
                   Current Standing</div>
                 <div
-                  style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:var(--text-primary);display:flex;align-items:center;gap:0.5rem">
+                  style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:var(--text-primary);display:flex;align-items:center;gap:0.5rem" data-i18n="rewards_tier">
                   🏆 Silver Hero</div>
               </div>
               <div style="text-align:right">
@@ -435,8 +422,8 @@
             <!-- Progress Bar -->
             <div style="margin-bottom:2.5rem">
               <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.5rem">
-                <span style="color:var(--text-muted)">To Gold Hero Tier</span>
-                <span style="font-weight:700;color:var(--text-primary)">550 pts remaining</span>
+                <span style="color:var(--text-muted)" data-i18n="rewards_remaining">To Gold Hero Tier</span>
+                <span style="font-weight:700;color:var(--text-primary)" data-i18n="rewards_pts_req">550 pts remaining</span>
               </div>
               <div style="height:10px;background:rgba(255,255,255,0.04);border-radius:10px;overflow:hidden">
                 <div
@@ -447,7 +434,7 @@
 
             <!-- Rewards Redeemables -->
             <div
-              style="font-size:0.85rem;color:var(--text-muted);font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.04em">
+              style="font-size:0.85rem;color:var(--text-muted);font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.04em" data-i18n="rewards_redeemable">
               Redeemable Rewards</div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
@@ -482,10 +469,9 @@
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <div class="section-tag">🐾 Find Your Companion</div>
-        <h2 class="section-title">Animals Ready for <span>Adoption</span></h2>
-        <p class="section-subtitle">These beautiful souls have been rescued and rehabilitated. They're waiting for a
-          forever home.</p>
+        <div class="section-tag" data-i18n="adopt_tag">🐾 Find Your Companion</div>
+        <h2 class="section-title" data-i18n="adopt_title">Animals Ready for Adoption</h2>
+        <p class="section-subtitle" data-i18n="adopt_subtitle">These beautiful souls have been rescued and rehabilitated. They're waiting for a forever home.</p>
       </div>
 
       <div class="grid grid-4">
@@ -568,7 +554,7 @@
       </div>
 
       <div class="text-center mt-8">
-        <a href="pages/adoption.html" class="btn btn-outline">See All Available Animals →</a>
+        <a href="pages/adoption.html" class="btn btn-outline" data-i18n="adopt_btn_all">See All Available Animals →</a>
       </div>
     </div>
   </section>
@@ -582,12 +568,11 @@
           style="position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(30,131,197,0.05) 0%, transparent 70%);pointer-events:none">
         </div>
         <div style="font-size:2.8rem;margin-bottom:1rem">🧡</div>
-        <h2 class="section-title" style="margin-bottom:1rem">Support Animal Rescue <span>NGOs</span></h2>
-        <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem">Your donation funds
-          medical care, food, and shelter for rescued animals. Every contribution makes a life-changing difference.</p>
+        <h2 class="section-title" style="margin-bottom:1rem" data-i18n="donate_title">Support Animal Rescue NGOs</h2>
+        <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem" data-i18n="donate_desc">Your donation funds medical care, food, and shelter for rescued animals. Every contribution makes a life-changing difference.</p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-          <a href="pages/donate.html" class="btn btn-primary btn-xl">💰 Donate Now</a>
-          <a href="pages/ngos.html" class="btn btn-outline btn-xl">🏥 View NGOs</a>
+          <a href="pages/donate.html" class="btn btn-primary btn-xl" data-i18n="donate_btn">💰 Donate Now</a>
+          <a href="pages/ngos.html" class="btn btn-outline btn-xl" data-i18n="donate_btn_view">🏥 View NGOs</a>
         </div>
       </div>
     </div>
@@ -602,9 +587,8 @@
           <a href="index.html" class="footer-brand">
             <img src="assets/images/logo.png" alt="AniCure Logo" style="height:44px;object-fit:contain" />
           </a>
-          <p class="footer-desc">
-            A real-time animal rescue and care platform connecting helpers, NGOs, vets, and shelters to save more lives
-            every day.
+          <p class="footer-desc" data-i18n="footer_desc">
+            A real-time animal rescue and care platform connecting helpers, NGOs, vets, and shelters to save more lives every day.
           </p>
           <div class="footer-socials">
             <a href="#" class="social-link" aria-label="Instagram">📸</a>
@@ -615,7 +599,7 @@
         </div>
 
         <div>
-          <div class="footer-title">Platform</div>
+          <div class="footer-title" data-i18n="footer_platform">Platform</div>
           <div class="footer-links">
             <a href="pages/reports.html" class="footer-link">View Reports</a>
             <a href="pages/report-form.html" class="footer-link">Report Animal</a>
@@ -625,7 +609,7 @@
         </div>
 
         <div>
-          <div class="footer-title">Community</div>
+          <div class="footer-title" data-i18n="footer_community">Community</div>
           <div class="footer-links">
             <a href="pages/ngos.html" class="footer-link">Our NGOs</a>
             <a href="pages/dashboard.html" class="footer-link">Dashboard</a>
@@ -635,16 +619,14 @@
 
         <div>
           <div class="footer-newsletter">
-            <div class="footer-title" style="margin-bottom:0.5rem">Stay Updated</div>
-            <p style="color:var(--text-muted);font-size:0.82rem;line-height:1.5">Get instructions, tips, and rescue
-              alerts directly to your inbox.</p>
+            <div class="footer-title" style="margin-bottom:0.5rem" data-i18n="footer_stay_updated">Stay Updated</div>
+            <p style="color:var(--text-muted);font-size:0.82rem;line-height:1.5" data-i18n="footer_newsletter_hint">Get instructions, tips, and rescue alerts directly to your inbox.</p>
             <form class="newsletter-form" onsubmit="event.preventDefault(); Toast.success('Subscribed successfully!');">
               <input type="email" class="newsletter-input" placeholder="Enter your email" required />
               <button type="submit" class="btn btn-primary btn-sm">Join</button>
             </form>
             <div style="margin-top:1.25rem;border-top:1px solid rgba(255,255,255,0.04);padding-top:1rem">
-              <a href="pages/report-form.html" class="btn btn-danger btn-sm w-full" style="justify-content:center">🆘
-                Report Emergency</a>
+              <a href="pages/report-form.html" class="btn btn-danger btn-sm w-full" style="justify-content:center" data-i18n="footer_emerg">🆘 Report Emergency</a>
             </div>
           </div>
         </div>
@@ -652,7 +634,7 @@
 
       <div class="footer-bottom">
         <div class="footer-copyright">
-          © 2026 AniCure. Built with <span style="color:#ef4444">❤️</span> for animals everywhere. 🐾
+          <span data-i18n="footer_copyright_1">© 2026 AniCure. Built with</span> <span style="color:#ef4444">❤️</span> <span data-i18n="footer_copyright_2">for animals everywhere.</span> 🐾
         </div>
         <div class="footer-legal">
           <a href="#" class="footer-legal-link">Privacy Policy</a>
@@ -821,8 +803,33 @@
     }
   </style>
 
+  <!-- Translations Dictionary -->
+  <script src="assets/js/translations.js"></script>
   <script src="assets/js/app.js"></script>
   <script>
+    // Language Translation Toggle
+    function updateLanguage(lang) {
+      if (typeof translations === 'undefined' || !translations[lang]) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+          el.innerText = translations[lang][key];
+        }
+      });
+      localStorage.setItem('ani_cure_lang', lang);
+    }
+
+    const langSelect = document.getElementById('lang-select');
+    if (langSelect) {
+      const savedLang = localStorage.getItem('ani_cure_lang') || 'en';
+      langSelect.value = savedLang;
+      setTimeout(() => updateLanguage(savedLang), 100); // Trigger update on load buffers
+
+      langSelect.addEventListener('change', (e) => {
+        updateLanguage(e.target.value);
+      });
+    }
+
     // Counter Animation Systems
     document.addEventListener("DOMContentLoaded", () => {
       animateCount("stat-rescued", 2847);

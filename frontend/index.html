@@ -474,7 +474,32 @@
         <p class="section-subtitle" data-i18n="adopt_subtitle">These beautiful souls have been rescued and rehabilitated. They're waiting for a forever home.</p>
       </div>
 
-      <div class="grid grid-4">
+      <!-- Search & Filter Bar -->
+      <div class="adopt-filter-bar">
+        <div class="adopt-filter-search">
+          <span class="adopt-filter-icon">🔍</span>
+          <input type="text" id="adopt-search" class="adopt-filter-input" placeholder="Search by name or breed..." oninput="filterAdoptionCards()" />
+        </div>
+        <select id="filter-species" class="adopt-filter-select" onchange="filterAdoptionCards()">
+          <option value="">🐾 All Species</option>
+          <option value="dog">🐶 Dogs</option>
+          <option value="cat">🐱 Cats</option>
+          <option value="rabbit">🐰 Rabbits</option>
+        </select>
+        <select id="filter-gender" class="adopt-filter-select" onchange="filterAdoptionCards()">
+          <option value="">⚥ All Genders</option>
+          <option value="male">♂ Male</option>
+          <option value="female">♀ Female</option>
+        </select>
+        <select id="filter-status" class="adopt-filter-select" onchange="filterAdoptionCards()">
+          <option value="">✅ All Status</option>
+          <option value="available">Available</option>
+          <option value="pending">Pending</option>
+        </select>
+        <button class="adopt-filter-clear" onclick="clearFilters()">✕ Clear</button>
+      </div>
+
+      <div class="grid grid-4" id="adoption-grid">
         <div class="adoption-card">
           <div style="position:relative">
             <div style="height:200px;overflow:hidden">
@@ -552,6 +577,7 @@
           </div>
         </div>
       </div>
+      <div id="adopt-no-results" style="display:none;text-align:center;padding:2rem 0;color:var(--text-muted);font-size:1rem">😕 No animals match your filters. <button onclick="clearFilters()" style="color:var(--clr-primary);background:none;border:none;font-weight:700;cursor:pointer;font-size:1rem">Clear filters</button></div>
 
       <div class="text-center mt-8">
         <a href="pages/adoption.html" class="btn btn-outline" data-i18n="adopt_btn_all">See All Available Animals →</a>
@@ -771,6 +797,58 @@
     </div>
   </div>
 
+  <!-- ============== FLOATING SOS BUTTON ============== -->
+  <div class="sos-fab" id="sos-fab" onclick="toggleSOSPanel()" aria-label="Emergency Helpline">
+    <span class="sos-fab-pulse"></span>
+    <span class="sos-fab-pulse sos-fab-pulse-2"></span>
+    <svg class="sos-fab-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L13.5 8.5H20L14.5 12.5L16.5 19L12 15L7.5 19L9.5 12.5L4 8.5H10.5L12 2Z" fill="white" opacity="0.9"/>
+    </svg>
+    <span class="sos-fab-text" id="sos-fab-icon">SOS</span>
+    <span class="sos-fab-tooltip">Emergency Help</span>
+  </div>
+
+  <div class="sos-panel" id="sos-panel">
+    <div class="sos-panel-banner">
+      <div class="sos-panel-banner-dots"></div>
+      <div style="position:relative;z-index:1">
+        <div style="font-size:1.6rem;margin-bottom:0.3rem">🚨</div>
+        <div style="font-weight:900;font-size:1rem;letter-spacing:0.04em">EMERGENCY HELPLINE</div>
+        <div style="font-size:0.72rem;opacity:0.8;margin-top:0.15rem">Tap an option below for instant help</div>
+      </div>
+      <button onclick="toggleSOSPanel()" class="sos-panel-close">✕</button>
+    </div>
+    <div class="sos-panel-body">
+      <a href="tel:+1800001234" class="sos-action sos-action-call">
+        <div class="sos-action-num">1</div>
+        <div class="sos-action-icon-wrap sos-icon-red">📞</div>
+        <div class="sos-action-info">
+          <div class="sos-action-title">Call Helpline</div>
+          <div class="sos-action-sub">1800-00-1234 &bull; 24/7 Free</div>
+        </div>
+        <div class="sos-action-arrow">›</div>
+      </a>
+      <a href="pages/report-form.html" class="sos-action sos-action-report">
+        <div class="sos-action-num">2</div>
+        <div class="sos-action-icon-wrap sos-icon-amber">📋</div>
+        <div class="sos-action-info">
+          <div class="sos-action-title">Report Incident</div>
+          <div class="sos-action-sub">File an emergency report</div>
+        </div>
+        <div class="sos-action-arrow">›</div>
+      </a>
+      <a href="pages/ngos.html" class="sos-action sos-action-ngo">
+        <div class="sos-action-num">3</div>
+        <div class="sos-action-icon-wrap sos-icon-blue">🏥</div>
+        <div class="sos-action-info">
+          <div class="sos-action-title">Find Nearby NGO</div>
+          <div class="sos-action-sub">Locate rescue centres near you</div>
+        </div>
+        <div class="sos-action-arrow">›</div>
+      </a>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container"></div>
 
@@ -806,6 +884,262 @@
   <!-- Translations Dictionary -->
   <script src="assets/js/translations.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <style>
+    /* ============================================================
+       REDESIGNED SOS — Circular FAB + Premium Panel
+    ============================================================ */
+
+    /* --- FAB Button --- */
+    .sos-fab {
+      position: fixed;
+      bottom: 2.2rem;
+      right: 2.2rem;
+      z-index: 9000;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: conic-gradient(from 180deg, #ff2a2a, #ff6b6b, #ff2a2a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 0 0 3px rgba(255,42,42,0.25), 0 10px 32px rgba(239,68,68,0.55);
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+    }
+    .sos-fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 5px rgba(255,42,42,0.2), 0 16px 40px rgba(239,68,68,0.65);
+    }
+    .sos-fab-svg {
+      width: 22px;
+      height: 22px;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+      display: none; /* using text label instead */
+    }
+    .sos-fab-text {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      transition: opacity 0.2s;
+    }
+    /* Tooltip label */
+    .sos-fab-tooltip {
+      position: absolute;
+      right: calc(100% + 12px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1a1d24;
+      border: 1px solid rgba(239,68,68,0.25);
+      color: #f87171;
+      font-size: 0.74rem;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 0.3rem 0.7rem;
+      border-radius: 8px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .sos-fab:hover .sos-fab-tooltip { opacity: 1; }
+    /* Pulse rings */
+    .sos-fab-pulse {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(239,68,68,0.55);
+      animation: sosPulse 2.2s ease-out infinite;
+      pointer-events: none;
+    }
+    .sos-fab-pulse-2 { animation-delay: 1.1s; }
+    @keyframes sosPulse {
+      0%   { transform: scale(1);    opacity: 0.7; }
+      80%  { transform: scale(1.65); opacity: 0;   }
+      100% { transform: scale(1.65); opacity: 0;   }
+    }
+
+    /* --- SOS Panel --- */
+    .sos-panel {
+      position: fixed;
+      bottom: 8rem;
+      right: 2.2rem;
+      z-index: 8999;
+      width: 310px;
+      background: #0f1117;
+      border: 1px solid rgba(239,68,68,0.18);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.7), 0 0 0 1px rgba(239,68,68,0.06);
+      transform: translateY(16px) scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .sos-panel.open {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+    /* Red gradient header banner */
+    .sos-panel-banner {
+      position: relative;
+      background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #b91c1c 100%);
+      padding: 1.1rem 1.25rem 1rem;
+      color: #fff;
+      overflow: hidden;
+    }
+    .sos-panel-banner-dots {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 12px 12px;
+    }
+    .sos-panel-close {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      z-index: 2;
+    }
+    .sos-panel-close:hover { background: rgba(255,255,255,0.22); color: #fff; }
+    /* Panel body */
+    .sos-panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0.5rem 0.75rem 0.75rem;
+    }
+    .sos-action {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 0.65rem;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background 0.18s, border-color 0.18s, transform 0.18s;
+      position: relative;
+    }
+    .sos-action + .sos-action { border-top: 1px solid rgba(255,255,255,0.04); border-radius: 0; }
+    .sos-action:first-child { border-radius: 14px 14px 0 0; }
+    .sos-action:last-child  { border-radius: 0 0 14px 14px; }
+    .sos-action:hover { background: rgba(255,255,255,0.04); transform: translateX(3px); }
+    /* Step number badge */
+    .sos-action-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    /* Icon pill */
+    .sos-action-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .sos-icon-red   { background: rgba(239,68,68,0.15);  }
+    .sos-icon-amber { background: rgba(239,153,52,0.15); }
+    .sos-icon-blue  { background: rgba(30,131,197,0.15); }
+    .sos-action-info { flex: 1; }
+    .sos-action-title { font-size: 0.87rem; font-weight: 700; color: var(--text-primary); }
+    .sos-action-sub   { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+    .sos-action-arrow {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      line-height: 1;
+      transition: transform 0.18s, color 0.18s;
+    }
+    .sos-action:hover .sos-action-arrow { transform: translateX(3px); color: var(--text-secondary); }
+
+    /* ---- Adoption Filter Bar ---- */
+    .adopt-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .adopt-filter-search {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 180px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 0.4rem 0.75rem;
+    }
+    .adopt-filter-icon { font-size: 0.9rem; color: var(--text-muted); }
+    .adopt-filter-input {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      width: 100%;
+      font-family: var(--font-sans);
+    }
+    .adopt-filter-input::placeholder { color: var(--text-muted); }
+    .adopt-filter-select {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .adopt-filter-select:focus { border-color: var(--clr-primary); outline: none; }
+    .adopt-filter-clear {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.15);
+      color: #f87171;
+      border-radius: 10px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .adopt-filter-clear:hover { background: rgba(239,68,68,0.18); }
+  </style>
   <script>
     // Language Translation Toggle
     function updateLanguage(lang) {
@@ -988,6 +1322,62 @@
       if (adopted) animateCounter(adopted, 1204);
       loadStats();
     });
+
+    /* ---- SOS Panel Toggle ---- */
+    function toggleSOSPanel() {
+      const panel = document.getElementById('sos-panel');
+      const icon  = document.getElementById('sos-fab-icon');
+      const isOpen = panel.classList.toggle('open');
+      icon.textContent = isOpen ? '✕' : '🆘';
+    }
+    // Close panel when clicking outside
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('sos-panel');
+      const fab   = document.getElementById('sos-fab');
+      if (panel.classList.contains('open') && !panel.contains(e.target) && !fab.contains(e.target)) {
+        panel.classList.remove('open');
+        document.getElementById('sos-fab-icon').textContent = '🆘';
+      }
+    });
+
+    /* ---- Adoption Search & Filter ---- */
+    const adoptionData = [
+      { el: 0, name: 'Bruno',    breed: 'Labrador Mix',    species: 'dog',    gender: 'male',   status: 'available' },
+      { el: 1, name: 'Luna',     breed: 'Persian Mix',     species: 'cat',    gender: 'female', status: 'available' },
+      { el: 2, name: 'Max',      breed: 'German Shepherd', species: 'dog',    gender: 'male',   status: 'pending'   },
+      { el: 3, name: 'Snowball', breed: 'Dutch Rabbit',    species: 'rabbit', gender: 'female', status: 'available' },
+    ];
+
+    function filterAdoptionCards() {
+      const search  = document.getElementById('adopt-search').value.toLowerCase();
+      const species = document.getElementById('filter-species').value.toLowerCase();
+      const gender  = document.getElementById('filter-gender').value.toLowerCase();
+      const status  = document.getElementById('filter-status').value.toLowerCase();
+      const cards   = document.querySelectorAll('#adoption-grid .adoption-card');
+      let visibleCount = 0;
+
+      adoptionData.forEach((pet, i) => {
+        const card = cards[i];
+        if (!card) return;
+        const matchSearch  = !search  || pet.name.toLowerCase().includes(search) || pet.breed.toLowerCase().includes(search);
+        const matchSpecies = !species || pet.species === species;
+        const matchGender  = !gender  || pet.gender === gender;
+        const matchStatus  = !status  || pet.status === status;
+        const visible = matchSearch && matchSpecies && matchGender && matchStatus;
+        card.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+      });
+
+      document.getElementById('adopt-no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    function clearFilters() {
+      document.getElementById('adopt-search').value = '';
+      document.getElementById('filter-species').value = '';
+      document.getElementById('filter-gender').value = '';
+      document.getElementById('filter-status').value = '';
+      filterAdoptionCards();
+    }
   </script>
 </body>
 

@@ -6,7 +6,67 @@
   <title>Adopt a Pet – AniCure</title>
   <meta name="description" content="Browse rescued animals available for adoption. Give a loving home to a rescued dog, cat, bird or other animal." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .adopt-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .adopt-filter-search {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 180px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 0.4rem 0.75rem;
+    }
+    .adopt-filter-icon { font-size: 0.9rem; color: var(--text-muted); }
+    .adopt-filter-input {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      width: 100%;
+      font-family: var(--font-sans);
+    }
+    .adopt-filter-input::placeholder { color: var(--text-muted); }
+    .adopt-filter-select {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.75rem;
+      font-size: 0.82rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .adopt-filter-select:focus { border-color: var(--clr-primary); outline: none; }
+    .adopt-filter-clear {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.15);
+      color: #f87171;
+      border-radius: 10px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .adopt-filter-clear:hover { background: rgba(239,68,68,0.18); }
+  </style>
 </head>
 <body>
 
@@ -38,20 +98,35 @@
   </div>
 
   <div class="container" style="padding-top:2.5rem">
-    <!-- Filters -->
-    <div class="card" style="padding:1.25rem;margin-bottom:2rem">
-      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
-        <span style="font-size:0.85rem;font-weight:600;color:var(--text-muted)">Filter by:</span>
-        <button class="btn btn-primary btn-sm filter-btn" data-type="all" onclick="filterAdoptions('all', this)">All Animals</button>
-        <button class="btn btn-ghost btn-sm filter-btn" data-type="dog" onclick="filterAdoptions('dog', this)">🐕 Dogs</button>
-        <button class="btn btn-ghost btn-sm filter-btn" data-type="cat" onclick="filterAdoptions('cat', this)">🐈 Cats</button>
-        <button class="btn btn-ghost btn-sm filter-btn" data-type="bird" onclick="filterAdoptions('bird', this)">🦜 Birds</button>
-        <button class="btn btn-ghost btn-sm filter-btn" data-type="rabbit" onclick="filterAdoptions('rabbit', this)">🐇 Rabbits</button>
-        <button class="btn btn-ghost btn-sm filter-btn" data-type="other" onclick="filterAdoptions('other', this)">🦎 Other</button>
-        <div style="margin-left:auto">
-          <span id="adoption-count" style="font-size:0.85rem;color:var(--text-muted)">Loading...</span>
-        </div>
+    <!-- Full Search & Filter Bar from Homepage -->
+    <div class="adopt-filter-bar">
+      <div class="adopt-filter-search">
+        <span class="adopt-filter-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input type="text" id="adopt-search" class="adopt-filter-input" placeholder="Search by name or breed..." oninput="filterAdoptionCards()" />
       </div>
+      <select id="filter-species" class="adopt-filter-select" onchange="filterAdoptionCards()">
+        <option value="">🐾 All Species</option>
+        <option value="dog">🐶 Dogs</option>
+        <option value="cat">🐱 Cats</option>
+        <option value="bird">🦜 Birds</option>
+        <option value="rabbit">🐰 Rabbits</option>
+        <option value="other">🦎 Other</option>
+      </select>
+      <select id="filter-gender" class="adopt-filter-select" onchange="filterAdoptionCards()">
+        <option value="">⚥ All Genders</option>
+        <option value="male">♂ Male</option>
+        <option value="female">♀ Female</option>
+      </select>
+      <select id="filter-status" class="adopt-filter-select" onchange="filterAdoptionCards()">
+        <option value="">✅ All Status</option>
+        <option value="available">Available</option>
+        <option value="pending">Pending</option>
+      </select>
+      <button class="adopt-filter-clear" onclick="clearFilters()"><i class="fa-solid fa-xmark" style="margin-right:4px"></i> Clear</button>
+    </div>
+
+    <div style="text-align:right; margin-bottom: 1rem;">
+      <span id="adoption-count" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">Loading...</span>
     </div>
 
     <div id="adoptions-grid" class="grid grid-4">
@@ -60,6 +135,7 @@
         <p style="margin-top:1rem">Loading animals...</p>
       </div>
     </div>
+    <div id="adopt-no-results" style="display:none;text-align:center;padding:2rem 0;color:var(--text-muted);font-size:1rem"><i class="fa-regular fa-face-frown" style="margin-right:6px"></i> No animals match your filters. <button onclick="clearFilters()" style="color:var(--clr-primary);background:none;border:none;font-weight:700;cursor:pointer;font-size:1rem">Clear filters</button></div>
   </div>
 </main>
 
@@ -174,21 +250,48 @@
     document.getElementById('adoption-count').textContent = `${demoAnimals.length} animals available`;
   }
 
-  function filterAdoptions(type, btn) {
-    currentFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(b => {
-      b.className = 'btn btn-ghost btn-sm filter-btn';
-    });
-    btn.className = 'btn btn-primary btn-sm filter-btn';
+  function filterAdoptionCards() {
+    const search  = (document.getElementById('adopt-search').value || '').toLowerCase();
+    const species = (document.getElementById('filter-species').value || '').toLowerCase();
+    const gender  = (document.getElementById('filter-gender').value || '').toLowerCase();
+    const status  = (document.getElementById('filter-status').value || '').toLowerCase();
+    const cards   = document.querySelectorAll('#adoptions-grid .adoption-card');
+    let visibleCount = 0;
 
-    const cards = document.querySelectorAll('#adoptions-grid .adoption-card');
-    let visible = 0;
-    cards.forEach(card => {
-      const show = type === 'all' || card.dataset.type === type;
-      card.style.display = show ? 'block' : 'none';
-      if (show) visible++;
+    cards.forEach((card) => {
+       const nameText = card.querySelector('.adoption-card-name')?.textContent.toLowerCase() || '';
+       const metaText = card.querySelector('div[style*="var(--text-muted)"]')?.textContent.toLowerCase() || ''; 
+       
+       const matchSearch = !search || nameText.includes(search) || metaText.includes(search);
+       
+       const cardSpecies = card.dataset.type || '';
+       const matchSpecies = !species || cardSpecies === species;
+       
+       const matchGender = !gender || (gender === 'male' ? metaText.includes('male') && !metaText.includes('female') : metaText.includes('female'));
+       
+       const badgeText = card.querySelector('.badge')?.textContent.toLowerCase() || '';
+       const matchStatus = !status || badgeText.includes(status);
+
+       if (matchSearch && matchSpecies && matchGender && matchStatus) {
+          card.style.display = 'block';
+          visibleCount++;
+       } else {
+          card.style.display = 'none';
+       }
     });
-    document.getElementById('adoption-count').textContent = `${visible} animals available`;
+
+    const noRes = document.getElementById('adopt-no-results');
+    if (noRes) noRes.style.display = visibleCount === 0 ? 'block' : 'none';
+    
+    document.getElementById('adoption-count').textContent = `${visibleCount} animals available`;
+  }
+
+  function clearFilters() {
+    document.getElementById('adopt-search').value = '';
+    document.getElementById('filter-species').value = '';
+    document.getElementById('filter-gender').value = '';
+    document.getElementById('filter-status').value = '';
+    filterAdoptionCards();
   }
 
   let selectedAdoptionId = null;

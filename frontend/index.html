@@ -9,6 +9,8 @@
     content="Report injured animals, connect with nearby NGOs, adopt rescued pets, and make a difference. AniCure is your real-time animal rescue companion." />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <!-- FontAwesome for modern icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=2.0" />
 </head>
 
@@ -30,17 +32,20 @@
 
     <div class="nav-actions">
       <!-- Language Dropdown -->
-      <select id="lang-select" style="background:rgba(255,255,255,0.04);color:var(--text-primary);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.4rem 0.6rem;font-size:0.8rem;cursor:pointer;outline:none">
-        <option value="en">🇺🇸 EN</option>
-        <option value="hi">🇮🇳 HI</option>
-      </select>
+      <div style="display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0 0.4rem 0 0.6rem">
+        <i class="fa-solid fa-globe" style="color:var(--text-muted);font-size:0.8rem"></i>
+        <select id="lang-select" style="background:transparent;color:var(--text-primary);border:none;padding:0.4rem 0.2rem 0.4rem 0.4rem;font-size:0.8rem;cursor:pointer;outline:none">
+          <option value="en" style="background:#1a1d24;color:#fff">EN</option>
+          <option value="hi" style="background:#1a1d24;color:#fff">HI</option>
+        </select>
+      </div>
 
       <a href="pages/auth.html" id="nav-login-btn" class="btn btn-outline btn-sm" data-i18n="nav_signin">Sign In</a>
       <a href="pages/dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">
-        👤 <span id="nav-user-name">User</span>
+        <i class="fa-solid fa-user"></i> <span id="nav-user-name">User</span>
       </a>
-      <a href="pages/report-form.html" class="btn btn-primary btn-sm" data-i18n="nav_report_animal">🆘 Report Animal</a>
-      <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none" data-i18n="nav_signout">Sign Out</button>
+      <a href="pages/report-form.html" class="btn btn-primary btn-sm" data-i18n="nav_report_animal"><i class="fa-solid fa-truck-medical" style="margin-right:4px"></i> Report Animal</a>
+      <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none" data-i18n="nav_signout"><i class="fa-solid fa-arrow-right-from-bracket" style="margin-right:4px"></i> Sign Out</button>
     </div>
   </nav>
 
@@ -58,11 +63,11 @@
       style="width:300px;height:300px;background:rgba(239,153,52,0.1);bottom:5%;left:25%;animation-delay:-3s"></div>
 
     <div class="container">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;min-height:calc(100vh - 68px)">
+      <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:4rem;align-items:center;min-height:calc(100vh - 68px)">
 
         <div class="hero-content">
           <div class="hero-badge" data-i18n="hero_badge">
-            🌿 Real-time Animal Rescue Network
+            <i class="fa-solid fa-leaf"></i> Real-time Animal Rescue Network
           </div>
 
           <h1 class="hero-title" style="margin-bottom:1rem">
@@ -74,78 +79,62 @@
             Track rescues in real-time and give abandoned animals a loving home.
           </p>
           <div class="hero-actions">
-            <a href="pages/report-form.html" class="btn btn-primary btn-xl" data-i18n="hero_btn_report">🆘 Report an Animal</a>
-            <a href="pages/adoption.html" class="btn btn-accent btn-xl" data-i18n="hero_btn_adopt">🐾 Adopt a Pet</a>
+            <a href="pages/report-form.html" class="btn btn-primary btn-xl" data-i18n="hero_btn_report"><i class="fa-solid fa-truck-medical" style="margin-right:6px"></i> Report an Animal</a>
+            <a href="pages/adoption.html" class="btn btn-accent btn-xl" data-i18n="hero_btn_adopt"><i class="fa-solid fa-paw" style="margin-right:6px"></i> Adopt a Pet</a>
           </div>
         </div>
 
-        <!-- Hero visual card -->
-        <div style="display:flex;flex-direction:column;gap:1.5rem" class="hero-cards">
-          <!-- Live report card -->
-          <div class="card" style="animation: fadeInUp 0.7s ease 0.2s both">
-            <div class="flex items-center gap-3 mb-3">
-              <div
-                style="width:42px;height:42px;background:rgba(239,68,68,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem">
-                🆘</div>
-              <div class="flex-1">
-                <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem">Injured Dog Found</div>
-                <div style="font-size:0.78rem;color:var(--text-muted)">Reported 3 min ago • Mumbai, India</div>
-              </div>
-              <span class="badge badge-danger">Critical</span>
+        <!-- Hero visual composite (3D Isometric Card) -->
+        <style>
+          .hero-3d-container { 
+            width:100%; height:100%; display:flex; align-items:center; justify-content:flex-end; 
+            perspective:1200px; 
+          }
+          .hero-3d-card {
+            position:relative; width:90%; max-width:460px; height:540px; 
+            transform-style:preserve-3d; 
+            transform: rotateY(-18deg) rotateX(10deg) translateZ(0); 
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            animation: float3DIdle 8s ease-in-out infinite;
+          }
+          .hero-3d-card:hover {
+            transform: rotateY(-5deg) rotateX(5deg) translateZ(20px) scale(1.02);
+            animation-play-state: paused;
+          }
+          @keyframes float3DIdle {
+            0%, 100% { transform: rotateY(-18deg) rotateX(10deg) translateY(0); }
+            50% { transform: rotateY(-15deg) rotateX(12deg) translateY(-15px); }
+          }
+        </style>
+        
+        <div class="hero-3d-container">
+          <div class="hero-3d-card">
+            
+            <!-- Abstract glowing back-shadow layer pushed deep back -->
+            <div style="position:absolute;inset:-20px;background:radial-gradient(circle at center, rgba(30,131,197,0.4) 0%, transparent 70%);transform:translateZ(-80px);filter:blur(40px);border-radius:2rem"></div>
+            
+            <!-- Main Glass Card Body -->
+            <div style="position:absolute;inset:0;border-radius:2rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);overflow:hidden;box-shadow:30px 40px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);transform:translateZ(0)">
+              <!-- Dark overlay for text contrast -->
+              <div style="position:absolute;inset:0;background:linear-gradient(to top, var(--bg-dark), transparent 60%);z-index:2;mix-blend-mode:multiply"></div>
+              <img src="assets/images/hero_dog_clean.png" alt="Rescued Happy Dog" style="width:100%;height:100%;object-fit:cover;z-index:1;position:relative" />
             </div>
-            <div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">
-              <div
-                style="width:30%;height:100%;background:linear-gradient(90deg,var(--clr-primary),#34d399);animation:progressAnim 2s ease infinite">
-              </div>
-            </div>
-            <div style="display:flex;justify-content:space-between;margin-top:0.6rem">
-              <span style="font-size:0.78rem;color:var(--text-muted)">⏳ Finding nearby NGO...</span>
-              <span style="font-size:0.78rem;color:var(--clr-primary)">🔔 3 NGOs notified</span>
-            </div>
-          </div>
 
-            <div class="hero-stats"
-            style="border-top:1px solid var(--border);border-bottom:none;margin-top:0.25rem;padding-top:1.25rem;padding-bottom:0;justify-content:space-between">
-            <div>
-              <div class="hero-stat-value" id="stat-rescued">2,847</div>
-              <div class="hero-stat-label" data-i18n="stat_rescued_lbl">Animals Rescued</div>
+            <!-- Floating Live Status Pill (Pops out in 3D: translateZ(80px)) -->
+            <div style="position:absolute;top:2.5rem;right:-3rem;background:rgba(20,24,30,0.65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);padding:0.75rem 1.25rem;border-radius:100px;display:flex;align-items:center;gap:0.75rem;box-shadow:-10px 15px 35px rgba(0,0,0,0.5);transform:translateZ(80px);animation:floatCard 5s ease-in-out infinite reverse">
+              <span style="display:block;width:10px;height:10px;border-radius:50%;background:#10b981;box-shadow:0 0 12px #10b981;animation:pulseStatus 2s infinite"></span>
+              <span style="font-weight:700;font-size:0.8rem;color:var(--text-primary);letter-spacing:0.04em;text-transform:uppercase">12 Active Rescues</span>
             </div>
-            <div style="width:1px;height:40px;background:var(--border)"></div>
-            <div>
-              <div class="hero-stat-value" id="stat-ngos">183</div>
-              <div class="hero-stat-label" data-i18n="stat_ngos_lbl">Active NGOs</div>
-            </div>
-            <div style="width:1px;height:40px;background:var(--border)"></div>
-            <div>
-              <div class="hero-stat-value" id="stat-adopted">1,204</div>
-              <div class="hero-stat-label" data-i18n="stat_adopted_lbl">Happy Adoptions</div>
-            </div>
-          </div>
 
-
-
-          <!-- NGO notification card -->
-          <div class="card" style="animation: fadeInUp 0.7s ease 0.4s both">
-            <div
-              style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">
-              Live NGO Alerts</div>
-            <div style="display:flex;flex-direction:column;gap:0.6rem" id="live-alerts">
-              <div class="flex items-center gap-2" style="font-size:0.85rem">
-                <span style="color:var(--clr-primary)">●</span>
-                <span style="color:var(--text-muted)">PetCare NGO accepted case #1284</span>
-                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:auto">2m</span>
-              </div>
-              <div class="flex items-center gap-2" style="font-size:0.85rem">
-                <span style="color:#f59e0b">●</span>
-                <span style="color:var(--text-muted)">Cat rescued near Bandra Station</span>
-                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:auto">8m</span>
-              </div>
-              <div class="flex items-center gap-2" style="font-size:0.85rem">
-                <span style="color:#3b82f6">●</span>
-                <span style="color:var(--text-muted)">Vet Dr. Sharma is en route</span>
-                <span style="color:var(--text-muted);font-size:0.75rem;margin-left:auto">12m</span>
+            <!-- Floating Vet Connect Pill (Pops out further: translateZ(140px)) -->
+            <div style="position:absolute;bottom:4rem;left:-3.5rem;background:rgba(20,24,30,0.65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(30,131,197,0.3);padding:0.75rem 1.15rem;border-radius:100px;display:flex;align-items:center;gap:0.85rem;box-shadow:15px 25px 45px rgba(0,0,0,0.6);transform:translateZ(140px);animation:floatCard 6s ease-in-out infinite 1s">
+              <div style="width:34px;height:34px;border-radius:50%;background:rgba(30,131,197,0.25);display:flex;align-items:center;justify-content:center;font-size:1rem;border:1px solid rgba(30,131,197,0.4)">🏥</div>
+              <div>
+                <div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);line-height:1.2">Vets Online</div>
+                <div style="font-size:0.65rem;color:var(--text-muted)">Ready to dispatch</div>
               </div>
             </div>
+            
           </div>
         </div>
       </div>
@@ -225,7 +214,7 @@
     style="background:linear-gradient(180deg, var(--bg-dark) 0%, rgba(34,197,94,0.03) 50%, var(--bg-dark) 100%)">
     <div class="container">
       <div class="section-header">
-        <div class="section-tag" data-i18n="services_tag">💡 Our Offerings</div>
+        <div class="section-tag" data-i18n="services_tag"><i class="fa-solid fa-lightbulb"></i> Our Offerings</div>
         <h2 class="section-title" data-i18n="services_title">Services We Provide</h2>
         <p class="section-subtitle" data-i18n="services_subtitle">Empowering communities to secure, treat, and find loving homes for animals in distress</p>
       </div>
@@ -233,7 +222,7 @@
       <div class="grid grid-4 services-grid">
         <div class="feature-card card-crisis">
           <div>
-            <div class="feature-icon" style="background:rgba(239, 68, 68, 0.1);color:#ef4444">🚨</div>
+            <div class="feature-icon" style="background:rgba(239, 68, 68, 0.1);color:#ef4444"><i class="fa-solid fa-truck-medical"></i></div>
             <div class="feature-title" data-i18n="service_crisis">24/7 Crisis Reporting</div>
             <p class="feature-desc" data-i18n="service_crisis_desc">Interactive live reporting module connecting nearest users dropping precise coordinates tags for swift responses.</p>
           </div>
@@ -242,7 +231,7 @@
 
         <div class="feature-card card-medical">
           <div>
-            <div class="feature-icon" style="background:rgba(59, 130, 246, 0.1);color:#3b82f6">🏥</div>
+            <div class="feature-icon" style="background:rgba(59, 130, 246, 0.1);color:#3b82f6"><i class="fa-solid fa-house-medical"></i></div>
             <div class="feature-title" data-i18n="service_medical">Medical Connectivity Grid</div>
             <p class="feature-desc" data-i18n="service_medical_desc">Direct interface to veterinary centers and clinics dispatching rescue professionals to critical hazards location spots.</p>
           </div>
@@ -251,7 +240,7 @@
 
         <div class="feature-card card-adopt">
           <div>
-            <div class="feature-icon" style="background:rgba(34, 197, 94, 0.1);color:var(--clr-primary)">🏡</div>
+            <div class="feature-icon" style="background:rgba(34, 197, 94, 0.1);color:var(--clr-primary)"><i class="fa-solid fa-paw"></i></div>
             <div class="feature-title" data-i18n="service_adopt">Verified Adoption Portal</div>
             <p class="feature-desc" data-i18n="service_adopt_desc">Matching rescued animals awaiting support items connecting caring owners directly to rescue networks safely.</p>
           </div>
@@ -260,7 +249,7 @@
 
         <div class="feature-card card-fund">
           <div>
-            <div class="feature-icon" style="background:rgba(245, 158, 11, 0.1);color:#f59e0b">💚</div>
+            <div class="feature-icon" style="background:rgba(245, 158, 11, 0.1);color:#f59e0b"><i class="fa-solid fa-hand-holding-heart"></i></div>
             <div class="feature-title" data-i18n="service_fund">Secured NGO Crowd-Funding</div>
             <p class="feature-desc" data-i18n="service_fund_desc">Streamlined verified payment pipelines empowering single click support systems assisting NGOs medical treatments buffers.</p>
           </div>
@@ -274,7 +263,7 @@
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <div class="section-tag" data-i18n="reports_tag">🆘 Live Reports</div>
+        <div class="section-tag" data-i18n="reports_tag"><i class="fa-solid fa-location-dot"></i> Live Reports</div>
         <h2 class="section-title" data-i18n="reports_title">Recent Animal Reports</h2>
         <p class="section-subtitle" data-i18n="reports_subtitle">Animals currently in need of help near you</p>
       </div>
@@ -289,7 +278,7 @@
           <div class="report-card-body">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
               <span class="badge badge-danger">Critical</span>
-              <span class="badge badge-warning">📋 Reported</span>
+              <span class="badge badge-warning"><i class="fa-solid fa-clipboard-list" style="margin-right:4px"></i> Reported</span>
             </div>
             <div class="report-card-title">Injured Dog on Highway</div>
             <p class="report-card-desc">Adult dog found on the side of highway 4, limping and in distress. Needs
@@ -308,7 +297,7 @@
           <div class="report-card-body">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
               <span class="badge badge-warning">Medium</span>
-              <span class="badge badge-info">✅ Accepted</span>
+              <span class="badge badge-info"><i class="fa-solid fa-check" style="margin-right:4px"></i> Accepted</span>
             </div>
             <div class="report-card-title">Abandoned Kittens</div>
             <p class="report-card-desc">Three kittens abandoned in a box near the railway station. Estimated 4-5 weeks
@@ -327,7 +316,7 @@
           <div class="report-card-body">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem">
               <span class="badge badge-info">Low</span>
-              <span class="badge badge-success">🦅 Rescued</span>
+              <span class="badge badge-success"><i class="fa-solid fa-dove" style="margin-right:4px"></i> Rescued</span>
             </div>
             <div class="report-card-title">Injured Bird - Wing Fracture</div>
             <p class="report-card-desc">Parrot with injured wing found in the park. Now under treatment at PetCare
@@ -353,7 +342,7 @@
       <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:center">
         <!-- Left: Info -->
         <div>
-          <div class="section-tag" data-i18n="rewards_tag">🎁 Earn Rewards</div>
+          <div class="section-tag" data-i18n="rewards_tag"><i class="fa-solid fa-gift"></i> Earn Rewards</div>
           <h2 class="section-title" style="font-size: clamp(2rem, 4vw, 3rem);margin-bottom:1.25rem" data-i18n="rewards_title">Be an Animal Hero & Get Rewarded</h2>
           <p style="color:var(--text-muted);margin-bottom:2rem;line-height:1.75" data-i18n="rewards_desc">Every valid report you file contributes to saving a life. Track your acts of kindness on your dashboard, climb the ranks, and redeem exclusive rewards for your care.</p>
 
@@ -389,7 +378,7 @@
               </div>
             </div>
           </div>
-          <a href="pages/report-form.html" class="btn btn-primary btn-lg" data-i18n="rewards_btn">Start Reporting 🐾</a>
+          <a href="pages/report-form.html" class="btn btn-primary btn-lg" data-i18n="rewards_btn">Start Reporting <i class="fa-solid fa-paw" style="margin-left:6px"></i></a>
         </div>
 
         <!-- Right: Gamified Card Preview -->
@@ -410,7 +399,7 @@
                   Current Standing</div>
                 <div
                   style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:var(--text-primary);display:flex;align-items:center;gap:0.5rem" data-i18n="rewards_tier">
-                  🏆 Silver Hero</div>
+                  <i class="fa-solid fa-trophy" style="color:#fcd34d"></i> Silver Hero</div>
               </div>
               <div style="text-align:right">
                 <div style="font-size:0.82rem;color:var(--text-muted);font-weight:600">Your Balance</div>
@@ -440,7 +429,7 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
               <div
                 style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);border-radius:16px;padding:1rem;text-align:center;position:relative">
-                <div style="font-size:1.75rem;margin-bottom:0.5rem">🏥</div>
+                <div style="font-size:1.75rem;margin-bottom:0.5rem;color:#3b82f6"><i class="fa-solid fa-stethoscope"></i></div>
                 <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;margin-bottom:0.25rem">Free Vet
                   Checkup</div>
                 <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem">Valid at 80+ Partner Clinics
@@ -450,7 +439,7 @@
               </div>
               <div
                 style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);border-radius:16px;padding:1rem;text-align:center">
-                <div style="font-size:1.75rem;margin-bottom:0.5rem">🥩</div>
+                <div style="font-size:1.75rem;margin-bottom:0.5rem;color:#ef4444"><i class="fa-solid fa-bowl-food"></i></div>
                 <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;margin-bottom:0.25rem">Feed a
                   Shelter</div>
                 <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem">Sponsor Meals for 10 Rescues
@@ -469,7 +458,7 @@
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <div class="section-tag" data-i18n="adopt_tag">🐾 Find Your Companion</div>
+        <div class="section-tag" data-i18n="adopt_tag"><i class="fa-solid fa-paw"></i> Find Your Companion</div>
         <h2 class="section-title" data-i18n="adopt_title">Animals Ready for Adoption</h2>
         <p class="section-subtitle" data-i18n="adopt_subtitle">These beautiful souls have been rescued and rehabilitated. They're waiting for a forever home.</p>
       </div>
@@ -477,7 +466,7 @@
       <!-- Search & Filter Bar -->
       <div class="adopt-filter-bar">
         <div class="adopt-filter-search">
-          <span class="adopt-filter-icon">🔍</span>
+          <span class="adopt-filter-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
           <input type="text" id="adopt-search" class="adopt-filter-input" placeholder="Search by name or breed..." oninput="filterAdoptionCards()" />
         </div>
         <select id="filter-species" class="adopt-filter-select" onchange="filterAdoptionCards()">
@@ -512,8 +501,8 @@
             <div class="adoption-card-name">Bruno</div>
             <div style="color:var(--text-muted);font-size:0.82rem">Labrador Mix • Male • 2 Years</div>
             <div class="adoption-tags">
-              <span class="tag">💉 Vaccinated</span>
-              <span class="tag">🏥 Healthy</span>
+              <span class="tag"><i class="fa-solid fa-syringe" style="margin-right:4px"></i> Vaccinated</span>
+              <span class="tag"><i class="fa-solid fa-heart-pulse" style="margin-right:4px"></i> Healthy</span>
             </div>
             <button type="button" onclick="openPetModal(0)" class="btn btn-outline w-full"
               style="display:flex;justify-content:center">View Details</button>
@@ -531,8 +520,8 @@
             <div class="adoption-card-name">Luna</div>
             <div style="color:var(--text-muted);font-size:0.82rem">Persian Mix • Female • 1 Year</div>
             <div class="adoption-tags">
-              <span class="tag">💉 Vaccinated</span>
-              <span class="tag">✂️ Neutered</span>
+              <span class="tag"><i class="fa-solid fa-syringe" style="margin-right:4px"></i> Vaccinated</span>
+              <span class="tag"><i class="fa-solid fa-scissors" style="margin-right:4px"></i> Neutered</span>
             </div>
             <button type="button" onclick="openPetModal(1)" class="btn btn-outline w-full"
               style="display:flex;justify-content:center">View Details</button>
@@ -550,8 +539,8 @@
             <div class="adoption-card-name">Max</div>
             <div style="color:var(--text-muted);font-size:0.82rem">German Shepherd • Male • 3 Years</div>
             <div class="adoption-tags">
-              <span class="tag">💉 Vaccinated</span>
-              <span class="tag">🎓 Trained</span>
+              <span class="tag"><i class="fa-solid fa-syringe" style="margin-right:4px"></i> Vaccinated</span>
+              <span class="tag"><i class="fa-solid fa-graduation-cap" style="margin-right:4px"></i> Trained</span>
             </div>
             <button type="button" onclick="openPetModal(2)" class="btn btn-outline w-full"
               style="display:flex;justify-content:center">View Details</button>
@@ -569,15 +558,15 @@
             <div class="adoption-card-name">Snowball</div>
             <div style="color:var(--text-muted);font-size:0.82rem">Rabbit • Female • 8 Months</div>
             <div class="adoption-tags">
-              <span class="tag">🏥 Healthy</span>
-              <span class="tag">🥕 Friendly</span>
+              <span class="tag"><i class="fa-solid fa-heart-pulse" style="margin-right:4px"></i> Healthy</span>
+              <span class="tag"><i class="fa-solid fa-carrot" style="margin-right:4px"></i> Friendly</span>
             </div>
             <button type="button" onclick="openPetModal(3)" class="btn btn-outline w-full"
               style="display:flex;justify-content:center">View Details</button>
           </div>
         </div>
       </div>
-      <div id="adopt-no-results" style="display:none;text-align:center;padding:2rem 0;color:var(--text-muted);font-size:1rem">😕 No animals match your filters. <button onclick="clearFilters()" style="color:var(--clr-primary);background:none;border:none;font-weight:700;cursor:pointer;font-size:1rem">Clear filters</button></div>
+      <div id="adopt-no-results" style="display:none;text-align:center;padding:2rem 0;color:var(--text-muted);font-size:1rem"><i class="fa-regular fa-face-frown" style="margin-right:6px"></i> No animals match your filters. <button onclick="clearFilters()" style="color:var(--clr-primary);background:none;border:none;font-weight:700;cursor:pointer;font-size:1rem">Clear filters</button></div>
 
       <div class="text-center mt-8">
         <a href="pages/adoption.html" class="btn btn-outline" data-i18n="adopt_btn_all">See All Available Animals →</a>
@@ -593,12 +582,12 @@
         <div
           style="position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(30,131,197,0.05) 0%, transparent 70%);pointer-events:none">
         </div>
-        <div style="font-size:2.8rem;margin-bottom:1rem">🧡</div>
+        <div style="font-size:2.8rem;margin-bottom:1rem"><i class="fa-solid fa-heart" style="color:#f97316"></i></div>
         <h2 class="section-title" style="margin-bottom:1rem" data-i18n="donate_title">Support Animal Rescue NGOs</h2>
         <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem" data-i18n="donate_desc">Your donation funds medical care, food, and shelter for rescued animals. Every contribution makes a life-changing difference.</p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-          <a href="pages/donate.html" class="btn btn-primary btn-xl" data-i18n="donate_btn">💰 Donate Now</a>
-          <a href="pages/ngos.html" class="btn btn-outline btn-xl" data-i18n="donate_btn_view">🏥 View NGOs</a>
+          <a href="pages/donate.html" class="btn btn-primary btn-xl" data-i18n="donate_btn"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:6px"></i> Donate Now</a>
+          <a href="pages/ngos.html" class="btn btn-outline btn-xl" data-i18n="donate_btn_view"><i class="fa-solid fa-house-medical" style="margin-right:6px"></i> View NGOs</a>
         </div>
       </div>
     </div>
@@ -617,10 +606,10 @@
             A real-time animal rescue and care platform connecting helpers, NGOs, vets, and shelters to save more lives every day.
           </p>
           <div class="footer-socials">
-            <a href="#" class="social-link" aria-label="Instagram">📸</a>
-            <a href="#" class="social-link" aria-label="Twitter">🐦</a>
-            <a href="#" class="social-link" aria-label="Facebook">👥</a>
-            <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
           </div>
         </div>
 
@@ -652,7 +641,7 @@
               <button type="submit" class="btn btn-primary btn-sm">Join</button>
             </form>
             <div style="margin-top:1.25rem;border-top:1px solid rgba(255,255,255,0.04);padding-top:1rem">
-              <a href="pages/report-form.html" class="btn btn-danger btn-sm w-full" style="justify-content:center" data-i18n="footer_emerg">🆘 Report Emergency</a>
+              <a href="pages/report-form.html" class="btn btn-danger btn-sm w-full" style="justify-content:center" data-i18n="footer_emerg"><i class="fa-solid fa-truck-medical" style="margin-right:6px"></i> Report Emergency</a>
             </div>
           </div>
         </div>
@@ -660,7 +649,7 @@
 
       <div class="footer-bottom">
         <div class="footer-copyright">
-          <span data-i18n="footer_copyright_1">© 2026 AniCure. Built with</span> <span style="color:#ef4444">❤️</span> <span data-i18n="footer_copyright_2">for animals everywhere.</span> 🐾
+          <span data-i18n="footer_copyright_1">© 2026 AniCure. Built with</span> <i class="fa-solid fa-heart" style="color:#ef4444;margin:0 4px"></i> <span data-i18n="footer_copyright_2">for animals everywhere.</span> <i class="fa-solid fa-paw" style="margin-left:4px"></i>
         </div>
         <div class="footer-legal">
           <a href="#" class="footer-legal-link">Privacy Policy</a>
@@ -722,16 +711,16 @@
           </div>
           <p id="p-bio" style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;margin-bottom:1.5rem"></p>
           <button type="button" onclick="showAdoptForm()" id="p-adopt-btn" class="btn btn-primary btn-sm w-full"
-            style="justify-content:center;border-radius:10px">Adopt Now 🐾</button>
+            style="justify-content:center;border-radius:10px">Adopt Now <i class="fa-solid fa-paw" style="margin-left:6px"></i></button>
         </div>
 
         <!-- Step 2: Request Form -->
         <div id="p-step-2" style="display:none">
-          <div style="font-weight:600;color:var(--text-primary);margin-bottom:0.4rem;font-size:0.88rem">🏥 Pickup
+          <div style="font-weight:600;color:var(--text-primary);margin-bottom:0.4rem;font-size:0.88rem"><i class="fa-solid fa-location-dot" style="margin-right:6px"></i> Pickup
             Location</div>
           <div
             style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:12px;padding:0.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem">
-            <div style="font-size:1.5rem">🏥</div>
+            <div style="font-size:1.5rem"><i class="fa-solid fa-house-medical"></i></div>
             <div style="line-height:1.4">
               <div id="p-shelter-name" style="font-weight:700;color:var(--text-primary);font-size:0.88rem">Happy Paws
                 NGO</div>
@@ -791,7 +780,7 @@
         <div id="mini-map" style="flex:1;height:100%"></div>
         <div style="padding:1rem;border-top:1px solid rgba(255,255,255,0.05);text-align:center">
           <a id="m-direct" href="#" target="_blank" class="btn btn-primary btn-sm w-full"
-            style="justify-content:center">🚗 Get Directions on Maps</a>
+            style="justify-content:center"><i class="fa-solid fa-car" style="margin-right:6px"></i> Get Directions on Maps</a>
         </div>
       </div>
     </div>
@@ -812,7 +801,7 @@
     <div class="sos-panel-banner">
       <div class="sos-panel-banner-dots"></div>
       <div style="position:relative;z-index:1">
-        <div style="font-size:1.6rem;margin-bottom:0.3rem">🚨</div>
+        <div style="font-size:1.6rem;margin-bottom:0.3rem"><i class="fa-solid fa-truck-medical"></i></div>
         <div style="font-weight:900;font-size:1rem;letter-spacing:0.04em">EMERGENCY HELPLINE</div>
         <div style="font-size:0.72rem;opacity:0.8;margin-top:0.15rem">Tap an option below for instant help</div>
       </div>
@@ -821,7 +810,7 @@
     <div class="sos-panel-body">
       <a href="tel:+1800001234" class="sos-action sos-action-call">
         <div class="sos-action-num">1</div>
-        <div class="sos-action-icon-wrap sos-icon-red">📞</div>
+        <div class="sos-action-icon-wrap sos-icon-red"><i class="fa-solid fa-phone"></i></div>
         <div class="sos-action-info">
           <div class="sos-action-title">Call Helpline</div>
           <div class="sos-action-sub">1800-00-1234 &bull; 24/7 Free</div>
@@ -830,7 +819,7 @@
       </a>
       <a href="pages/report-form.html" class="sos-action sos-action-report">
         <div class="sos-action-num">2</div>
-        <div class="sos-action-icon-wrap sos-icon-amber">📋</div>
+        <div class="sos-action-icon-wrap sos-icon-amber"><i class="fa-solid fa-clipboard-list"></i></div>
         <div class="sos-action-info">
           <div class="sos-action-title">Report Incident</div>
           <div class="sos-action-sub">File an emergency report</div>
@@ -839,7 +828,7 @@
       </a>
       <a href="pages/ngos.html" class="sos-action sos-action-ngo">
         <div class="sos-action-num">3</div>
-        <div class="sos-action-icon-wrap sos-icon-blue">🏥</div>
+        <div class="sos-action-icon-wrap sos-icon-blue"><i class="fa-solid fa-house-medical"></i></div>
         <div class="sos-action-info">
           <div class="sos-action-title">Find Nearby NGO</div>
           <div class="sos-action-sub">Locate rescue centres near you</div>
@@ -1328,7 +1317,7 @@
       const panel = document.getElementById('sos-panel');
       const icon  = document.getElementById('sos-fab-icon');
       const isOpen = panel.classList.toggle('open');
-      icon.textContent = isOpen ? '✕' : '🆘';
+      icon.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : 'SOS';
     }
     // Close panel when clicking outside
     document.addEventListener('click', (e) => {
@@ -1336,7 +1325,7 @@
       const fab   = document.getElementById('sos-fab');
       if (panel.classList.contains('open') && !panel.contains(e.target) && !fab.contains(e.target)) {
         panel.classList.remove('open');
-        document.getElementById('sos-fab-icon').textContent = '🆘';
+        document.getElementById('sos-fab-icon').innerHTML = 'SOS';
       }
     });
 

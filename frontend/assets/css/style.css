@@ -3,7 +3,7 @@
    Animal Rescue & Care Platform
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* ---- CSS Variables ---- */
 :root {
@@ -45,8 +45,8 @@
   --radius-full: 9999px;
 
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-sans: 'Nunito', sans-serif;
-  --font-display: 'Fredoka', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
 }
 
 /* ---- Reset & Base ---- */
@@ -456,6 +456,20 @@ textarea.form-control {
 .grid-auto {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .rewards-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
 }
 
 /* ============================================================

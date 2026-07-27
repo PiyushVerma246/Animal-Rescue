@@ -12,13 +12,63 @@
   <!-- FontAwesome for modern icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=2.0" />
+
+  <!-- ============================================================
+       INTRO GATE — redirect first-time visitors to the storytelling
+       intro page. Bypassed once sessionStorage flag is set.
+       ============================================================ -->
+  <script>
+    (function () {
+      var fromIntro   = sessionStorage.getItem('from_intro');
+      var introSeen   = sessionStorage.getItem('intro_seen');
+      var isDev       = location.search.indexOf('skip_intro') !== -1;
+
+      // Mark as seen so back-navigation doesn't re-trigger
+      if (fromIntro) {
+        sessionStorage.removeItem('from_intro');
+        sessionStorage.setItem('intro_seen', '1');
+        // Apply dark overlay that will fade out after page load
+        document.documentElement.style.backgroundColor = '#0d0f12';
+        return; // stay on index.html
+      }
+
+      // Skip gate for dev mode or if already seen
+      if (isDev || introSeen) return;
+
+      // First visit — redirect to intro
+      window.location.replace('intro.html');
+    })();
+  </script>
+
+  <!-- Reveal animation styles (only active when arriving from intro) -->
+  <style id="intro-arrive-styles">
+    .intro-arriving body > *:not(#intro-fade-overlay) {
+      animation: introArriveFade 0.8s ease forwards;
+    }
+    @keyframes introArriveFade {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #intro-fade-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0d0f12;
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #intro-fade-overlay.done {
+      opacity: 0;
+    }
+  </style>
 </head>
 
 <body>
 
   <!-- ============== NAVBAR ============== -->
   <nav class="navbar">
-    <a href="index.html" class="navbar-brand">
+    <a href="intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand">
       <img src="assets/images/logo.png" alt="AniCure Logo" style="height:52px;object-fit:contain" />
     </a>
 
@@ -1198,6 +1248,27 @@
     .adopt-filter-clear:hover { background: rgba(239,68,68,0.18); }
   </style>
   <script>
+    /* ---- From-Intro Cinematic Reveal ---- */
+    (function () {
+      var introSeen = sessionStorage.getItem('intro_seen');
+      if (!introSeen) return;
+
+      // Insert dark overlay
+      var overlay = document.createElement('div');
+      overlay.id = 'intro-fade-overlay';
+      document.body.insertBefore(overlay, document.body.firstChild);
+
+      // Fade out overlay after a short delay (lets fonts/images settle)
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            overlay.classList.add('done');
+            setTimeout(function () { overlay.remove(); }, 800);
+          }, 120);
+        });
+      });
+    })();
+
     // Language Translation Toggle
     function updateLanguage(lang) {
       if (typeof translations === 'undefined' || !translations[lang]) return;

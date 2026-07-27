@@ -1,0 +1,11 @@
+# AniCure AI Service — Python Dependencies
+# Install with: pip install -r requirements.txt
+
+flask==3.0.2
+open-clip-torch==2.24.0
+Pillow==10.3.0
+numpy==1.26.4
+
+# PyTorch — CPU-only (remove +cpu suffix for GPU support)
+# For GPU: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+torch==2.2.2

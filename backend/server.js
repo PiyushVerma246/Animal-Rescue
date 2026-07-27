@@ -12,7 +12,8 @@ const reportRoutes = require('./routes/reportRoutes');
 const adoptionRoutes = require('./routes/adoptionRoutes');
 const donationRoutes = require('./routes/donationRoutes');
 const userRoutes = require('./routes/userRoutes');
-const ngoRoutes = require('./routes/ngoRoutes');
+const ngoRoutes    = require('./routes/ngoRoutes');
+const rescueRoutes = require('./routes/rescueRoutes'); // AI duplicate detection
 
 const app = express();
 const server = http.createServer(app);
@@ -45,7 +46,8 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/adoption', adoptionRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/ngos', ngoRoutes);
+app.use('/api/ngos',   ngoRoutes);
+app.use('/api/rescue', rescueRoutes); // AI-powered duplicate rescue detection
 
 // Health check
 app.get('/api/health', (req, res) => {

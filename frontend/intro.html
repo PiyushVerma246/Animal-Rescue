@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AniCure – Animal Rescue & Care Platform</title>
+  <meta name="description" content="Report injured animals, connect with nearby NGOs, adopt rescued pets, and make a difference. AniCure is your real-time animal rescue companion." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis smooth scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <style>
+    /* ============================================================
+       INTRO PAGE — FULL LOCAL STYLES
+       (self-contained — NOT loading style.css to avoid conflicts)
+       ============================================================ */
+
+    :root {
+      --clr-primary: #EF9934;
+      --clr-primary-dark: #d47e1d;
+      --clr-primary-light: #f4b264;
+      --clr-primary-glow: rgba(239, 153, 52, 0.15);
+      --clr-accent: #1E83C5;
+      --clr-accent-dark: #156da6;
+      --clr-danger: #ef4444;
+      --clr-success: #1E83C5;
+      --bg-dark: #0d0f12;
+      --bg-card: #12151a;
+      --bg-nav: rgba(13, 15, 18, 0.95);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --text-body: #cbd5e1;
+      --border: rgba(30, 131, 197, 0.12);
+      --border-hover: rgba(30, 131, 197, 0.3);
+      --radius-full: 9999px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --font-sans: 'Inter', sans-serif;
+      --font-display: 'Outfit', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul { list-style: none; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; outline: none; }
+    img { max-width: 100%; display: block; }
+
+    html {
+      font-size: 16px;
+      /* Disable native smooth scroll — Lenis handles it */
+      scroll-behavior: auto !important;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ---- Scrollbar ---- */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--clr-primary-dark); border-radius: 3px; }
+
+    /* ============================================================
+       NAVBAR (self-contained — exact same look as main site)
+       ============================================================ */
+    .navbar {
+      position: fixed;
+      top: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 2rem);
+      max-width: 1200px;
+      z-index: 1000;
+      /* Darker glassmorphism to stand out against the bright daytime video frame */
+      background: rgba(13, 15, 18, 0.55);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 0.65rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+      /* GSAP will animate opacity only — translateX stays via CSS */
+      will-change: opacity;
+    }
+
+    /* Wrapper so GSAP can slide Y without breaking centerX */
+    #navbar-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+    #navbar-wrap > .navbar {
+      position: relative;
+      top: 1.25rem;
+      left: 50%;
+      pointer-events: auto;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .nav-link {
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-full);
+      /* Use brighter text for better contrast on the intro page */
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover { color: var(--text-primary); background: rgba(30,131,197,0.08); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.6rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-dark));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 15px rgba(239,153,52,0.35), inset 0 2px 0 rgba(255,255,255,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(239,153,52,0.55), inset 0 2px 0 rgba(255,255,255,0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--clr-primary);
+      border: 1.5px solid var(--border-hover);
+    }
+
+    .btn-outline:hover {
+      background: var(--clr-primary-glow);
+      border-color: var(--clr-primary);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-body);
+      border: 1px solid var(--border);
+    }
+
+    .btn-sm { padding: 0.4rem 1rem; font-size: 0.82rem; }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+    }
+
+    /* ============================================================
+       LOADING SCREEN
+       ============================================================ */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #0d0f12;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    #loading-screen.hidden {
+      opacity: 0;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .loading-logo {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+
+    .loading-logo span { color: var(--clr-primary); }
+
+    .loading-paw {
+      font-size: 2.5rem;
+      animation: pawBounce 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pawBounce {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-12px) scale(1.1); opacity: 1; }
+    }
+
+    .loading-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .loading-bar-track {
+      width: min(320px, 80vw);
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--clr-primary-dark), var(--clr-primary));
+      border-radius: 99px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 12px rgba(239,153,52,0.6);
+    }
+
+    .loading-pct {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .loading-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(239,153,52,0.08);
+      animation: particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    /* ============================================================
+       STORY WRAPPER — the scroll container
+       ============================================================ */
+    #story-wrapper {
+      position: relative;
+      width: 100%;
+      height: 8500px;
+      /* Clip footer from leaking into story area */
+      z-index: 1;
+    }
+
+    #story-sticky {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* ============================================================
+       CANVAS — full viewport
+       ============================================================ */
+    #story-canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ============================================================
+       GRADIENT OVERLAY
+       ============================================================ */
+    #gradient-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background:
+        linear-gradient(to bottom,
+          rgba(13,15,18,0.45) 0%,
+          rgba(13,15,18,0.1) 18%,
+          transparent 35%,
+          transparent 55%,
+          rgba(13,15,18,0.2) 75%,
+          rgba(13,15,18,0.65) 90%,
+          rgba(13,15,18,0.85) 100%
+        );
+    }
+
+    /* ============================================================
+       CAPTION LAYER
+       ============================================================ */
+    #caption-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 10vh;
+      left: 50%;
+      transform: translateX(-50%) translateY(28px);
+      text-align: center;
+      max-width: min(680px, 90vw);
+      opacity: 0;
+      filter: blur(10px);
+      transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.9s cubic-bezier(0.4,0,0.2,1),
+                  filter 0.9s cubic-bezier(0.4,0,0.2,1);
+      will-change: opacity, transform, filter;
+    }
+
+    .caption.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      filter: blur(0);
+    }
+
+    .caption-text {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 40px rgba(0,0,0,0.8), 0 0 80px rgba(0,0,0,0.5);
+    }
+
+    .caption-accent { color: var(--clr-primary); }
+
+    /* ============================================================
+       INITIAL BUTTONS
+       ============================================================ */
+    #initial-buttons {
+      position: absolute;
+      bottom: 12vh;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-glass {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      text-decoration: none;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s ease,
+                  background 0.3s ease;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      will-change: transform;
+      white-space: nowrap;
+    }
+
+    .btn-glass-primary {
+      background: rgba(239,153,52,0.15);
+      color: #fff;
+      border: 1px solid rgba(239,153,52,0.45);
+      box-shadow: 0 0 30px rgba(239,153,52,0.12), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .btn-glass-primary:hover {
+      background: rgba(239,153,52,0.25);
+      border-color: rgba(239,153,52,0.7);
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 0 50px rgba(239,153,52,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .btn-glass-secondary {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .btn-glass-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: hintPulse 2.5s ease-in-out infinite 2s;
+    }
+
+    .scroll-hint-line {
+      width: 1px;
+      height: 30px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+      animation: lineGrow 2.5s ease-in-out infinite 2s;
+    }
+
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes lineGrow {
+      0%, 100% { transform: scaleY(1); transform-origin: top; }
+      50% { transform: scaleY(1.3); }
+    }
+
+    /* ============================================================
+       EXPLORE CTA (revealed at end)
+       ============================================================ */
+    #explore-cta {
+      position: fixed;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #explore-cta.visible { pointer-events: auto; }
+
+    #explore-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(239,153,52,0.5);
+      background: rgba(239,153,52,0.12);
+      color: #fff;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 0 40px rgba(239,153,52,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s ease,
+                  background 0.3s ease;
+      text-decoration: none;
+    }
+
+    #explore-cta-btn:hover {
+      background: rgba(239,153,52,0.25);
+      border-color: rgba(239,153,52,0.8);
+      transform: scale(1.06);
+      box-shadow: 0 0 70px rgba(239,153,52,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .cta-glow { animation: ctaGlowPulse 2.5s ease-in-out infinite; }
+
+    @keyframes ctaGlowPulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(239,153,52,0.25), inset 0 1px 0 rgba(255,255,255,0.12); }
+      50%       { box-shadow: 0 0 80px rgba(239,153,52,0.55), inset 0 1px 0 rgba(255,255,255,0.2); }
+    }
+
+    .cta-icon { font-size: 1.2rem; transition: transform 0.3s ease; }
+    #explore-cta-btn:hover .cta-icon { transform: translateX(4px); }
+
+    /* ============================================================
+       CINEMATIC OVERLAY
+       ============================================================ */
+    #cinematic-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0d0f12;
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       FOOTER — hidden until transition
+       ============================================================ */
+    .footer {
+      display: none;
+    }
+
+    .footer.revealed {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 3rem; }
+
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-display); font-size: 1.3rem; font-weight: 800;
+      color: #f8fafc; text-decoration: none; margin-bottom: 1rem;
+    }
+
+    .footer-desc { color: #64748b; font-size: 0.85rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    .footer-socials { display: flex; gap: 0.75rem; }
+
+    .social-link {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      color: #64748b; font-size: 0.85rem; transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      background: rgba(239,153,52,0.1); border-color: rgba(239,153,52,0.3);
+      color: #EF9934; transform: translateY(-2px);
+    }
+
+    .footer-title {
+      font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
+      color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+
+    .footer-links { display: flex; flex-direction: column; gap: 0.65rem; }
+
+    .footer-link {
+      color: #64748b; font-size: 0.88rem; transition: color 0.2s ease, transform 0.2s ease;
+      display: inline-block;
+    }
+
+    .footer-link:hover { color: #f8fafc; transform: translateX(3px); }
+
+    .newsletter-form { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+
+    .newsletter-input {
+      flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 99px; padding: 0.5rem 1rem; color: #f8fafc; font-size: 0.85rem;
+      font-family: var(--font-sans); outline: none;
+    }
+
+    .newsletter-input:focus { border-color: rgba(239,153,52,0.4); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.04); margin-top: 3rem; padding-top: 1.5rem;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+
+    .footer-copyright { color: #475569; font-size: 0.82rem; }
+    .footer-legal { display: flex; gap: 1.5rem; }
+    .footer-legal-link { color: #475569; font-size: 0.82rem; transition: color 0.2s ease; }
+    .footer-legal-link:hover { color: #94a3b8; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      .caption-text { font-size: 1.4rem; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .btn-row { flex-direction: column; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       LOADING SCREEN
+       ============================================================ -->
+  <div id="loading-screen">
+    <div class="loading-particles" id="loading-particles"></div>
+    <div class="loading-paw">🐾</div>
+    <div style="text-align:center;">
+      <div class="loading-logo">ANI<span>CURE</span></div>
+    </div>
+    <div class="loading-subtitle">Loading Story&hellip;</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+      <div class="loading-bar-track">
+        <div class="loading-bar-fill" id="loading-bar"></div>
+      </div>
+      <div class="loading-pct" id="loading-pct">0%</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       NAVBAR — wrapped in a slide container so GSAP can
+       animate translateY without breaking the CSS centerX
+       ============================================================ -->
+  <div id="navbar-wrap">
+    <nav class="navbar" id="main-navbar">
+      <a href="intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand">
+        <img src="assets/images/logo.png" alt="AniCure Logo" style="height:52px;object-fit:contain" />
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link" data-i18n="nav_home">Home</a></li>
+        <li><a href="pages/reports.html" class="nav-link" data-i18n="nav_reports">Reports</a></li>
+        <li><a href="pages/adoption.html" class="nav-link" data-i18n="nav_adoption">Adoption</a></li>
+        <li><a href="pages/donate.html" class="nav-link" data-i18n="nav_donate">Donate</a></li>
+        <li><a href="pages/ngos.html" class="nav-link" data-i18n="nav_ngos">NGOs</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div style="display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0 0.4rem 0 0.6rem">
+          <i class="fa-solid fa-globe" style="color:var(--text-muted);font-size:0.8rem"></i>
+          <select id="lang-select" style="background:transparent;color:var(--text-primary);border:none;padding:0.4rem 0.2rem 0.4rem 0.4rem;font-size:0.8rem;cursor:pointer;outline:none">
+            <option value="en" style="background:#1a1d24;color:#fff">EN</option>
+            <option value="hi" style="background:#1a1d24;color:#fff">HI</option>
+          </select>
+        </div>
+        <a href="pages/auth.html" id="nav-login-btn" class="btn btn-outline btn-sm" data-i18n="nav_signin">Sign In</a>
+        <a href="pages/dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">
+          <i class="fa-solid fa-user"></i> <span id="nav-user-name">User</span>
+        </a>
+        <a href="pages/report-form.html" class="btn btn-primary btn-sm" data-i18n="nav_report_animal">
+          <i class="fa-solid fa-truck-medical" style="margin-right:4px"></i> Report Animal
+        </a>
+        <button id="nav-logout-btn" class="btn btn-ghost btn-sm" style="display:none" data-i18n="nav_signout">
+          <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right:4px"></i> Sign Out
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       STORY WRAPPER — 8500px scroll canvas
+       ============================================================ -->
+  <div id="story-wrapper">
+    <div id="story-sticky">
+      <canvas id="story-canvas"></canvas>
+      <div id="gradient-overlay"></div>
+
+      <div id="caption-layer">
+        <div class="caption" id="caption-1">
+          <div class="caption-text">Every life deserves <span class="caption-accent">another chance.</span></div>
+        </div>
+        <div class="caption" id="caption-2">
+          <div class="caption-text">No one stopped.</div>
+        </div>
+        <div class="caption" id="caption-3">
+          <div class="caption-text">One report <span class="caption-accent">changed everything.</span></div>
+        </div>
+        <div class="caption" id="caption-4">
+          <div class="caption-text">AI connected <span class="caption-accent">help instantly.</span></div>
+        </div>
+        <div class="caption" id="caption-5">
+          <div class="caption-text">Care. Rescue. <span class="caption-accent">Recovery.</span></div>
+        </div>
+        <div class="caption" id="caption-6">
+          <div class="caption-text">Welcome to <span class="caption-accent">AniCure.</span></div>
+        </div>
+      </div>
+
+      <div id="initial-buttons">
+        <div class="btn-row">
+          <button class="btn-glass btn-glass-primary" id="btn-explore-skip">
+            <i class="fa-solid fa-compass" style="font-size:0.9rem"></i>
+            Explore Website
+          </button>
+          <button class="btn-glass btn-glass-secondary" id="btn-begin-story">
+            <i class="fa-solid fa-play" style="font-size:0.75rem"></i>
+            Begin Story
+          </button>
+        </div>
+        <div class="scroll-hint">
+          <div class="scroll-hint-line"></div>
+          <span>scroll to begin</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       EXPLORE CTA — fixed, appears at ~85%
+       ============================================================ -->
+  <div id="explore-cta">
+    <button id="explore-cta-btn">
+      <span>Enter AniCure</span>
+      <span class="cta-icon"><i class="fa-solid fa-arrow-right"></i></span>
+    </button>
+  </div>
+
+  <!-- ============================================================
+       CINEMATIC TRANSITION OVERLAY
+       ============================================================ -->
+  <div id="cinematic-overlay"></div>
+
+  <!-- ============================================================
+       FOOTER — hidden until Explore transition completes
+       ============================================================ -->
+  <footer class="footer" id="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="footer-brand">
+            <img src="assets/images/logo.png" alt="AniCure Logo" style="height:44px;object-fit:contain" />
+          </a>
+          <p class="footer-desc">
+            A real-time animal rescue and care platform connecting helpers, NGOs, vets, and shelters to save more lives every day.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">Platform</div>
+          <div class="footer-links">
+            <a href="pages/reports.html" class="footer-link">View Reports</a>
+            <a href="pages/report-form.html" class="footer-link">Report Animal</a>
+            <a href="pages/adoption.html" class="footer-link">Adoption</a>
+            <a href="pages/donate.html" class="footer-link">Donate</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">Community</div>
+          <div class="footer-links">
+            <a href="pages/ngos.html" class="footer-link">Our NGOs</a>
+            <a href="pages/dashboard.html" class="footer-link">Dashboard</a>
+            <a href="pages/auth.html" class="footer-link">Login / Register</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-newsletter">
+            <div class="footer-title" style="margin-bottom:0.5rem">Stay Updated</div>
+            <p style="color:var(--text-muted);font-size:0.82rem;line-height:1.5">Get tips and rescue alerts directly to your inbox.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed!');">
+              <input type="email" class="newsletter-input" placeholder="Enter your email" required />
+              <button type="submit" class="btn btn-primary btn-sm">Join</button>
+            </form>
+            <div style="margin-top:1.25rem;border-top:1px solid rgba(255,255,255,0.04);padding-top:1rem">
+              <a href="pages/report-form.html" class="btn btn-danger btn-sm" style="display:inline-flex;justify-content:center;width:100%;text-align:center">
+                <i class="fa-solid fa-truck-medical" style="margin-right:6px"></i> Report Emergency
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          © 2026 AniCure. Built with <i class="fa-solid fa-heart" style="color:#ef4444;margin:0 4px"></i> for animals everywhere. <i class="fa-solid fa-paw" style="margin-left:4px"></i>
+        </div>
+        <div class="footer-legal">
+          <a href="#" class="footer-legal-link">Privacy Policy</a>
+          <a href="#" class="footer-legal-link">Terms of Service</a>
+          <a href="#" class="footer-legal-link">Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App JS for auth -->
+  <script src="assets/js/translations.js"></script>
+  <script src="assets/js/app.js"></script>
+
+  <script>
+    /* ============================================================
+       ANICURE — SCROLL STORYTELLING ENGINE v2
+       Complete rewrite fixing:
+       1. Frame repeating (scroll overflow past wrapper)
+       2. Canvas half-screen (CSS sizing conflict)
+       3. Nav broken centering (GSAP overwriting translateX)
+       ============================================================ */
+
+    'use strict';
+
+    // ---- Config ----
+    const TOTAL_FRAMES   = 344;
+    const FRAME_PATH     = 'assets/frames/ezgif-frame-';
+    const PRELOAD_FIRST  = 30;
+    const CTA_REVEAL_AT  = 0.85;
+
+    // Caption definitions
+    const CAPTIONS = [
+      { id: 'caption-1', inFrame:  5, outFrame:  42 },
+      { id: 'caption-2', inFrame: 50, outFrame:  87 },
+      { id: 'caption-3', inFrame: 95, outFrame: 147 },
+      { id: 'caption-4', inFrame: 155, outFrame: 207 },
+      { id: 'caption-5', inFrame: 215, outFrame: 277 },
+      { id: 'caption-6', inFrame: 285, outFrame: 344 },
+    ];
+
+    // ---- State ----
+    const frames      = new Array(TOTAL_FRAMES + 1).fill(null);
+    let currentFrame  = 0;
+    let scrollLocked  = true;
+    let hasScrolled   = false;
+    let ctaRevealed   = false;
+    let transitionDone = false;
+
+    // ---- DOM ----
+    const canvas          = document.getElementById('story-canvas');
+    const ctx             = canvas.getContext('2d', { alpha: false });
+    const loadingScreen   = document.getElementById('loading-screen');
+    const loadingBar      = document.getElementById('loading-bar');
+    const loadingPct      = document.getElementById('loading-pct');
+    const initialButtons  = document.getElementById('initial-buttons');
+    const exploreCTA      = document.getElementById('explore-cta');
+    const exploreCTABtn   = document.getElementById('explore-cta-btn');
+    const cinematicOverlay = document.getElementById('cinematic-overlay');
+    const navbarWrap      = document.getElementById('navbar-wrap');
+    const storyWrapper    = document.getElementById('story-wrapper');
+    const footer          = document.getElementById('site-footer');
+    const btnSkip         = document.getElementById('btn-explore-skip');
+    const btnBegin        = document.getElementById('btn-begin-story');
+
+    // ---- Particles ----
+    (function() {
+      const container = document.getElementById('loading-particles');
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 80 + 30;
+        p.style.cssText = `
+          width:${size}px; height:${size}px;
+          left:${Math.random() * 100}%;
+          animation-duration:${Math.random() * 8 + 10}s;
+          animation-delay:${Math.random() * 6}s;
+          opacity:${Math.random() * 0.15};
+        `;
+        container.appendChild(p);
+      }
+    })();
+
+    /* ============================================================
+       CANVAS — pixel-perfect sizing
+       ============================================================ */
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      // Set display size via CSS
+      canvas.style.width  = w + 'px';
+      canvas.style.height = h + 'px';
+
+      // Set actual buffer size (hi-dpi crisp)
+      canvas.width  = w * dpr;
+      canvas.height = h * dpr;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Redraw current frame at new size
+      const img = frames[currentFrame] || frames[1];
+      if (img) drawFrame(img);
+    }
+
+    function drawFrame(img) {
+      if (!img || !img.naturalWidth) return;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+
+      // Cover-fit: scale to fill viewport, center crop
+      const scale = Math.max(w / iw, h / ih);
+      const sw = iw * scale;
+      const sh = ih * scale;
+      const x = (w - sw) / 2;
+      const y = (h - sh) / 2;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(img, x, y, sw, sh);
+    }
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resizeCanvas, 80);
+    });
+
+    /* ============================================================
+       FRAME LOADING — progressive
+       ============================================================ */
+    function frameUrl(index) {
+      return `${FRAME_PATH}${String(index).padStart(3, '0')}.png`;
+    }
+
+    function loadSingleFrame(index) {
+      return new Promise(resolve => {
+        if (frames[index]) return resolve(frames[index]);
+        const img = new Image();
+        img.onload  = () => { frames[index] = img; resolve(img); };
+        img.onerror = () => { frames[index] = frames[Math.max(1, index - 1)] || null; resolve(null); };
+        img.src = frameUrl(index);
+      });
+    }
+
+    async function preloadFirstBatch() {
+      let loaded = 0;
+
+      // Frame 1 → show immediately
+      const first = await loadSingleFrame(1);
+      if (first) { resizeCanvas(); drawFrame(first); }
+      loaded++;
+      updateLoadingProgress(loaded, PRELOAD_FIRST);
+
+      // Frames 2–30
+      for (let i = 2; i <= PRELOAD_FIRST; i++) {
+        await loadSingleFrame(i);
+        loaded++;
+        updateLoadingProgress(loaded, PRELOAD_FIRST);
+      }
+    }
+
+    function updateLoadingProgress(loaded, total) {
+      const pct = Math.round((loaded / total) * 100);
+      loadingBar.style.width = pct + '%';
+      loadingPct.textContent = pct + '%';
+    }
+
+    function preloadRemainingFrames() {
+      let i = PRELOAD_FIRST + 1;
+      function loadNext() {
+        if (i > TOTAL_FRAMES) return;
+        loadSingleFrame(i).then(() => { i++; requestAnimationFrame(loadNext); });
+      }
+      requestAnimationFrame(loadNext);
+    }
+
+    function dismissLoadingScreen() {
+      loadingScreen.classList.add('hidden');
+      setTimeout(() => { loadingScreen.style.display = 'none'; }, 750);
+    }
+
+    /* ============================================================
+       SCROLL LOCK (during initial load)
+       ============================================================ */
+    function preventScroll(e) {
+      if (scrollLocked) { e.preventDefault(); e.stopPropagation(); }
+    }
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+
+    function unlockScroll() { scrollLocked = false; }
+
+    /* ============================================================
+       SCROLL → FRAME MAPPING
+       Uses ScrollTrigger for rock-solid pinning + scrub.
+       This replaces the manual Lenis-only approach that caused
+       the repeating / half-screen bugs.
+       ============================================================ */
+    let lenis;
+
+    function initScrollSystem() {
+      // 1. Lenis for smooth inertia
+      lenis = new Lenis({
+        duration: 1.4,
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: 1,
+      });
+
+      // Lenis RAF loop
+      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+
+      // 2. Register GSAP + ScrollTrigger
+      gsap.registerPlugin(ScrollTrigger);
+
+      // 3. Connect Lenis ↔ ScrollTrigger
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.lagSmoothing(0);
+
+      // 4. ScrollTrigger → drives the entire story
+      //    This pins #story-sticky and maps scrub progress to frame index.
+      //    The "end" is computed from the wrapper height so it never overflows.
+      ScrollTrigger.create({
+        trigger: '#story-wrapper',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.2,
+        onUpdate: (self) => {
+          if (transitionDone) return;
+
+          const progress = self.progress;   // 0 → 1, clamped by ST
+          const scroll   = window.scrollY || document.documentElement.scrollTop;
+
+          // ---- Buttons + Nav fade ----
+          if (progress > 0.005 && !hasScrolled) {
+            hasScrolled = true;
+            gsap.to(initialButtons, {
+              opacity: 0, y: -20, duration: 0.55, ease: 'power2.out',
+              onComplete: () => { initialButtons.style.pointerEvents = 'none'; }
+            });
+            gsap.to(navbarWrap, { opacity: 0, y: -60, duration: 0.65, ease: 'power2.out' });
+          }
+
+          if (progress <= 0.003 && hasScrolled) {
+            hasScrolled = false;
+            gsap.to(initialButtons, {
+              opacity: 1, y: 0, duration: 0.5, ease: 'power2.out',
+              onStart: () => { initialButtons.style.pointerEvents = 'auto'; }
+            });
+            gsap.to(navbarWrap, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+            hideCTA();
+          }
+
+          // ---- Frame mapping (clamped 1–344, never wraps) ----
+          const frameIdx = Math.min(TOTAL_FRAMES, Math.max(1,
+            Math.round(progress * (TOTAL_FRAMES - 1)) + 1
+          ));
+
+          if (frameIdx !== currentFrame) {
+            currentFrame = frameIdx;
+            // Find the closest loaded frame
+            let img = frames[frameIdx];
+            if (!img) {
+              for (let f = frameIdx - 1; f >= 1; f--) {
+                if (frames[f]) { img = frames[f]; break; }
+              }
+            }
+            if (img) drawFrame(img);
+          }
+
+          // ---- Captions ----
+          updateCaptions(frameIdx);
+
+          // ---- CTA at 85% ----
+          if (progress >= CTA_REVEAL_AT && !ctaRevealed) revealCTA();
+          else if (progress < CTA_REVEAL_AT - 0.03 && ctaRevealed) hideCTA();
+        }
+      });
+    }
+
+    /* ============================================================
+       CAPTIONS
+       ============================================================ */
+    function updateCaptions(frameIdx) {
+      CAPTIONS.forEach(cap => {
+        const el = document.getElementById(cap.id);
+        if (!el) return;
+        const shouldShow = frameIdx >= cap.inFrame && frameIdx <= cap.outFrame;
+        if (shouldShow && !el.classList.contains('visible')) el.classList.add('visible');
+        else if (!shouldShow && el.classList.contains('visible')) el.classList.remove('visible');
+      });
+    }
+
+    /* ============================================================
+       CTA REVEAL / HIDE
+       ============================================================ */
+    function revealCTA() {
+      ctaRevealed = true;
+      exploreCTA.classList.add('visible');
+      gsap.to(exploreCTA, { opacity: 1, y: 0, duration: 0.9, ease: 'back.out(1.4)' });
+      setTimeout(() => { exploreCTABtn.classList.add('cta-glow'); }, 800);
+    }
+
+    function hideCTA() {
+      ctaRevealed = false;
+      exploreCTABtn.classList.remove('cta-glow');
+      gsap.to(exploreCTA, {
+        opacity: 0, y: 40, duration: 0.5, ease: 'power2.in',
+        onComplete: () => { exploreCTA.classList.remove('visible'); }
+      });
+    }
+
+    /* ============================================================
+       CINEMATIC EXPLORE TRANSITION
+       ============================================================ */
+    function exploreTransition() {
+      if (transitionDone) return;
+      transitionDone = true;
+
+      scrollLocked = true;
+      if (lenis) lenis.stop();
+
+      const tl = gsap.timeline();
+
+      tl.to(canvas, { scale: 1.06, duration: 0.6, ease: 'power2.inOut' });
+      tl.to(cinematicOverlay, { opacity: 1, duration: 0.6, ease: 'power2.inOut' }, '-=0.2');
+      tl.call(() => {
+        storyWrapper.style.display = 'none';
+        exploreCTA.style.display   = 'none';
+        canvas.style.transform     = 'none';
+      });
+      tl.call(() => {
+        sessionStorage.setItem('from_intro', '1');
+        window.location.href = 'index.html';
+      }, null, '+=0.1');
+    }
+
+    function skipIntro() {
+      sessionStorage.setItem('from_intro', '1');
+      gsap.to(cinematicOverlay, {
+        opacity: 1, duration: 0.4, ease: 'power2.inOut',
+        onComplete: () => { window.location.href = 'index.html'; }
+      });
+    }
+
+    function beginStory() {
+      if (lenis) {
+        lenis.scrollTo(350, { duration: 1.6, easing: t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t });
+      } else {
+        window.scrollTo({ top: 350, behavior: 'smooth' });
+      }
+    }
+
+    /* ============================================================
+       EVENT LISTENERS
+       ============================================================ */
+    btnSkip.addEventListener('click', skipIntro);
+    btnBegin.addEventListener('click', beginStory);
+    exploreCTABtn.addEventListener('click', exploreTransition);
+
+    function logout() {
+      localStorage.removeItem('anicure_token');
+      localStorage.removeItem('anicure_user');
+      window.location.href = 'index.html';
+    }
+    document.getElementById('nav-logout-btn').addEventListener('click', logout);
+
+    /* ============================================================
+       BOOTSTRAP
+       ============================================================ */
+    async function bootstrap() {
+      resizeCanvas();
+      await preloadFirstBatch();
+      dismissLoadingScreen();
+
+      // Reveal initial buttons
+      gsap.to(initialButtons, { opacity: 1, y: 0, duration: 0.8, delay: 0.5, ease: 'power2.out' });
+
+      // Small delay so loading screen finishes fading before scroll unlocks
+      setTimeout(() => {
+        initScrollSystem();
+        unlockScroll();
+        preloadRemainingFrames();
+      }, 900);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof updateNavbar === 'function') updateNavbar();
+      bootstrap();
+    });
+  </script>
+
+</body>
+</html>

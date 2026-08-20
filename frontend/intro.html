@@ -88,7 +88,7 @@
       max-width: 1200px;
       z-index: 1000;
       /* Darker glassmorphism to stand out against the bright daytime video frame */
-      background: rgba(13, 15, 18, 0.55);
+      background: rgba(13, 15, 18, 0.85);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -133,7 +133,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 1.5rem;
     }
 
     .nav-link {
@@ -400,21 +400,21 @@
        ============================================================ */
     #initial-buttons {
       position: absolute;
-      bottom: 12vh;
+      bottom: 8vh;
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
       opacity: 0;
       will-change: opacity, transform;
     }
 
     .btn-row {
       display: flex;
-      gap: 0.85rem;
+      gap: 1.5rem;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
@@ -443,31 +443,33 @@
     }
 
     .btn-glass-primary {
-      background: rgba(239,153,52,0.15);
+      background: var(--clr-primary);
       color: #fff;
-      border: 1px solid rgba(239,153,52,0.45);
-      box-shadow: 0 0 30px rgba(239,153,52,0.12), inset 0 1px 0 rgba(255,255,255,0.1);
+      border: 1px solid var(--clr-primary-light);
+      box-shadow: 0 6px 20px rgba(239,153,52,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
     }
 
     .btn-glass-primary:hover {
-      background: rgba(239,153,52,0.25);
-      border-color: rgba(239,153,52,0.7);
+      background: var(--clr-primary-dark);
+      border-color: var(--clr-primary-light);
       transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 0 50px rgba(239,153,52,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+      box-shadow: 0 10px 30px rgba(239,153,52,0.6), inset 0 1px 0 rgba(255,255,255,0.3);
     }
 
     .btn-glass-secondary {
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
     }
 
     .btn-glass-secondary:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.25);
       color: #fff;
-      border-color: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.5);
       transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
     }
 
     .scroll-hint {
@@ -475,8 +477,9 @@
       flex-direction: column;
       align-items: center;
       gap: 0.4rem;
-      color: rgba(255,255,255,0.3);
-      font-size: 0.72rem;
+      color: rgba(255,255,255,0.8);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      font-size: 0.75rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       animation: hintPulse 2.5s ease-in-out infinite 2s;
@@ -860,7 +863,7 @@
     const TOTAL_FRAMES   = 344;
     const FRAME_PATH     = 'assets/frames/ezgif-frame-';
     const PRELOAD_FIRST  = 30;
-    const CTA_REVEAL_AT  = 0.85;
+    const CTA_REVEAL_AT  = 0.95;
 
     // Caption definitions
     const CAPTIONS = [
@@ -972,8 +975,16 @@
       return new Promise(resolve => {
         if (frames[index]) return resolve(frames[index]);
         const img = new Image();
-        img.onload  = () => { frames[index] = img; resolve(img); };
-        img.onerror = () => { frames[index] = frames[Math.max(1, index - 1)] || null; resolve(null); };
+        img.onload  = () => { 
+          frames[index] = img; 
+          if (index === currentFrame) drawFrame(img);
+          resolve(img); 
+        };
+        img.onerror = () => { 
+          frames[index] = frames[Math.max(1, index - 1)] || null; 
+          if (index === currentFrame && frames[index]) drawFrame(frames[index]);
+          resolve(null); 
+        };
         img.src = frameUrl(index);
       });
     }

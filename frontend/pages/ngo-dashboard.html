@@ -1,18 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NGO Dashboard â€“ AniCure</title>
+  <title>NGO Dashboard – AniCure</title>
   <meta name="description" content="NGO dashboard to manage animal rescue cases, accept reports, and track status updates." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ¾</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
 
 <nav class="navbar">
   <a href="../intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand">
-    <div class="brand-icon">ðŸ¾</div>
+    <div class="brand-icon">🐾</div>
     Ani<span>Cure</span>
   </a>
   <ul class="nav-links">
@@ -22,7 +22,7 @@
   </ul>
   <div class="nav-actions">
     <div id="notif-btn" style="position:relative;cursor:pointer;padding:0.5rem">
-      <span style="font-size:1.2rem">ðŸ””</span>
+      <span style="font-size:1.2rem">🔔</span>
       <span id="notif-count" style="display:none;position:absolute;top:2px;right:2px;background:var(--clr-danger);color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.6rem;display:none;align-items:center;justify-content:center;font-weight:700">0</span>
     </div>
     <button onclick="logout()" class="btn btn-ghost btn-sm">Sign Out</button>
@@ -33,35 +33,35 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div style="text-align:center;padding:1rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem">
-      <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--clr-primary),var(--clr-primary-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 0.75rem">ðŸ¥</div>
+      <div style="width:60px;height:60px;background:linear-gradient(135deg,var(--clr-primary),var(--clr-primary-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin:0 auto 0.75rem">🏥</div>
       <div style="font-weight:700;color:var(--text-primary);font-size:0.95rem" id="org-name">Loading...</div>
       <div style="font-size:0.78rem;color:var(--text-muted)" id="org-role">NGO</div>
-      <span class="badge badge-success" style="margin-top:0.5rem" id="verified-badge" style="display:none">âœ… Verified</span>
+      <span class="badge badge-success" style="margin-top:0.5rem" id="verified-badge" style="display:none">✅ Verified</span>
     </div>
 
     <nav class="sidebar-nav">
       <a href="#" class="sidebar-link active" onclick="showSection('overview',this)">
-        <span class="icon">ðŸ“Š</span> Overview
+        <span class="icon">📊</span> Overview
       </a>
       <a href="#" class="sidebar-link" onclick="showSection('nearby',this)">
-        <span class="icon">ðŸ“</span> Nearby Cases
+        <span class="icon">📍</span> Nearby Cases
       </a>
       <a href="#" class="sidebar-link" onclick="showSection('active',this)">
-        <span class="icon">ðŸ¥</span> Active Cases
+        <span class="icon">🏥</span> Active Cases
       </a>
       <a href="#" class="sidebar-link" onclick="showSection('notifications',this)">
-        <span class="icon">ðŸ””</span> Notifications
+        <span class="icon">🔔</span> Notifications
         <span id="notif-badge" style="display:none;background:var(--clr-danger);color:#fff;border-radius:20px;padding:1px 7px;font-size:0.72rem;margin-left:auto">0</span>
       </a>
       <a href="adoption.html" class="sidebar-link">
-        <span class="icon">ðŸ¾</span> Manage Adoptions
+        <span class="icon">🐾</span> Manage Adoptions
       </a>
       <!-- AI Duplicate Detection Panel -->
       <a href="#" class="sidebar-link" onclick="showSection('duplicates',this)">
-        <span class="icon">ðŸ¤–</span> Duplicate Detection
+        <span class="icon">🤖</span> Duplicate Detection
       </a>
       <a href="#" class="sidebar-link" onclick="showSection('profile',this)">
-        <span class="icon">âš™ï¸</span> Profile/Settings
+        <span class="icon">⚙️</span> Profile/Settings
       </a>
     </nav>
   </aside>
@@ -82,28 +82,28 @@
 
       <div class="grid grid-4" style="margin-bottom:2rem">
         <div class="stat-card">
-          <div class="stat-icon green">âœ…</div>
+          <div class="stat-icon green">✅</div>
           <div>
             <div class="stat-value" id="accepted-cases">0</div>
             <div class="stat-label">Cases Accepted</div>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon blue">ðŸ¥</div>
+          <div class="stat-icon blue">🏥</div>
           <div>
             <div class="stat-value" id="active-cases-stat">0</div>
             <div class="stat-label">Active Cases</div>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon amber">ðŸ¦…</div>
+          <div class="stat-icon amber">🦅</div>
           <div>
             <div class="stat-value" id="rescued-stat">0</div>
             <div class="stat-label">Animals Rescued</div>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon red">ðŸ””</div>
+          <div class="stat-icon red">🔔</div>
           <div>
             <div class="stat-value" id="pending-notifs">0</div>
             <div class="stat-label">Pending Alerts</div>
@@ -127,7 +127,7 @@
     <section id="section-nearby" style="display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
         <div>
-          <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">ðŸ“ Nearby Case Reports</h2>
+          <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">📍 Nearby Case Reports</h2>
           <p style="color:var(--text-muted);font-size:0.9rem">Animal emergencies requiring immediate attention near your location</p>
         </div>
         <div style="display:flex;gap:0.75rem;align-items:center">
@@ -136,7 +136,7 @@
             <option value="20" selected>20 km</option>
             <option value="50">50 km</option>
           </select>
-          <button onclick="loadNearbyReports()" class="btn btn-ghost btn-sm">ðŸ”„ Refresh</button>
+          <button onclick="loadNearbyReports()" class="btn btn-ghost btn-sm">🔄 Refresh</button>
         </div>
       </div>
 
@@ -151,7 +151,7 @@
     <!-- Active Cases Section -->
     <section id="section-active" style="display:none">
       <div style="margin-bottom:1.5rem">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">ðŸ¥ Active Cases</h2>
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">🏥 Active Cases</h2>
         <p style="color:var(--text-muted);font-size:0.9rem">Cases you are currently handling</p>
       </div>
       <div id="active-section-list">
@@ -162,7 +162,7 @@
     <!-- Notifications -->
     <section id="section-notifications" style="display:none">
       <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">ðŸ”” Notifications</h2>
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">🔔 Notifications</h2>
         <button onclick="markAllRead()" class="btn btn-ghost btn-sm">Mark all read</button>
       </div>
       <div id="ngo-notifs-list" style="display:flex;flex-direction:column;gap:0.75rem">
@@ -173,13 +173,13 @@
     <!-- Profile Section -->
     <section id="section-profile" style="display:none">
       <div style="margin-bottom:2rem">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">âš™ï¸ Organization Profile</h2>
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">⚙️ Organization Profile</h2>
         <p style="color:var(--text-muted);font-size:0.9rem">Manage your NGO profile and location settings</p>
       </div>
       <div class="card" style="max-width:600px;padding:2rem">
         <div class="form-group">
           <label class="form-label">Update Location</label>
-          <button onclick="updateNGOLocation()" class="btn btn-ghost btn-sm">ðŸ“¡ Use Current Location</button>
+          <button onclick="updateNGOLocation()" class="btn btn-ghost btn-sm">📡 Use Current Location</button>
         </div>
         <div class="grid grid-2">
           <div class="form-group">
@@ -206,27 +206,27 @@
     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section id="section-duplicates" style="display:none">
       <div style="margin-bottom:2rem">
-        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">ðŸ¤– AI Duplicate Rescue Detection</h2>
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--text-primary)">🤖 AI Duplicate Rescue Detection</h2>
         <p style="color:var(--text-muted);font-size:0.9rem">Monitor how the system merges duplicate animal rescue reports in real-time</p>
       </div>
 
       <!-- Stats Row -->
       <div class="grid grid-4" style="margin-bottom:2rem" id="dup-stats-row">
         <div class="stat-card">
-          <div class="stat-icon green">ðŸ“‹</div>
-          <div><div class="stat-value" id="dup-total-rescues">â€“</div><div class="stat-label">Total Rescues</div></div>
+          <div class="stat-icon green">📋</div>
+          <div><div class="stat-value" id="dup-total-rescues">–</div><div class="stat-label">Total Rescues</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon blue">ðŸ‘ï¸</div>
-          <div><div class="stat-value" id="dup-total-witnesses">â€“</div><div class="stat-label">Total Witnesses</div></div>
+          <div class="stat-icon blue">👁️</div>
+          <div><div class="stat-value" id="dup-total-witnesses">–</div><div class="stat-label">Total Witnesses</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon amber">ðŸ”€</div>
-          <div><div class="stat-value" id="dup-merged">â€“</div><div class="stat-label">Duplicates Merged</div></div>
+          <div class="stat-icon amber">🔀</div>
+          <div><div class="stat-value" id="dup-merged">–</div><div class="stat-label">Duplicates Merged</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon red">ðŸŽ¯</div>
-          <div><div class="stat-value" id="dup-avg-sim">â€“</div><div class="stat-label">Avg Similarity</div></div>
+          <div class="stat-icon red">🎯</div>
+          <div><div class="stat-value" id="dup-avg-sim">–</div><div class="stat-label">Avg Similarity</div></div>
         </div>
       </div>
 
@@ -246,7 +246,7 @@
               <option value="rescued">Rescued</option>
               <option value="closed">Closed</option>
             </select>
-            <button onclick="loadDuplicatePanel()" class="btn btn-ghost btn-sm">ðŸ”„ Refresh</button>
+            <button onclick="loadDuplicatePanel()" class="btn btn-ghost btn-sm">🔄 Refresh</button>
           </div>
         </div>
         <div id="dup-rescues-table">
@@ -260,7 +260,7 @@
       <!-- Top Witnessed Rescues -->
       <div class="card" style="padding:0;overflow:hidden;margin-top:1.5rem">
         <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)">
-          <h3 style="font-family:var(--font-display);font-weight:700;color:var(--text-primary)">ðŸ† Most-Witnessed Rescues</h3>
+          <h3 style="font-family:var(--font-display);font-weight:700;color:var(--text-primary)">🏆 Most-Witnessed Rescues</h3>
           <p style="color:var(--text-muted);font-size:0.82rem;margin-top:2px">Cases with the highest number of confirmed witnesses</p>
         </div>
         <div id="dup-top-witnessed" style="padding:1rem">
@@ -278,16 +278,16 @@
   <div class="modal">
     <div class="modal-header">
       <h3 class="modal-title">Update Case Status</h3>
-      <button class="modal-close" onclick="closeModal()">âœ•</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <input type="hidden" id="modal-report-id" />
     <div class="form-group">
       <label class="form-label">New Status *</label>
       <select class="form-control" id="modal-status">
-        <option value="accepted">âœ… Accept Case</option>
-        <option value="under_treatment">ðŸ’Š Under Treatment</option>
-        <option value="rescued">ðŸ¦… Rescued</option>
-        <option value="closed">ðŸ”’ Close Case</option>
+        <option value="accepted">✅ Accept Case</option>
+        <option value="under_treatment">💊 Under Treatment</option>
+        <option value="rescued">🦅 Rescued</option>
+        <option value="closed">🔒 Close Case</option>
       </select>
     </div>
     <div class="form-group">
@@ -330,7 +330,7 @@
       document.getElementById('section-overview').style.display = 'block';
       document.getElementById('org-name').textContent = data.user.organizationName || data.user.name;
       document.getElementById('org-role').textContent = Format.capitalize(data.user.role) + ' Organization';
-      document.getElementById('welcome-msg').textContent = `Welcome, ${data.user.organizationName || data.user.name}! ðŸ¥`;
+      document.getElementById('welcome-msg').textContent = `Welcome, ${data.user.organizationName || data.user.name}! 🏥`;
       document.getElementById('accepted-cases').textContent = data.stats.acceptedCases || 0;
       document.getElementById('rescued-stat').textContent = data.stats.rescuedCases || 0;
       document.getElementById('active-cases-stat').textContent = (data.activeCases || []).length;
@@ -347,7 +347,7 @@
     const user = Auth.getUser() || {};
     document.getElementById('org-name').textContent = user.organizationName || 'Demo NGO';
     document.getElementById('org-role').textContent = 'NGO Organization';
-    document.getElementById('welcome-msg').textContent = `Welcome, ${user.organizationName || 'NGO Team'}! ðŸ¥`;
+    document.getElementById('welcome-msg').textContent = `Welcome, ${user.organizationName || 'NGO Team'}! 🏥`;
     document.getElementById('accepted-cases').textContent = '24';
     document.getElementById('rescued-stat').textContent = '18';
     document.getElementById('active-cases-stat').textContent = '3';
@@ -368,7 +368,7 @@
           <thead><tr><th>Animal</th><th>Description</th><th>Reporter</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody>
             ${cases.map(c => `<tr>
-              <td>${animalEmoji[c.animalType] || 'ðŸ¾'} <strong style="color:var(--text-primary)">${Format.capitalize(c.animalType)}</strong></td>
+              <td>${animalEmoji[c.animalType] || '🐾'} <strong style="color:var(--text-primary)">${Format.capitalize(c.animalType)}</strong></td>
               <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted)">${c.description}</td>
               <td style="font-size:0.82rem;color:var(--text-muted)">${c.reporter?.name || 'Anonymous'}<br><span style="color:var(--clr-primary)">${c.reporter?.phone || ''}</span></td>
               <td>${statusBadge(c.status)}</td>
@@ -379,7 +379,7 @@
           </tbody>
         </table></div>`
       : `<div style="padding:3rem;text-align:center;color:var(--text-muted)">
-          <div style="font-size:3rem;margin-bottom:1rem">âœ…</div>
+          <div style="font-size:3rem;margin-bottom:1rem">✅</div>
           <div>No active cases right now</div>
         </div>`;
     
@@ -408,8 +408,9 @@
     try {
       const data = await api.get(`/reports/nearby?lat=${ngoCoords.lat}&lng=${ngoCoords.lng}&radius=${radius}`);
       renderNearbyCards(data.reports || []);
-    } catch {
-      renderNearbyCards(demoNearby());
+    } catch (err) {
+      Toast.error('Failed to load nearby reports');
+      renderNearbyCards([]);
     }
   }
 
@@ -426,23 +427,23 @@
     container.innerHTML = reports.length
       ? reports.map(r => `
         <div class="report-card">
-          <div class="report-card-image-placeholder">${animalEmoji[r.animalType] || 'ðŸ¾'}</div>
+          <div class="report-card-image-placeholder">${animalEmoji[r.animalType] || '🐾'}</div>
           <div class="report-card-body">
             <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem">${severityBadge(r.severity)} ${statusBadge(r.status)}</div>
             <div class="report-card-title">${Format.capitalize(r.animalType)} Emergency</div>
             <p class="report-card-desc">${r.description.substring(0,100)}${r.description.length>100?'...':''}</p>
             <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem">
-              ðŸ“ ${r.location?.city || 'Unknown'} â€¢ ${Format.relativeTime(r.createdAt)}<br>
-              ðŸ‘¤ Reported by: ${r.reporter?.name || 'Anonymous'}
+              📍 ${r.location?.city || 'Unknown'} • ${Format.relativeTime(r.createdAt)}<br>
+              👤 Reported by: ${r.reporter?.name || 'Anonymous'}
             </div>
             <div style="display:flex;gap:0.5rem">
-              <button onclick="openStatusModal('${r._id}','accepted')" class="btn btn-primary btn-sm flex-1" style="justify-content:center">âœ… Accept Case</button>
+              <button onclick="openStatusModal('${r._id}','accepted')" class="btn btn-primary btn-sm flex-1" style="justify-content:center">✅ Accept Case</button>
               <a href="reports.html" class="btn btn-ghost btn-sm">Details</a>
             </div>
           </div>
         </div>`).join('')
       : `<div style="text-align:center;color:var(--text-muted);padding:4rem;grid-column:1/-1">
-          <div style="font-size:3rem;margin-bottom:1rem">ðŸŽ‰</div>
+          <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
           <div>No open cases nearby!</div>
         </div>`;
   }
@@ -458,7 +459,7 @@
       ? notifs.map(n => `
         <div class="card" style="padding:1rem">
           <div class="flex items-start gap-3">
-            <span style="font-size:1.4rem">${n.type==='new_report'?'ðŸ†˜':n.type==='donation_received'?'ðŸ’°':'ðŸ””'}</span>
+            <span style="font-size:1.4rem">${n.type==='new_report'?'🆘':n.type==='donation_received'?'💰':'🔔'}</span>
             <div class="flex-1">
               <div style="font-weight:600;color:var(--text-primary);font-size:0.9rem">${n.title}</div>
               <div style="color:var(--text-muted);font-size:0.83rem;margin-top:2px">${n.message}</div>
@@ -471,9 +472,9 @@
 
   function demoNGONotifs() {
     const items = [
-      { icon:'ðŸ†˜', title:'New Emergency Nearby!', msg:'Injured dog reported near Andheri West. 2.5km away.', time:'5m' },
-      { icon:'ðŸ’°', title:'Donation Received', msg:'â‚¹2,500 donation received from a supporter!', time:'1h' },
-      { icon:'âœ…', title:'Case Resolved', msg:'The cat rescue case #1283 has been marked as rescued.', time:'3h' },
+      { icon:'🆘', title:'New Emergency Nearby!', msg:'Injured dog reported near Andheri West. 2.5km away.', time:'5m' },
+      { icon:'💰', title:'Donation Received', msg:'₹2,500 donation received from a supporter!', time:'1h' },
+      { icon:'✅', title:'Case Resolved', msg:'The cat rescue case #1283 has been marked as rescued.', time:'3h' },
     ];
     return document.getElementById('ngo-notifs-list').innerHTML = items.map(n => `
       <div class="card" style="padding:1rem">
@@ -492,14 +493,14 @@
     try {
       const data = await api.get('/users/notifications');
       renderNGONotifs(data.notifications || []);
-    } catch { demoNGONotifs(); }
+    } catch { renderNGONotifs([]); }
   }
 
   async function loadActiveCases() {
     try {
       const data = await api.get('/reports?status=accepted&status=under_treatment');
       renderActiveCases(data.reports || []);
-    } catch { renderActiveCases(demoCases()); }
+    } catch { renderActiveCases([]); }
   }
 
   // Status Modal
@@ -556,7 +557,7 @@
   }
 
   // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-  //  DUPLICATE DETECTION PANEL â€” JavaScript
+  //  DUPLICATE DETECTION PANEL — JavaScript
   // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
   /** Severity-to-score colour mapping */
@@ -595,11 +596,11 @@
     // Render stats
     if (statsResult.status === 'fulfilled' && statsResult.value.success) {
       const s = statsResult.value.stats;
-      document.getElementById('dup-total-rescues').textContent   = s.totalRescues   ?? 'â€“';
-      document.getElementById('dup-total-witnesses').textContent = s.totalWitnesses ?? 'â€“';
-      document.getElementById('dup-merged').textContent          = s.duplicatesMerged ?? 'â€“';
+      document.getElementById('dup-total-rescues').textContent   = s.totalRescues   ?? '–';
+      document.getElementById('dup-total-witnesses').textContent = s.totalWitnesses ?? '–';
+      document.getElementById('dup-merged').textContent          = s.duplicatesMerged ?? '–';
       document.getElementById('dup-avg-sim').textContent =
-        s.avgSimilarityPercent ? `${s.avgSimilarityPercent}%` : 'â€“';
+        s.avgSimilarityPercent ? `${s.avgSimilarityPercent}%` : '–';
 
       // Show AI service status banner
       const banner = document.getElementById('ai-status-banner');
@@ -610,7 +611,7 @@
           banner.style.border     = '1px solid var(--clr-primary)40';
           banner.style.color      = 'var(--clr-primary)';
           banner.innerHTML =
-            'ðŸ¤– <strong>AI Embedding Service Online</strong> â€” ' +
+            '🤖 <strong>AI Embedding Service Online</strong> — ' +
             'CLIP-based image similarity active (60% weight). ' +
             'Duplicate threshold: 90%.';
         } else {
@@ -618,7 +619,7 @@
           banner.style.border     = '1px solid #f59e0b40';
           banner.style.color      = '#f59e0b';
           banner.innerHTML =
-            'âš ï¸ <strong>AI Embedding Service Offline</strong> â€” ' +
+            '⚠️ <strong>AI Embedding Service Offline</strong> — ' +
             'Falling back to geo + time scoring only (50/50 weight). ' +
             'Start <code>ai-service/start.bat</code> to enable CLIP.';
         }
@@ -634,7 +635,7 @@
     } else {
       document.getElementById('dup-rescues-table').innerHTML =
         '<div style="padding:3rem;text-align:center;color:var(--text-muted)">' +
-        '<div style="font-size:2rem;margin-bottom:1rem">ðŸ”Œ</div>' +
+        '<div style="font-size:2rem;margin-bottom:1rem">🔌</div>' +
         '<div>Backend not connected. Start the server to see live data.</div></div>';
     }
   }
@@ -649,7 +650,7 @@
     if (!rescues.length) {
       container.innerHTML =
         '<div style="padding:3rem;text-align:center;color:var(--text-muted)">' +
-        '<div style="font-size:2.5rem;margin-bottom:1rem">âœ…</div>' +
+        '<div style="font-size:2.5rem;margin-bottom:1rem">✅</div>' +
         '<div>No rescue cases found for the selected filter.</div></div>';
       return;
     }
@@ -661,17 +662,17 @@
         : null;
       const locationStr  = r.location?.city || r.location?.address || 'Unknown';
       const statusMap    = {
-        open:        '<span class="badge badge-warning">ðŸŸ¡ Open</span>',
-        assigned:    '<span class="badge badge-info">âœ… Assigned</span>',
-        in_progress: '<span class="badge badge-info">ðŸ’Š In Progress</span>',
-        rescued:     '<span class="badge badge-success">ðŸª¶ Rescued</span>',
-        closed:      '<span class="badge badge-muted">ðŸ”’ Closed</span>',
+        open:        '<span class="badge badge-warning">🟡 Open</span>',
+        assigned:    '<span class="badge badge-info">✅ Assigned</span>',
+        in_progress: '<span class="badge badge-info">💊 In Progress</span>',
+        rescued:     '<span class="badge badge-success">🪶 Rescued</span>',
+        closed:      '<span class="badge badge-muted">🔒 Closed</span>',
       };
 
       return `<tr>
         <td>
           <div style="font-weight:600;color:var(--text-primary);font-size:0.88rem">
-            ${animalEmoji[r.animalType] || 'ðŸ¾'} ${Format.capitalize(r.animalType)}
+            ${animalEmoji[r.animalType] || '🐾'} ${Format.capitalize(r.animalType)}
           </div>
           <div style="font-size:0.74rem;color:var(--text-muted);margin-top:2px">
             ${r._id?.toString().slice(-6).toUpperCase()}
@@ -685,7 +686,7 @@
           <span style="font-weight:700;color:var(--clr-primary)">${mergedCount}</span>
         </td>
         <td style="text-align:center">
-          ${latestSim !== null ? simPill(latestSim) : '<span style="color:var(--text-muted);font-size:0.8rem">â€”</span>'}
+          ${latestSim !== null ? simPill(latestSim) : '<span style="color:var(--text-muted);font-size:0.8rem">—</span>'}
         </td>
         <td>${statusMap[r.status] || r.status}</td>
         <td style="font-size:0.8rem;color:var(--text-muted)">${Format.relativeTime(r.createdAt)}</td>
@@ -734,16 +735,16 @@
           `background:${i === 0 ? 'var(--clr-primary)10' : 'transparent'}">
           <div style="width:32px;height:32px;border-radius:50%;background:var(--clr-primary)20;` +
             `display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0">
-            ${i === 0 ? 'ðŸ¯…' : i + 1}
+            ${i === 0 ? '🯅' : i + 1}
           </div>
           <div style="flex:1">
             <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary)">
-              ${animalEmoji[r.animalType] || 'ðŸ¾'} ${Format.capitalize(r.animalType)}
-              â€” ${r.location?.city || 'Unknown location'}
+              ${animalEmoji[r.animalType] || '🐾'} ${Format.capitalize(r.animalType)}
+              — ${r.location?.city || 'Unknown location'}
             </div>
             <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">
               ${Format.relativeTime(r.createdAt)}
-              ${avgSim !== null ? '&nbsp;â€¢&nbsp;Avg similarity: ' + simPill(avgSim) : ''}
+              ${avgSim !== null ? '&nbsp;•&nbsp;Avg similarity: ' + simPill(avgSim) : ''}
             </div>
           </div>
           <div style="text-align:right;flex-shrink:0">

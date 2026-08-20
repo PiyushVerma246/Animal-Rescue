@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Donate â€“ Support Animal Rescue NGOs â€“ AniCure</title>
+  <title>Donate – Support Animal Rescue NGOs – AniCure</title>
   <meta name="description" content="Donate to animal rescue NGOs and shelters to fund medical care, food, and shelter for rescued animals." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ¾</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
 
 <nav class="navbar">
-  <a href="../intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand"><div class="brand-icon">ðŸ¾</div>Ani<span>Cure</span></a>
+  <a href="../intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand"><div class="brand-icon">🐾</div>Ani<span>Cure</span></a>
   <ul class="nav-links">
     <li><a href="../index.html" class="nav-link">Home</a></li>
     <li><a href="reports.html" class="nav-link">Reports</a></li>
@@ -21,7 +21,7 @@
   </ul>
   <div class="nav-actions">
     <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
-    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">ðŸ‘¤ <span id="nav-user-name">User</span></a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
     <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
   </div>
 </nav>
@@ -30,11 +30,11 @@
   <!-- Hero -->
   <div style="background:linear-gradient(135deg,#0d2010,#142018);border-bottom:1px solid var(--border);padding:3.5rem 0;text-align:center">
     <div class="container">
-      <div class="section-tag" style="display:inline-flex;margin-bottom:1rem">ðŸ’š Make a Difference</div>
+      <div class="section-tag" style="display:inline-flex;margin-bottom:1rem">💚 Make a Difference</div>
       <h1 class="section-title" style="margin-bottom:0.75rem">Support <span>Animal Rescue NGOs</span></h1>
       <p style="color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto 2rem">Your donation funds emergency medical care, food, shelter, and rehabilitation for injured and abandoned animals.</p>
       <div style="display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap">
-        <div><div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text-primary)">â‚¹24L+</div><div style="font-size:0.82rem;color:var(--text-muted)">Donations raised</div></div>
+        <div><div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text-primary)">₹24L+</div><div style="font-size:0.82rem;color:var(--text-muted)">Donations raised</div></div>
         <div style="width:1px;background:var(--border)"></div>
         <div><div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text-primary)">183</div><div style="font-size:0.82rem;color:var(--text-muted)">NGOs supported</div></div>
         <div style="width:1px;background:var(--border)"></div>
@@ -56,9 +56,9 @@
       <!-- Donation Form -->
       <div class="sticky-top">
         <div class="card" style="padding:2rem" id="donation-form-card">
-          <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem">ðŸ’° Make a Donation</h3>
+          <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem">💰 Make a Donation</h3>
           <div id="selected-ngo-info" style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.15);border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1.25rem;font-size:0.85rem;color:var(--text-muted)">
-            â† Select an NGO from the list
+            ← Select an NGO from the list
           </div>
           <input type="hidden" id="selected-ngo-id" />
 
@@ -66,10 +66,10 @@
           <div class="form-group">
             <label class="form-label">Donation Amount</label>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem">
-              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(100, this)">â‚¹100</button>
-              <button type="button" class="btn btn-primary btn-sm amount-btn" onclick="setAmount(500, this)">â‚¹500</button>
-              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(1000, this)">â‚¹1K</button>
-              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(5000, this)">â‚¹5K</button>
+              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(100, this)">₹100</button>
+              <button type="button" class="btn btn-primary btn-sm amount-btn" onclick="setAmount(500, this)">₹500</button>
+              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(1000, this)">₹1K</button>
+              <button type="button" class="btn btn-ghost btn-sm amount-btn" onclick="setAmount(5000, this)">₹5K</button>
             </div>
             <input type="number" class="form-control" id="donation-amount" placeholder="Or enter custom amount" min="1" value="500" />
           </div>
@@ -80,11 +80,11 @@
           </div>
 
           <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-md);padding:0.75rem;margin-bottom:1.25rem;font-size:0.82rem;color:var(--text-muted)">
-            ðŸ”’ Secure payment powered by Stripe. Your card details are never stored.
+            🔒 Secure payment powered by Stripe. Your card details are never stored.
           </div>
 
           <button onclick="processDonation()" class="btn btn-primary w-full btn-lg" style="justify-content:center" id="donate-btn">
-            ðŸ’š Donate Now
+            💚 Donate Now
           </button>
 
           <div style="text-align:center;margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted)">
@@ -121,16 +121,16 @@
         <div style="display:flex;align-items:flex-start;gap:1rem">
           ${n.logo 
             ? `<div style="width:50px;height:50px;border-radius:12px;overflow:hidden;flex-shrink:0"><img src="${n.logo}" style="width:100%;height:100%;object-fit:cover" alt="${n.organizationName || n.name}" /></div>`
-            : `<div style="width:50px;height:50px;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.05));border:1px solid rgba(34,197,94,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">ðŸ¥</div>`
+            : `<div style="width:50px;height:50px;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.05));border:1px solid rgba(34,197,94,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">🏥</div>`
           }
           <div class="flex-1">
             <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.25rem">
               <div style="font-weight:700;color:var(--text-primary)">${n.organizationName || n.name}</div>
-              ${n.verified ? '<span class="badge badge-success" style="font-size:0.68rem">âœ… Verified</span>' : ''}
+              ${n.verified ? '<span class="badge badge-success" style="font-size:0.68rem">✅ Verified</span>' : ''}
             </div>
-            <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">ðŸ“ ${n.location?.city || 'India'}, ${n.location?.state || ''}</div>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem">📍 ${n.location?.city || 'India'}, ${n.location?.state || ''}</div>
             <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.5">${n.organizationDescription || 'Fighting for animal welfare every day.'}</p>
-            <div style="margin-top:0.75rem;font-size:0.82rem;color:var(--clr-primary)">ðŸ¦… ${n.rescuedCount || '100+'} animals rescued</div>
+            <div style="margin-top:0.75rem;font-size:0.82rem;color:var(--clr-primary)">🦅 ${n.rescuedCount || '100+'} animals rescued</div>
           </div>
         </div>
       </div>`).join('');
@@ -150,12 +150,12 @@
     document.getElementById('selected-ngo-id').value = id;
     document.getElementById('selected-ngo-info').innerHTML = `
       <div style="display:flex;align-items:center;width:100%;gap:0.75rem;padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
-        <span style="font-size:1.3rem">ðŸ¥</span>
+        <span style="font-size:1.3rem">🏥</span>
         <div style="flex:1">
           <div style="font-size:0.75rem;color:var(--text-muted)">Supporting</div>
           <div style="font-weight:700;color:var(--clr-primary);font-size:0.95rem">${name}</div>
         </div>
-        <button type="button" onclick="deselectNGO(event)" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:4px;height:24px;width:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:0.2s" onmouseover="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">âœ•</button>
+        <button type="button" onclick="deselectNGO(event)" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:4px;height:24px;width:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:0.2s" onmouseover="this.style.background='rgba(255,255,255,0.05)';this.style.color='var(--text-primary)'" onmouseout="this.style.background='none';this.style.color='var(--text-muted)'">✕</button>
       </div>`;
   }
 
@@ -207,7 +207,7 @@
       }
     } catch (err) {
       // Demo mode - simulate success
-      Toast.success(`Thank you! Your donation of â‚¹${amount} would be processed via Stripe. (Demo mode: Stripe key not configured)`);
+      Toast.success(`Thank you! Your donation of ₹${amount} would be processed via Stripe. (Demo mode: Stripe key not configured)`);
       Loading.hide(btn);
     }
   }

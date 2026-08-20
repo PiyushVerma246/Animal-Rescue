@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Dashboard â€“ AniCure</title>
+  <title>My Dashboard – AniCure</title>
   <meta name="description" content="Track your animal reports, view reward points, and manage your AniCure profile." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ¾</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../assets/css/style.css" />
@@ -251,11 +251,11 @@
           <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
             <h5 style="font-size:0.82rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Rank Milestones</h5>
             <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.82rem;color:var(--text-muted)">
-              <div><i class="fa-solid fa-seedling" style="color:#22c55e;width:16px"></i> <strong style="color:var(--text-primary)">Sprout</strong> â€“ 0â€“99 pts</div>
-              <div><i class="fa-solid fa-leaf" style="color:#10b981;width:16px"></i> <strong style="color:var(--text-primary)">Helper</strong> â€“ 100â€“499 pts</div>
-              <div><strong style="color:var(--text-primary);margin-left:20px">Rescuer</strong> â€“ 500â€“999 pts</div>
-              <div><i class="fa-solid fa-star" style="color:#eab308;width:16px"></i> <strong style="color:var(--text-primary)">Animal Hero</strong> â€“ 1000â€“4999 pts</div>
-              <div><i class="fa-solid fa-crown" style="color:#f59e0b;width:16px"></i> <strong style="color:var(--text-primary)">Guardian Angel</strong> â€“ 5000+ pts</div>
+              <div><i class="fa-solid fa-seedling" style="color:#22c55e;width:16px"></i> <strong style="color:var(--text-primary)">Sprout</strong> – 0–99 pts</div>
+              <div><i class="fa-solid fa-leaf" style="color:#10b981;width:16px"></i> <strong style="color:var(--text-primary)">Helper</strong> – 100–499 pts</div>
+              <div><strong style="color:var(--text-primary);margin-left:20px">Rescuer</strong> – 500–999 pts</div>
+              <div><i class="fa-solid fa-star" style="color:#eab308;width:16px"></i> <strong style="color:var(--text-primary)">Animal Hero</strong> – 1000–4999 pts</div>
+              <div><i class="fa-solid fa-crown" style="color:#f59e0b;width:16px"></i> <strong style="color:var(--text-primary)">Guardian Angel</strong> – 5000+ pts</div>
             </div>
           </div>
         </div>
@@ -288,8 +288,10 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('section-overview').style.display = 'block';
     } catch (err) {
-      // Show demo data on API failure
-      showDemoData();
+      Toast.error('Failed to load dashboard data');
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('section-overview').innerHTML = '<div style="padding:4rem;text-align:center;color:var(--text-muted)">Failed to load data. Please refresh.</div>';
+      document.getElementById('section-overview').style.display = 'block';
     }
   }
 
@@ -419,8 +421,8 @@
             <div style="margin-bottom:1rem">No reports yet</div>
             <a href="report-form.html" class="btn btn-primary">Submit Your First Report</a>
           </div>`;
-    } catch {
-      document.getElementById('my-reports-list').innerHTML = demoReportsCards();
+    } catch (err) {
+      document.getElementById('my-reports-list').innerHTML = `<div style="text-align:center;padding:4rem;grid-column:1/-1;color:var(--text-muted)">Failed to load reports.</div>`;
     }
   }
 
@@ -431,7 +433,7 @@
         <div class="report-card-body">
           <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem">${severityBadge('medium')} ${statusBadge('rescued')}</div>
           <div class="report-card-title">${Format.capitalize(type)} Report</div>
-          <p class="report-card-desc">Demo report â€“ this is a demonstration of what your reports look like.</p>
+          <p class="report-card-desc">Demo report – this is a demonstration of what your reports look like.</p>
           <div class="report-card-meta">
             <span style="font-size:0.78rem;color:var(--text-muted)">3 days ago</span>
             <a href="reports.html" class="btn btn-primary btn-sm">View</a>
@@ -445,10 +447,7 @@
       const data = await api.get('/users/notifications');
       renderNotifications(data.notifications || []);
     } catch { 
-      renderNotifications([
-        { _id: '1', title: 'Welcome, Animal Saver! <i class="fa-solid fa-paw" style="color:var(--clr-primary)"></i>', message: 'Create reports and help rescue injured animals on the go.', type: 'welcome', isRead: false, createdAt: new Date() },
-        { _id: '2', title: 'Help Desk Live <i class="fa-solid fa-headset" style="color:var(--clr-primary)"></i>', message: 'You have joined the AniCure Network. Submit full descriptions accurately.', type: 'report_status_update', isRead: true, createdAt: new Date(Date.now() - 86400000) }
-      ]);
+      renderNotifications([]);
     }
   }
 

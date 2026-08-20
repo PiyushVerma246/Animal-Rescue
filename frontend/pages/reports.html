@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All Reports â€“ AniCure</title>
+  <title>All Reports – AniCure</title>
   <meta name="description" content="Browse all injured and abandoned animal reports. Filter by status, animal type, or severity." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ¾</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
 
 <nav class="navbar">
-  <a href="../intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand"><div class="brand-icon">ðŸ¾</div>Ani<span>Cure</span></a>
+  <a href="../intro.html" onclick="sessionStorage.removeItem('intro_seen')" class="navbar-brand"><div class="brand-icon">🐾</div>Ani<span>Cure</span></a>
   <ul class="nav-links">
     <li><a href="../index.html" class="nav-link">Home</a></li>
     <li><a href="reports.html" class="nav-link active">Reports</a></li>
@@ -21,8 +21,8 @@
   </ul>
   <div class="nav-actions">
     <a href="auth.html" id="nav-login-btn" class="btn btn-outline btn-sm">Sign In</a>
-    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">ðŸ‘¤ <span id="nav-user-name">User</span></a>
-    <a href="report-form.html" class="btn btn-primary btn-sm">ðŸ†˜ Report Animal</a>
+    <a href="dashboard.html" id="nav-dash-btn" class="btn btn-ghost btn-sm" style="display:none">👤 <span id="nav-user-name">User</span></a>
+    <a href="report-form.html" class="btn btn-primary btn-sm">🆘 Report Animal</a>
     <button id="nav-logout-btn" onclick="logout()" class="btn btn-ghost btn-sm" style="display:none">Sign Out</button>
   </div>
 </nav>
@@ -30,7 +30,7 @@
 <main style="padding-top:68px;min-height:100vh;padding-bottom:4rem">
   <div style="background:linear-gradient(135deg,#0d2010,#142018);border-bottom:1px solid var(--border);padding:3rem 0">
     <div class="container">
-      <div class="section-tag" style="display:inline-flex;margin-bottom:0.75rem">ðŸ“‹ Live Reports</div>
+      <div class="section-tag" style="display:inline-flex;margin-bottom:0.75rem">📋 Live Reports</div>
       <h1 class="section-title" style="margin-bottom:0.5rem">Animal <span>Emergency Reports</span></h1>
       <p style="color:var(--text-muted)">Real-time reports of injured and abandoned animals needing help</p>
     </div>
@@ -39,10 +39,10 @@
   <div class="container" style="padding-top:2rem">
     <!-- Stats Bar -->
     <div class="grid grid-4" style="margin-bottom:2rem" id="stats-bar">
-      <div class="stat-card"><div class="stat-icon green">ðŸ“‹</div><div><div class="stat-value" id="total-stat">â€“</div><div class="stat-label">Total Reports</div></div></div>
-      <div class="stat-card"><div class="stat-icon red">â³</div><div><div class="stat-value" id="pending-stat">â€“</div><div class="stat-label">Pending</div></div></div>
-      <div class="stat-card"><div class="stat-icon blue">ðŸ¥</div><div><div class="stat-value" id="inprog-stat">â€“</div><div class="stat-label">In Progress</div></div></div>
-      <div class="stat-card"><div class="stat-icon amber">âœ…</div><div><div class="stat-value" id="rescued-stat">â€“</div><div class="stat-label">Rescued</div></div></div>
+      <div class="stat-card"><div class="stat-icon green">📋</div><div><div class="stat-value" id="total-stat">–</div><div class="stat-label">Total Reports</div></div></div>
+      <div class="stat-card"><div class="stat-icon red">⏳</div><div><div class="stat-value" id="pending-stat">–</div><div class="stat-label">Pending</div></div></div>
+      <div class="stat-card"><div class="stat-icon blue">🏥</div><div><div class="stat-value" id="inprog-stat">–</div><div class="stat-label">In Progress</div></div></div>
+      <div class="stat-card"><div class="stat-icon amber">✅</div><div><div class="stat-value" id="rescued-stat">–</div><div class="stat-label">Rescued</div></div></div>
     </div>
 
     <!-- Filters -->
@@ -57,18 +57,18 @@
         </select>
         <select id="filter-type" class="form-control" style="width:auto" onchange="applyFilters()">
           <option value="">All Animals</option>
-          <option value="dog">ðŸ• Dog</option>
-          <option value="cat">ðŸˆ Cat</option>
-          <option value="bird">ðŸ¦œ Bird</option>
-          <option value="cow">ðŸ„ Cow</option>
-          <option value="other">ðŸ¦Ž Other</option>
+          <option value="dog">🐕 Dog</option>
+          <option value="cat">🐈 Cat</option>
+          <option value="bird">🦜 Bird</option>
+          <option value="cow">🐄 Cow</option>
+          <option value="other">🦎 Other</option>
         </select>
         <select id="filter-severity" class="form-control" style="width:auto" onchange="applyFilters()">
           <option value="">All Severity</option>
-          <option value="critical">ðŸ”´ Critical</option>
-          <option value="high">ðŸŸ  High</option>
-          <option value="medium">ðŸŸ¡ Medium</option>
-          <option value="low">ðŸŸ¢ Low</option>
+          <option value="critical">🔴 Critical</option>
+          <option value="high">🟠 High</option>
+          <option value="medium">🟡 Medium</option>
+          <option value="low">🟢 Low</option>
         </select>
         <button onclick="resetFilters()" class="btn btn-ghost btn-sm">Reset</button>
         <div style="margin-left:auto">
@@ -135,8 +135,9 @@
       const data = await api.get(`/reports${query}`);
       renderReports(data.reports || []);
       renderPagination(data.pagination);
-    } catch {
-      renderReports(demoReports);
+    } catch (err) {
+      Toast.error(err.message || 'Failed to load reports');
+      renderReports([]);
     }
   }
 
@@ -147,23 +148,23 @@
         <div class="report-card">
           ${r.images?.length
             ? `<img src="${r.images[0].startsWith('http') ? r.images[0] : 'http://localhost:5000' + r.images[0]}" class="report-card-image" onerror="this.style.display='none'" />`
-            : `<div class="report-card-image-placeholder">${animalEmoji[r.animalType] || 'ðŸ¾'}</div>`
+            : `<div class="report-card-image-placeholder">${animalEmoji[r.animalType] || '🐾'}</div>`
           }
           <div class="report-card-body">
             <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.6rem">${severityBadge(r.severity)} ${statusBadge(r.status)}</div>
             <div class="report-card-title">${Format.capitalize(r.animalType)} Emergency</div>
             <p class="report-card-desc">${r.description.substring(0, 100)}${r.description.length > 100 ? '...' : ''}</p>
             <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem">
-              ðŸ“ ${r.location?.city || 'Unknown'} â€¢ ${Format.relativeTime(r.createdAt)}
+              📍 ${r.location?.city || 'Unknown'} • ${Format.relativeTime(r.createdAt)}
             </div>
             <div class="report-card-meta">
-              <span style="font-size:0.78rem;color:var(--text-muted)">ðŸ‘¤ ${r.reporter?.name || 'Anonymous'}</span>
+              <span style="font-size:0.78rem;color:var(--text-muted)">👤 ${r.reporter?.name || 'Anonymous'}</span>
               <a href="report-form.html" class="btn btn-primary btn-sm">View</a>
             </div>
           </div>
         </div>`).join('')
       : `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)">
-          <div style="font-size:3rem;margin-bottom:1rem">ðŸ”</div>
+          <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
           <div style="margin-bottom:1rem">No reports found matching your filters</div>
           <button onclick="resetFilters()" class="btn btn-outline">Clear Filters</button>
         </div>`;

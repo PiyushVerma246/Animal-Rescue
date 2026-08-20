@@ -12,6 +12,7 @@
  */
 
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 
 /**
  * rescueRateLimiter
@@ -41,8 +42,8 @@ const rescueRateLimiter = rateLimit({
   // Skip in test environment so unit tests are not throttled
   skip: () => process.env.NODE_ENV === 'test',
 
-  // Custom key generator — use IP address (default behaviour)
-  keyGenerator: (req) => req.ip || req.connection?.remoteAddress || 'unknown',
+  // Use built-in IP key generator to support IPv4 and IPv6
+  keyGenerator: ipKeyGenerator,
 
   // Handler called when limit is exceeded (allows custom logging)
   handler: (req, res, next, options) => {

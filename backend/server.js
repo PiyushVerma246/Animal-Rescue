@@ -31,7 +31,10 @@ app.set('io', io);
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'null'],
+  origin: function (origin, callback) {
+    // Allow any origin for local development
+    callback(null, true);
+  },
   credentials: true,
 }));
 app.use(express.json());

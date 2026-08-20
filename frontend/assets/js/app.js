@@ -45,6 +45,10 @@ const api = {
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        Auth.clearSession();
+        window.location.href = 'auth.html';
+      }
       throw new Error(data.message || 'Request failed');
     }
 

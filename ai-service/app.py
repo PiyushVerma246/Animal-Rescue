@@ -30,6 +30,10 @@ import torch
 from flask import Flask, jsonify, request
 from PIL import Image
 
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from inference.injury_analyzer import InjuryAnalyzer
+
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
@@ -48,6 +52,8 @@ logger.info(f"Loading CLIP model: {MODEL_NAME} ({PRETRAINED}) — this may take 
 _model, _, _preprocess = open_clip.create_model_and_transforms(MODEL_NAME, pretrained=PRETRAINED)
 _model.eval()
 logger.info("CLIP model loaded and ready.")
+
+analyzer = InjuryAnalyzer()
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -131,6 +137,31 @@ def embed():
     except Exception as e:
         logger.error(f"Embedding generation failed: {traceback.format_exc()}")
         return jsonify({"error": f"Embedding generation failed: {str(e)}"}), 500
+
+@app.route("/analyze-injury", methods=["POST"])
+def analyze_injury():
+    """
+    Analyze an image for animal injuries using the trained YOLO/Classification model.
+    """
+    data = request.get_json(silent=True)
+    if not data or not data.get("image_b64"):
+        return jsonify({"error": "Missing required field: image_b64"}), 400
+
+    try:
+        image = _decode_image(data["image_b64"])
+    except Exception as e:
+        logger.warning(f"Failed to decode image: {e}")
+        return jsonify({"error": f"Invalid image data: {str(e)}"}), 400
+
+    try:
+        result = analyzer.analyze(image)
+        # Return 503 if model is not available
+        if not result.get("success", False) and result.get("code") == "MODEL_NOT_AVAILABLE":
+            return jsonify(result), 503
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Inference failed: {traceback.format_exc()}")
+        return jsonify({"error": f"Inference failed: {str(e)}"}), 500
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

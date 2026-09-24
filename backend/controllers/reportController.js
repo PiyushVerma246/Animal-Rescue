@@ -1,6 +1,7 @@
 const Report = require('../models/Report');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const aiService = require('../services/aiService');
 
 // Helper: send real-time notification via Socket.io
 const sendSocketNotification = (io, recipientId, notification) => {
@@ -29,18 +30,60 @@ exports.createReport = async (req, res) => {
 
     const isLoggedIn = !!req.user;
 
+    // AI Analysis and Triage
+    let aiTriageResult = {};
+    let parsedObservations = [];
+    try {
+      if (req.body.userObservations) {
+        parsedObservations = JSON.parse(req.body.userObservations);
+      }
+    } catch (e) {
+      // Handle array or string formatting safely
+      parsedObservations = Array.isArray(req.body.userObservations) 
+        ? req.body.userObservations 
+        : [req.body.userObservations].filter(Boolean);
+    }
+
+    try {
+      // Call python microservice using the first uploaded image
+      aiTriageResult = await aiService.analyzeInjury(images[0], parsedObservations);
+    } catch (err) {
+      if (err.message === 'MODEL_NOT_AVAILABLE') {
+        return res.status(503).json({
+          success: false,
+          code: 'MODEL_NOT_AVAILABLE',
+          message: 'AI model is not configured. Please supply a trained model at models/injury_severity_v1.pt.'
+        });
+      }
+      // Fail gracefully and default to manual review if AI server is totally down
+      console.error("AI Service Error:", err);
+      aiTriageResult = {
+        finalSeverity: 'UNKNOWN',
+        finalPriority: 'MANUAL_REVIEW',
+        injuryType: 'unknown',
+        confidence: 0,
+        userObservations: parsedObservations
+      };
+    }
+
     // Build report data
     const reportData = {
-      animalType,
+      animalType: aiTriageResult.animalType && aiTriageResult.animalType !== 'unknown' ? aiTriageResult.animalType : animalType,
       description,
-      severity: severity || 'medium',
+      severity: aiTriageResult.finalSeverity.toLowerCase(), // 'high', 'medium', 'low', 'unknown'
+      priority: aiTriageResult.finalPriority,
+      injuryDetected: aiTriageResult.injuryDetected,
+      injuryType: aiTriageResult.injuryType,
+      confidence: aiTriageResult.confidence,
+      userObservations: parsedObservations,
+      aiAnalysis: aiTriageResult,
       images,
-      imageUrl: images[0], // Set main image URL for backwards compatibility
-      latitude: parsedCoords[1], // Requirement 3 scalar layout mapping
-      longitude: parsedCoords[0], // Requirement 3 scalar layout mapping
+      imageUrl: images[0],
+      latitude: parsedCoords[1],
+      longitude: parsedCoords[0],
       location: {
         type: 'Point',
-        coordinates: parsedCoords, // [lng, lat]
+        coordinates: parsedCoords,
         address,
         city,
         state,
@@ -96,11 +139,14 @@ exports.createReport = async (req, res) => {
     // Create notifications for nearby orgs
     await Promise.all(
       nearby.map(async (org) => {
+        // Calculate rough distance (in km) since MongoDB $near sorts by distance but doesn't return it in this query format easily without aggregation
+        // For simplicity, we just say "Nearby" or use the AI priority
+        const priorityText = aiTriageResult.finalPriority ? `[${aiTriageResult.finalPriority}]` : '';
         const notif = await Notification.create({
           recipient: org._id,
           type: 'new_report',
-          title: '🆘 New Animal Emergency Nearby!',
-          message: `A ${animalType} needs help near ${city || address}. ${description.substring(0, 80)}...`,
+          title: `🆘 NEW RESCUE REQUEST: ${animalType.toUpperCase()}`,
+          message: `${priorityText} A ${aiTriageResult.finalSeverity || 'medium'} severity injury reported near ${city || address}. Priority: ${aiTriageResult.finalPriority || 'MANUAL_REVIEW'}.`,
           relatedReport: report._id,
         });
         sendSocketNotification(io, org._id, notif);

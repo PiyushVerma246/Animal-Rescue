@@ -42,9 +42,19 @@ const reportSchema = new mongoose.Schema(
     },
     severity: {
       type: String,
-      enum: ['low', 'medium', 'high', 'critical'],
+      enum: ['low', 'medium', 'high', 'critical', 'UNKNOWN'],
       default: 'medium',
     },
+    priority: {
+      type: String,
+      enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL', 'MANUAL_REVIEW'],
+      default: 'MANUAL_REVIEW',
+    },
+    injuryDetected: { type: Boolean, default: null },
+    injuryType: { type: String, default: 'unknown' },
+    confidence: { type: Number, default: 0.0 },
+    userObservations: [{ type: String }],
+    aiAnalysis: { type: mongoose.Schema.Types.Mixed },
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

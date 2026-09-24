@@ -56,10 +56,13 @@
     </div>
 
     <!-- Demo accounts -->
-    <div style="margin-top:1.5rem;padding:1rem;background:rgba(34,197,94,0.05);border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.8rem;color:var(--text-muted)">
-      <div style="font-weight:600;color:var(--text-secondary);margin-bottom:0.5rem">Demo Accounts</div>
-      <div>User: <span style="color:var(--clr-primary)">user@demo.com</span> / demo1234</div>
-      <div>NGO: <span style="color:var(--clr-primary)">ngo@demo.com</span> / demo1234</div>
+    <div style="margin-top:1.5rem;padding:1rem;background:rgba(34,197,94,0.05);border:1px solid var(--border);border-radius:var(--radius-md);font-size:0.85rem;color:var(--text-muted)">
+      <div style="font-weight:600;color:var(--text-secondary);margin-bottom:0.75rem;text-align:center">Test Demo Accounts</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button type="button" onclick="document.getElementById('login-email').value='user@demo.com';document.getElementById('login-password').value='password123';document.getElementById('login-btn').click()" class="btn btn-outline" style="width:100%;justify-content:center">Login as User (View Records/Rewards)</button>
+        <button type="button" onclick="document.getElementById('login-email').value='ngo@demo.com';document.getElementById('login-password').value='password123';document.getElementById('login-btn').click()" class="btn btn-outline" style="width:100%;justify-content:center">Login as NGO (View New Reports/Priority)</button>
+        <button type="button" onclick="window.location.href='admin.html'" class="btn btn-outline" style="width:100%;justify-content:center;border-color:#3b82f6;color:#3b82f6"><i class="fa-solid fa-shield-halved"></i> Global Admin Panel</button>
+      </div>
     </div>
   </div>
 

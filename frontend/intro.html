@@ -941,6 +941,7 @@
     }
 
     function drawFrame(img) {
+      return; // Temporarily prevent drawing frames to hide the video thumbnail
       if (!img || !img.naturalWidth) return;
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -1222,13 +1223,16 @@
       dismissLoadingScreen();
 
       // Reveal initial buttons
-      gsap.to(initialButtons, { opacity: 1, y: 0, duration: 0.8, delay: 0.5, ease: 'power2.out' });
+      // gsap.to(initialButtons, { opacity: 1, y: 0, duration: 0.8, delay: 0.5, ease: 'power2.out' });
 
       // Small delay so loading screen finishes fading before scroll unlocks
       setTimeout(() => {
-        initScrollSystem();
-        unlockScroll();
-        preloadRemainingFrames();
+        // initScrollSystem();
+        // unlockScroll();
+        // preloadRemainingFrames();
+        
+        // Temporarily bypass video animation and go to home page
+        skipIntro();
       }, 900);
     }
 

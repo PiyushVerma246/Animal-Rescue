@@ -416,10 +416,22 @@
 
   function demoNearby() {
     return [
-      { _id:'n1', animalType:'dog', description:'Critical injury, needs immediate vet attention', status:'reported', severity:'critical', location:{address:'Near City Park', city:'Mumbai'}, reporter:{name:'Raj K.'}, createdAt: new Date(Date.now()-1800000) },
-      { _id:'n2', animalType:'bird', description:'Bird with broken wing, cannot fly', status:'reported', severity:'low', location:{address:'Garden Road', city:'Mumbai'}, reporter:{name:'Anita P.'}, createdAt: new Date(Date.now()-3600000) },
-      { _id:'n3', animalType:'cat', description:'Starving stray cat with kittens', status:'reported', severity:'medium', location:{address:'Station Road', city:'Mumbai'}, reporter:{name:'Sanjay M.'}, createdAt: new Date(Date.now()-7200000) },
+      { _id:'n1', animalType:'dog', description:'Critical injury, needs immediate vet attention', status:'reported', severity:'critical', priority:'CRITICAL', injuryType:'open_wound', confidence: 0.92, location:{address:'Near City Park', city:'Mumbai'}, reporter:{name:'Raj K.'}, createdAt: new Date(Date.now()-1800000) },
+      { _id:'n2', animalType:'bird', description:'Bird with broken wing, cannot fly', status:'reported', severity:'low', priority:'MEDIUM', injuryType:'suspected_fracture', confidence: 0.85, location:{address:'Garden Road', city:'Mumbai'}, reporter:{name:'Anita P.'}, createdAt: new Date(Date.now()-3600000) },
+      { _id:'n3', animalType:'cat', description:'Starving stray cat with kittens', status:'reported', severity:'medium', priority:'HIGH', injuryType:'unknown', confidence: 0.70, location:{address:'Station Road', city:'Mumbai'}, reporter:{name:'Sanjay M.'}, createdAt: new Date(Date.now()-7200000) },
     ];
+  }
+
+  function priorityBadge(prio) {
+    const map = {
+      'LOW': ['#3b82f6', 'Low Priority'],
+      'MEDIUM': ['#f59e0b', 'Medium Priority'],
+      'HIGH': ['#f97316', 'High Priority'],
+      'CRITICAL': ['#ef4444', 'CRITICAL'],
+      'MANUAL_REVIEW': ['#a855f7', 'Manual Review']
+    };
+    const [c, l] = map[prio] || ['#94a3b8', prio];
+    return `<span style="background:${c}22;color:${c};padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;letter-spacing:0.5px">${l}</span>`;
   }
 
   function renderNearbyCards(reports) {
@@ -429,9 +441,19 @@
         <div class="report-card">
           <div class="report-card-image-placeholder">${animalEmoji[r.animalType] || '🐾'}</div>
           <div class="report-card-body">
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem">${severityBadge(r.severity)} ${statusBadge(r.status)}</div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem">
+              ${severityBadge(r.severity)} 
+              ${r.priority ? priorityBadge(r.priority) : ''}
+              ${statusBadge(r.status)}
+            </div>
             <div class="report-card-title">${Format.capitalize(r.animalType)} Emergency</div>
             <p class="report-card-desc">${r.description.substring(0,100)}${r.description.length>100?'...':''}</p>
+            <div style="background:rgba(255,255,255,0.02);padding:0.75rem;border-radius:6px;border:1px solid rgba(255,255,255,0.05);margin-bottom:0.75rem">
+              <div style="font-size:0.78rem;color:var(--text-muted);display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+                <div>🤖 <strong>AI Scan:</strong> ${Format.capitalize((r.injuryType || 'unknown').replace('_', ' '))}</div>
+                <div>🎯 <strong>Confidence:</strong> ${r.confidence ? Math.round(r.confidence * 100) + '%' : 'N/A'}</div>
+              </div>
+            </div>
             <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem">
               📍 ${r.location?.city || 'Unknown'} • ${Format.relativeTime(r.createdAt)}<br>
               👤 Reported by: ${r.reporter?.name || 'Anonymous'}
@@ -464,6 +486,12 @@
               <div style="font-weight:600;color:var(--text-primary);font-size:0.9rem">${n.title}</div>
               <div style="color:var(--text-muted);font-size:0.83rem;margin-top:2px">${n.message}</div>
               <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">${Format.relativeTime(n.createdAt)}</div>
+              ${n.type === 'new_report' && n.relatedReport ? `
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem">
+                  <button onclick="openStatusModal('${n.relatedReport}','accepted')" class="btn btn-primary btn-sm">✅ ACCEPT RESCUE</button>
+                  <a href="reports.html" class="btn btn-outline btn-sm">VIEW CASE</a>
+                </div>
+              ` : ''}
             </div>
           </div>
         </div>`).join('')

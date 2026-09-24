@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -92,6 +92,36 @@
         </div>
       </div>
 
+      <!-- User Observations -->
+      <div style="margin-bottom:2rem">
+        <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text-primary);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">🩺 Immediate Observations (Optional)</h3>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem">Select any that apply to assist the AI in triage:</p>
+        
+        <div class="grid grid-2" style="gap:0.75rem" id="user-observations-group">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Heavy bleeding" /> Heavy bleeding
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Difficulty breathing" /> Difficulty breathing
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Cannot stand/walk" /> Cannot stand/walk
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Unconscious/unresponsive" /> Unconscious/unresponsive
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Suspected fracture" /> Suspected fracture
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Severe distress" /> Severe distress
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text-primary);cursor:pointer">
+            <input type="checkbox" value="Eye injury" /> Eye injury
+          </label>
+        </div>
+      </div>
+
       <!-- Location: Interactive Map -->
       <div style="margin-bottom:2rem">
         <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text-primary);margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">📍 Pin the Location on the Map</h3>
@@ -166,9 +196,11 @@
           <!-- Controls -->
           <div style="margin-top:1rem;display:flex;gap:0.75rem;justify-content:center">
             <button type="button" class="btn btn-primary btn-sm" id="capture-btn" onclick="takePhoto()">📷 Capture Photo</button>
+            <button type="button" class="btn btn-outline btn-sm" id="upload-btn" onclick="document.getElementById('file-upload').click()">📁 Upload Image</button>
+            <input type="file" id="file-upload" accept="image/*" style="display:none" onchange="handleFileUpload(event)" />
             <button type="button" class="btn btn-outline btn-sm" id="retake-btn" onclick="startCamera()" style="display:none">🔄 Retake</button>
           </div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">⚠️ Camera capture is required. Gallery uploads are disabled.</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">Upload from device enabled for testing purposes.</div>
         </div>
       </div>
 
@@ -183,23 +215,44 @@
       </div>
     </form>
 
-    <!-- Success Card (hidden) -->
-    <div id="success-card" class="card" style="display:none;border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.05);text-align:center;padding:3rem">
-      <div style="font-size:4rem;margin-bottom:1rem">✅</div>
-      <h2 style="font-family:var(--font-display);color:var(--text-primary);font-size:1.5rem;margin-bottom:0.5rem">Report Submitted!</h2>
-      <p style="color:var(--text-muted);margin-bottom:0.5rem">Your report has been submitted. Nearby NGOs and vets have been notified!</p>
-      <p id="notif-count" style="color:var(--clr-primary);font-weight:600;margin-bottom:1rem"></p>
-      <!-- Guest upsell -->
-      <div id="guest-upsell" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:0.88rem;color:var(--text-muted)">
-        🎁 <strong style="color:var(--text-primary)">Did you know?</strong> If you had been signed in, you'd earn <strong style="color:var(--clr-primary)">+50 reward points</strong> for this report and +100 more when the animal gets rescued!<br/>
-        <a href="auth.html" class="btn btn-primary btn-sm" style="margin-top:0.75rem;display:inline-flex">Create Free Account →</a>
+    <!-- AI Success Card (hidden) -->
+    <div id="success-card" class="card" style="display:none;border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.02);padding:2.5rem 2rem">
+      <div style="text-align:center;margin-bottom:2rem">
+        <div style="font-size:3.5rem;margin-bottom:1rem">🤖</div>
+        <h2 style="font-family:var(--font-display);color:var(--text-primary);font-size:1.5rem;margin-bottom:0.25rem">AI-ASSISTED INJURY ASSESSMENT</h2>
+        <p style="color:var(--text-muted);font-size:0.9rem">Your report was scanned and successfully submitted to the nearest NGOs.</p>
+        <p id="notif-count" style="color:var(--clr-primary);font-weight:600;margin-top:0.5rem"></p>
       </div>
+      
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem;margin-bottom:2rem">
+        <div class="grid grid-2" style="gap:1rem;font-size:0.9rem">
+          <div><strong style="color:var(--text-secondary)">Animal:</strong> <span id="ai-animal"></span></div>
+          <div><strong style="color:var(--text-secondary)">Injury Detected:</strong> <span id="ai-injury-detected"></span></div>
+          <div><strong style="color:var(--text-secondary)">Probable Injury:</strong> <span id="ai-injury-type"></span></div>
+          <div><strong style="color:var(--text-secondary)">Severity:</strong> <span id="ai-severity"></span></div>
+          <div><strong style="color:var(--text-secondary)">AI Confidence:</strong> <span id="ai-confidence"></span></div>
+          <div><strong style="color:var(--text-secondary)">Rescue Priority:</strong> <span id="ai-priority"></span></div>
+        </div>
+      </div>
+      
+      <div style="text-align:center;margin-bottom:2rem">
+        <h4 style="color:#ef4444;font-size:1rem;margin-bottom:0.5rem">Recommended Action:</h4>
+        <p id="ai-recommendation" style="color:var(--text-primary);font-weight:600">Immediate rescue/veterinary attention recommended.</p>
+        <p style="color:var(--text-muted);font-size:0.75rem;margin-top:1rem;font-style:italic">Disclaimer: This is an AI-assisted preliminary assessment and does not replace professional veterinary examination.</p>
+      </div>
+
       <!-- Logged-in reward notice -->
-      <div id="points-awarded" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:0.88rem">
-        🎁 <strong style="color:var(--clr-primary)">+50 reward points added to your account!</strong> You'll earn another +100 when the animal is rescued.
+      <div id="points-awarded" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:0.88rem;text-align:center">
+        🎁 <strong style="color:var(--clr-primary)">+50 reward points added!</strong> You'll earn +100 more when rescued.
       </div>
+      <!-- Guest upsell -->
+      <div id="guest-upsell" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:0.88rem;color:var(--text-muted);text-align:center">
+        🎁 Create a free account to earn reward points for this report!
+        <div style="margin-top:0.75rem"><a href="auth.html" class="btn btn-primary btn-sm">Sign Up Now</a></div>
+      </div>
+
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-        <a href="reports.html" class="btn btn-primary">View All Reports</a>
+        <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
         <button onclick="resetForm()" class="btn btn-outline">Submit Another</button>
       </div>
     </div>
@@ -211,7 +264,15 @@
 <!-- Leaflet.js – Open Source Maps (no API key needed) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<style>
+  /* CSS trick to make standard OpenStreetMap dark to match theme */
+  .leaflet-layer,
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out,
+  .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
+</style>
 <script src="../assets/js/app.js"></script>
 <script>
   // Update reward banner based on login state
@@ -241,6 +302,7 @@
     preview.style.display = 'none';
     videoContainer.style.display = 'flex';
     document.getElementById('capture-btn').style.display = 'inline-flex';
+    document.getElementById('upload-btn').style.display = 'inline-flex';
     document.getElementById('retake-btn').style.display = 'none';
     capturedImageBlob = null;
 
@@ -279,17 +341,39 @@
       videoContainer.style.display = 'none';
       preview.style.display = 'block';
       document.getElementById('capture-btn').style.display = 'none';
+      document.getElementById('upload-btn').style.display = 'none';
       document.getElementById('retake-btn').style.display = 'inline-flex';
       
       if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
     }, 'image/jpeg', 0.85);
   }
 
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    capturedImageBlob = file;
+    const previewImg = document.getElementById('capture-preview-img');
+    const preview = document.getElementById('capture-preview-container');
+    const videoContainer = document.getElementById('video-container');
+
+    previewImg.src = URL.createObjectURL(file);
+    
+    // Toggle Views
+    videoContainer.style.display = 'none';
+    preview.style.display = 'block';
+    document.getElementById('capture-btn').style.display = 'none';
+    document.getElementById('upload-btn').style.display = 'none';
+    document.getElementById('retake-btn').style.display = 'inline-flex';
+    
+    if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+  }
+
   // Auto-start camera
   window.addEventListener('load', startCamera);
 
-  // â”€â”€â”€ Interactive Leaflet Map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€─
-  let userCoords = null; // [lng, lat] – GeoJSON order for backend
+  // ─── Interactive Leaflet Map ───────────────────────────────────────────
+  let userCoords = null; // [lng, lat] for backend GeoJSON
   let map = null;
   let marker = null;
 
@@ -306,7 +390,6 @@
   });
 
   function initMap(lat, lng) {
-    // Remove loading overlay
     const loader = document.getElementById('map-loading');
     if (loader) loader.remove();
 
@@ -318,10 +401,9 @@
       zoomControl: true,
     });
 
-    // Dark-styled tile layer (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>',
-      subdomains: 'abcd',
+    // Free OpenStreetMap layer with dark mode CSS filter
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
       maxZoom: 19,
     }).addTo(map);
 
@@ -357,8 +439,6 @@
 
     setCoords(lat, lng);
     map.panTo([lat, lng]);
-
-    // Show status
     document.getElementById('location-status').style.display = 'flex';
   }
 
@@ -471,7 +551,17 @@
     }
 
     const btn = document.getElementById('submit-btn');
-    Loading.show(btn, 'Submitting...');
+    
+    // AI Loading simulation sequence for UX
+    const steps = ['Uploading image...', 'Analyzing injury...', 'Estimating severity...', 'Generating priority...'];
+    let stepIdx = 0;
+    Loading.show(btn, steps[stepIdx]);
+    const stepInterval = setInterval(() => {
+      stepIdx++;
+      if (stepIdx < steps.length) {
+        btn.innerHTML = `<div class="loading-spinner" style="width:1rem;height:1rem;border-width:2px;margin-right:0.5rem"></div> ${steps[stepIdx]}`;
+      }
+    }, 1500);
 
     try {
       const formData = new FormData();
@@ -482,18 +572,41 @@
       formData.append('city', document.getElementById('city').value);
       formData.append('state', document.getElementById('state').value);
       
-      // Strict Location Coordinates
-      formData.append('coordinates', JSON.stringify(userCoords));
+      // Gather User Observations
+      const obsChecks = document.querySelectorAll('#user-observations-group input:checked');
+      const observations = Array.from(obsChecks).map(cb => cb.value);
+      formData.append('userObservations', JSON.stringify(observations));
 
-      // Strict Captured Image from Canvas
+      formData.append('coordinates', JSON.stringify(userCoords));
       formData.append('images', capturedImageBlob, 'rescue_capture.jpg');
 
       const data = await api.upload('/reports', formData);
+      clearInterval(stepInterval);
 
       document.getElementById('report-form').style.display = 'none';
       const successCard = document.getElementById('success-card');
       successCard.style.display = 'block';
-      document.getElementById('notif-count').textContent = `🔔 ${data.notifiedOrgs || 0} nearby organizations were instantly notified!`;
+      
+      // Populate AI Assessment Card
+      const ai = data.report.aiAnalysis || {};
+      document.getElementById('ai-animal').textContent = Format.capitalize(data.report.animalType || 'Unknown');
+      document.getElementById('ai-injury-detected').innerHTML = data.report.injuryDetected ? '<span style="color:#ef4444;font-weight:700">Yes</span>' : 'No';
+      document.getElementById('ai-injury-type').textContent = Format.capitalize((data.report.injuryType || 'unknown').replace('_', ' '));
+      
+      const sevColor = data.report.severity === 'critical' ? '#ef4444' : data.report.severity === 'high' ? '#f97316' : data.report.severity === 'medium' ? '#f59e0b' : '#3b82f6';
+      document.getElementById('ai-severity').innerHTML = `<span style="color:${sevColor};font-weight:700">${(data.report.severity || 'UNKNOWN').toUpperCase()}</span>`;
+      
+      const prioColor = data.report.priority === 'CRITICAL' ? '#ef4444' : data.report.priority === 'MANUAL_REVIEW' ? '#a855f7' : '#3b82f6';
+      document.getElementById('ai-priority').innerHTML = `<span style="color:${prioColor};font-weight:700">${(data.report.priority || 'UNKNOWN').replace('_', ' ')}</span>`;
+      
+      document.getElementById('ai-confidence').textContent = data.report.priority === 'MANUAL_REVIEW' ? 'Low (Manual Override)' : `${Math.round(data.report.confidence * 100)}%`;
+      
+      if (data.report.priority === 'MANUAL_REVIEW') {
+        document.getElementById('ai-recommendation').textContent = 'The AI could not confidently assess this image. The case has been marked for manual review.';
+        document.getElementById('ai-recommendation').style.color = '#a855f7';
+      }
+
+      document.getElementById('notif-count').textContent = `🔔 ${data.notifiedOrgs || 0} nearby rescue teams notified!`;
       
       if (Auth.isLoggedIn()) {
         document.getElementById('points-awarded').style.display = 'block';
@@ -502,6 +615,7 @@
       }
 
     } catch (err) {
+      clearInterval(stepInterval);
       Toast.error(err.message || 'Failed to submit report');
       Loading.hide(btn);
     }

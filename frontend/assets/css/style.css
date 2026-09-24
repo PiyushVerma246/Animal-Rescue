@@ -1729,4 +1729,89 @@ tr:hover td {
   .footer-legal {
     justify-content: center;
   }
+}/* ============================================================
+   UNIVERSAL RESPONSIVE FIXES (ADDED)
+   ============================================================ */
+@media (max-width: 992px) {
+  .hero-grid-layout, .services-grid, .stats-container, .testimonials-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+  .hero-content {
+    text-align: center;
+    align-items: center;
+  }
+  .hero-actions {
+    justify-content: center;
+  }
+  .hero-visual {
+    margin: 0 auto;
+  }
+  
+  .about-grid, .adoption-grid, .form-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto !important;
+    padding: 1.5rem !important;
+    gap: 1rem;
+    border-radius: 15px;
+  }
+  .nav-links {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  .nav-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+  }
+  
+  /* Ensure grids stack nicely on mobile */
+  .grid-2, .grid-3, .grid-4 {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .section-header {
+    text-align: center;
+    align-items: center;
+  }
+  
+  .footer-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-legal {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

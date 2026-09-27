@@ -2,8 +2,7 @@
    AniCure - Global JavaScript Utilities
    ============================================================ */
 
-const API_URL = 'http://localhost:5000/api';
-
+const API_URL = 'https://anicure.onrender.com/api';
 // ---- Auth Helpers ----
 const Auth = {
   getToken: () => localStorage.getItem('anicure_token'),

@@ -135,7 +135,7 @@
               </td>
               <td><i class="fa-solid fa-location-dot" style="color:#ef4444;margin-right:4px"></i> ${displayLoc}</td>
               <td>
-                <div style="margin-bottom:0.25rem">${severityBadge(r.severity)}</div>
+                <div style="margin-bottom:0.25rem">${customSeverityBadge(r.severity)}</div>
                 <div>${r.priority ? priorityBadge(r.priority) : ''}</div>
               </td>
               <td>${ngoHtml}</td>
@@ -149,7 +149,7 @@
     }
 
     // Helper functions imported from app.js or redefined if needed
-    const severityBadge = (sev) => {
+    const customSeverityBadge = (sev) => {
       const map = {
         low: ['#3b82f6', 'Low'], medium: ['#f59e0b', 'Medium'],
         high: ['#f97316', 'High'], critical: ['#ef4444', 'Critical']

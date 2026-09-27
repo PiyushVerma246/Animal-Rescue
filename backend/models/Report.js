@@ -42,7 +42,7 @@ const reportSchema = new mongoose.Schema(
     },
     severity: {
       type: String,
-      enum: ['low', 'medium', 'high', 'critical', 'UNKNOWN'],
+      enum: ['low', 'medium', 'high', 'critical', 'unknown'],
       default: 'medium',
     },
     priority: {

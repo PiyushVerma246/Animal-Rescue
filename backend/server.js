@@ -52,6 +52,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/ngos',   ngoRoutes);
 app.use('/api/rescue', rescueRoutes); // AI-powered duplicate rescue detection
 
+// Root route for UptimeRobot
+app.get('/', (req, res) => {
+  res.send('AniCure Backend is awake and running!');
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'AniCure API is running', timestamp: new Date() });
